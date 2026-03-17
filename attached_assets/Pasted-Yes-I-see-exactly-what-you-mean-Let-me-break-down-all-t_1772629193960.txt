@@ -1,0 +1,69 @@
+Yes, I see exactly what you mean. Let me break down all the issues clearly.
+
+---
+
+## Problem 1 — The Glowing Green Button Bug
+
+In the Fight Club screenshot, there's a **glowing green bar at the very bottom** that's cut off — it's a button that's either:
+- Hidden behind the bottom navigation bar
+- Overflowing off screen
+- Z-index issue where the nav bar is covering it
+
+**The button is probably "Join Club" or "Request to Join"** — which means the most important action on the whole page is invisible to users.
+
+**Fix to paste in Replit Agent:**
+> *"On the club detail page, the bottom CTA button is being hidden behind the bottom navigation bar. Add padding-bottom of at least 80px to the page content so the Join button is always visible above the nav bar. Also ensure the button has a fixed position above the nav bar with z-index higher than content but lower than nav."*
+
+---
+
+## Problem 2 — Missing Organiser Workflow After Club Creation
+
+You created Fight Club but after creating it, there's **no clear path to:**
+- Create an event for that club
+- See your club dashboard
+- Manage members
+- Check who joined
+
+This is the **biggest workflow gap** right now. The organiser needs a clear home after creating a club.
+
+**What should happen after "Launch Club":**
+```
+Create Club → Success screen → 
+"Your club is live! What's next?" →
+[ Create First Event ] [ View Club Dashboard ]
+```
+
+**Fix to paste in Replit Agent:**
+> *"After a club is successfully created, instead of redirecting to the home page, show a success screen with: the club name, a celebration message 'Your club is live! 🎉', and two prominent buttons: 'Create Your First Event' (links to /create with New Event tab pre-selected and club pre-filled) and 'Go to My Dashboard' (links to /organizer). Also on the /organizer page, make sure the organiser can see all clubs they created with quick actions: Create Event, View Members, Edit Club."*
+
+---
+
+## Problem 3 — No Way to Create Events Linked to a Club
+
+Right now your Create → New Event form probably doesn't **link the event to a specific club**. So even if you create an event, it floats disconnected from Fight Club.
+
+**Fix to paste in Replit Agent:**
+> *"On the Create Event form, add a 'Club' dropdown field that shows all clubs where the logged-in user is the organiser. This field should be required for event creation. When an organiser arrives from the club dashboard, pre-fill this dropdown with that club's ID. Events must always be linked to a club."*
+
+---
+
+## Problem 4 — Events Page Empty
+
+Because no events are linked to clubs yet, the events page shows nothing. Once Problem 3 is fixed and you create a test event for Fight Club, this page will populate automatically.
+
+---
+
+## The 3 Prompts to Fix Everything — Paste in Order
+
+**Prompt A — Fix the hidden button:**
+> *"On all club detail pages, the bottom CTA button (Join Club / Request to Join) is hidden behind the bottom navigation bar. Fix by adding pb-24 padding to the page scroll container and ensure the CTA button renders above the nav bar on all screen sizes."*
+
+**Prompt B — Fix post-creation flow:**
+> *"After club creation succeeds, redirect to a success page that shows the club name, a '🎉 Your tribe is live!' message, and two buttons: 'Create First Event' and 'Go to Dashboard'. The /organizer page should list all clubs the user created with buttons: Create Event, View Members, Share Club."*
+
+**Prompt C — Fix event-to-club linking:**
+> *"The Create Event form must have a required Club selector dropdown showing all clubs where the current user is organiser. Pre-fill it when navigating from a club's dashboard. Save the club_id on the event. On each club detail page, show upcoming events linked to that club under an 'Upcoming Events' section."*
+
+---
+
+Paste these three prompts one at a time into Replit Agent and your core organiser workflow will be complete. Want me to write any of these in more detail?

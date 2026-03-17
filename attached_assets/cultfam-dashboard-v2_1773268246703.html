@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Organiser Dashboard · CultFam</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --terra:#C4622D;--terra-l:#E8845A;--terra-d:#8B4420;
+  --cream:#F5F0E8;--cream-dk:#EDE7DB;--warm:#FDFAF5;
+  --ink:#1A1410;--ink-s:#3D2E26;--ink-d:#7A6358;
+  --gold:#C9A84C;--green:#4A7C59;--red:#C42D2D;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);max-width:390px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--warm);padding:48px 20px 0;border-bottom:1px solid rgba(196,98,45,0.08);position:sticky;top:0;z-index:50;flex-shrink:0}
+.topbar-row{display:flex;align-items:center;gap:12px;padding-bottom:14px}
+.club-av{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1A1410,#C4622D);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.topbar-info{flex:1}
+.topbar-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink)}
+.topbar-badge{font-size:10px;color:var(--terra);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;display:flex;align-items:center;gap:4px}
+.topbar-right{display:flex;gap:8px}
+.t-btn{width:36px;height:36px;border-radius:50%;background:var(--cream);border:none;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+.t-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--terra);border-radius:50%;border:2px solid var(--warm)}
+
+/* ── 4-TAB NAV ── */
+.tab-nav{display:flex;background:var(--warm);border-bottom:1px solid rgba(196,98,45,0.08)}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 12px;cursor:pointer;border:none;background:none;position:relative;transition:all 0.15s}
+.tab-icon{font-size:20px;line-height:1}
+.tab-lbl{font-size:9px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink-d);transition:color 0.15s}
+.tab-btn.active .tab-lbl{color:var(--terra)}
+.tab-bar{position:absolute;bottom:0;left:20%;right:20%;height:2.5px;background:var(--terra);border-radius:2px;opacity:0;transition:opacity 0.15s}
+.tab-btn.active .tab-bar{opacity:1}
+.tab-badge{position:absolute;top:8px;right:calc(50% - 18px);background:var(--terra);color:white;font-size:9px;font-weight:700;border-radius:8px;padding:1px 5px;min-width:16px;text-align:center}
+
+/* ── PAGES ── */
+.page{display:none;flex-direction:column;height:calc(100vh - 132px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page::-webkit-scrollbar{display:none}
+.page.active{display:flex}
+
+/* ── SHARED ── */
+.sec-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;padding:18px 20px 10px;color:var(--ink)}
+.card{background:white;border-radius:18px;margin:0 16px 12px;box-shadow:0 2px 8px rgba(26,20,16,0.05);overflow:hidden}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px;margin-bottom:4px}
+.stat-card{background:white;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(26,20,16,0.05)}
+.stat-num{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--terra);display:block}
+.stat-lbl{font-size:11px;color:var(--ink-d);margin-top:2px;font-weight:500}
+.stat-trend{font-size:10px;color:var(--green);font-weight:700;margin-top:4px}
+.chip-row{display:flex;gap:6px;padding:0 16px;margin-bottom:12px;overflow-x:auto}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{background:var(--cream);border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--ink-s);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.15s;flex-shrink:0}
+.chip.active{background:var(--terra);color:white}
+.row-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(196,98,45,0.06);cursor:pointer}
+.row-item:last-child{border-bottom:none}
+.row-item:active{background:var(--cream)}
+.ri-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ri-info{flex:1;min-width:0}
+.ri-name{font-size:14px;font-weight:600;color:var(--ink)}
+.ri-sub{font-size:11px;color:var(--ink-d);margin-top:2px}
+.ri-right{text-align:right;flex-shrink:0}
+.ri-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--terra);font-weight:500}
+.ri-meta{font-size:11px;color:var(--ink-d);margin-top:2px}
+.chevron{font-size:14px;color:var(--ink-d)}
+.pill{display:inline-flex;align-items:center;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:0.04em}
+.pill-pending{background:rgba(201,168,76,0.15);color:var(--gold)}
+.pill-active{background:rgba(74,124,89,0.12);color:var(--green)}
+.pill-rejected{background:rgba(196,45,45,0.1);color:var(--red)}
+
+/* ── HOME PAGE ── */
+.health-banner{margin:14px 16px 0;background:linear-gradient(135deg,var(--ink),#3D1A08);border-radius:18px;padding:16px;display:flex;align-items:center;gap:12px}
+.hb-icon{font-size:28px;flex-shrink:0}
+.hb-info{flex:1}
+.hb-title{font-size:13px;font-weight:700;color:white}
+.hb-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+.hb-score{font-family:'DM Mono',monospace;font-size:22px;color:var(--terra-l);font-weight:500}
+
+.checklist{padding:14px 16px;background:white;border-radius:18px;margin:0 16px 12px;box-shadow:0 2px 8px rgba(26,20,16,0.05)}
+.cl-title{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-d);margin-bottom:10px}
+.cl-item{display:flex;align-items:center;gap:10px;padding:5px 0}
+.cl-check{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.cl-check.done{background:rgba(74,124,89,0.15);color:var(--green)}
+.cl-check.todo{background:var(--cream);border:2px solid var(--cream-dk)}
+.cl-text{font-size:13px;color:var(--ink-s)}
+.cl-text.done{color:var(--ink-d);text-decoration:line-through}
+
+/* mini chart */
+.chart-wrap{padding:0 16px 4px}
+.chart-card{background:white;border-radius:18px;padding:16px;box-shadow:0 2px 8px rgba(26,20,16,0.05)}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chart-title{font-size:13px;font-weight:700;color:var(--ink)}
+.chart-sub{font-size:11px;color:var(--ink-d)}
+.mini-chart{display:flex;align-items:flex-end;gap:5px;height:60px}
+.bar{flex:1;border-radius:4px 4px 0 0;background:var(--cream-dk);min-height:4px;transition:background 0.15s;cursor:pointer}
+.bar.active{background:var(--terra)}
+.bar:hover{background:var(--terra-l)}
+.chart-labels{display:flex;gap:5px;margin-top:5px}
+.bar-lbl{flex:1;text-align:center;font-size:9px;color:var(--ink-d);font-weight:600}
+
+/* quick actions */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 16px}
+.qa-btn{background:white;border:none;border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 8px rgba(26,20,16,0.05);transition:transform 0.1s;font-family:'DM Sans',sans-serif}
+.qa-btn:active{transform:scale(0.97)}
+.qa-icon{font-size:20px;flex-shrink:0}
+.qa-text{font-size:13px;font-weight:700;color:var(--ink);text-align:left;line-height:1.2}
+
+/* ── MEMBERS PAGE ── */
+.member-card{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(196,98,45,0.06)}
+.member-card:last-child{border-bottom:none}
+.member-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0;position:relative}
+.av-a{background:#E8D5C4;color:var(--terra-d)}
+.av-b{background:#C4D5C9;color:#2D5C3A}
+.av-c{background:#D5C4D8;color:#5C2D6B}
+.av-d{background:#D5D4C4;color:#5C5B2D}
+.av-e{background:#C4D0D5;color:#2D4E5C}
+.av-f{background:#D5C4C4;color:#5C2D2D}
+.founding-star{position:absolute;bottom:-2px;right:-2px;font-size:11px}
+.member-info{flex:1;min-width:0}
+.member-name{font-size:14px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px}
+.member-meta{font-size:11px;color:var(--ink-d);margin-top:2px}
+.member-right{text-align:right;flex-shrink:0}
+.attend-count{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--terra)}
+.attend-lbl{font-size:10px;color:var(--ink-d);margin-top:1px}
+.req-card{margin:0 16px 10px;background:white;border-radius:18px;padding:14px 16px;box-shadow:0 2px 8px rgba(26,20,16,0.05)}
+.req-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.req-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:14px;flex-shrink:0}
+.req-info{flex:1}
+.req-name{font-size:14px;font-weight:700;color:var(--ink)}
+.req-meta{font-size:11px;color:var(--ink-d);margin-top:1px}
+.req-answer{background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.req-q{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-d);margin-bottom:3px}
+.req-a{font-size:13px;color:var(--ink-s);line-height:1.4}
+.req-actions{display:flex;gap:8px}
+.accept-btn{flex:1;background:var(--green);color:white;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.reject-btn{flex:1;background:var(--cream);color:var(--ink-d);border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ── MANAGE PAGE ── */
+.sub-tab-row{display:flex;gap:6px;padding:12px 16px 0;overflow-x:auto}
+.sub-tab-row::-webkit-scrollbar{display:none}
+.sub-tab{background:var(--cream);border:none;border-radius:20px;padding:7px 16px;font-size:12px;font-weight:700;color:var(--ink-d);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.15s;flex-shrink:0}
+.sub-tab.active{background:var(--terra);color:white}
+.sub-page{display:none;flex:1;overflow-y:auto;padding-bottom:20px}
+.sub-page::-webkit-scrollbar{display:none}
+.sub-page.active{display:block}
+.add-btn{width:calc(100% - 32px);margin:0 16px;background:var(--terra);color:white;border:none;border-radius:14px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.add-btn-outline{width:calc(100% - 32px);margin:0 16px;background:white;color:var(--terra);border:2px dashed rgba(196,98,45,0.2);border-radius:14px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+.event-card{background:white;border-radius:18px;margin:10px 16px 0;box-shadow:0 2px 8px rgba(26,20,16,0.05);overflow:hidden}
+.ev-banner{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative}
+.g1{background:linear-gradient(135deg,#1A3A2A,#2D6B4A)}
+.g2{background:linear-gradient(135deg,#1A1A3A,#2D2D7A)}
+.g3{background:linear-gradient(135deg,#3A2A1A,#8B5E2D)}
+.ev-status{position:absolute;top:8px;left:8px;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700}
+.ev-upcoming{background:rgba(74,124,89,0.85);color:white}
+.ev-spots{position:absolute;top:8px;right:8px;background:rgba(196,98,45,0.9);color:white;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700}
+.ev-body{padding:12px 14px}
+.ev-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.ev-details{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.ev-detail{font-size:12px;color:var(--ink-d);display:flex;align-items:center;gap:5px}
+.ev-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(196,98,45,0.07);padding-top:10px}
+.ev-price{font-family:'DM Mono',monospace;font-size:16px;color:var(--terra);font-weight:500}
+.ev-actions{display:flex;gap:6px}
+.ev-btn{background:var(--cream);border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--ink-s);cursor:pointer;font-family:'DM Sans',sans-serif}
+.ev-btn.primary{background:var(--terra);color:white}
+
+/* broadcast */
+.broadcast-card{margin:12px 16px 0;background:white;border-radius:18px;padding:16px;box-shadow:0 2px 8px rgba(26,20,16,0.05)}
+.field-lbl{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-d);margin-bottom:6px}
+.field-input{background:var(--cream);border:1.5px solid transparent;border-radius:10px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;width:100%;margin-bottom:12px;transition:border-color 0.15s}
+.field-input:focus{border-color:rgba(196,98,45,0.25);background:var(--warm)}
+.field-textarea{background:var(--cream);border:1.5px solid transparent;border-radius:10px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;width:100%;margin-bottom:12px;resize:none;min-height:80px;line-height:1.5;transition:border-color 0.15s}
+.field-textarea:focus{border-color:rgba(196,98,45,0.25);background:var(--warm)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid rgba(196,98,45,0.07)}
+.toggle-info{font-size:13px;color:var(--ink-s);font-weight:500}
+.toggle-sub{font-size:11px;color:var(--ink-d);margin-top:1px}
+.toggle{width:44px;height:26px;border-radius:13px;background:var(--terra);border:none;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0}
+.toggle.off{background:var(--cream-dk)}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:white;top:3px;right:3px;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.off::after{transform:translateX(-18px)}
+.broadcast-btn{width:100%;background:var(--terra);color:white;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* faq */
+.faq-item{background:white;border-radius:14px;margin:10px 16px 0;padding:14px;box-shadow:0 2px 6px rgba(26,20,16,0.05)}
+.faq-q{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.faq-a{font-size:12px;color:var(--ink-d);line-height:1.5}
+.faq-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+.faq-btn{background:var(--cream);border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--ink-d);cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* public page */
+.link-card{margin:12px 16px 0;background:var(--ink);border-radius:18px;padding:16px}
+.lc-label{font-size:10px;color:rgba(255,255,255,0.4);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px}
+.lc-url{font-family:'DM Mono',monospace;font-size:13px;color:var(--terra-l);margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lc-btns{display:flex;gap:8px}
+.lc-btn{flex:1;border:none;border-radius:10px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px}
+.lc-copy{background:rgba(255,255,255,0.1);color:white}
+.lc-view{background:var(--terra);color:white}
+
+.page-section-item{background:white;border-radius:16px;margin:10px 16px 0;box-shadow:0 2px 6px rgba(26,20,16,0.05);overflow:hidden}
+.psi-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.psi-drag{color:var(--ink-d);font-size:14px;flex-shrink:0;display:flex;flex-direction:column;gap:3px}
+.psi-drag span{display:block;width:14px;height:2px;background:var(--cream-dk);border-radius:1px}
+.psi-emoji{width:36px;height:36px;border-radius:10px;background:rgba(196,98,45,0.1);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.psi-info{flex:1;min-width:0}
+.psi-name{font-size:13px;font-weight:700;color:var(--ink)}
+.psi-meta{font-size:11px;color:var(--ink-d);margin-top:1px}
+.psi-toggle{width:34px;height:20px;border-radius:10px;background:var(--terra);border:none;cursor:pointer;position:relative;flex-shrink:0}
+.psi-toggle.off{background:var(--cream-dk)}
+.psi-toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:white;top:2px;right:2px;transition:transform 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.15)}
+.psi-toggle.off::after{transform:translateX(-14px)}
+
+/* ── SETTINGS PAGE ── */
+.settings-section{margin:12px 16px 0}
+.settings-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-d);padding:0 0 8px}
+.settings-card{background:white;border-radius:18px;box-shadow:0 2px 8px rgba(26,20,16,0.05);overflow:hidden}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(196,98,45,0.06);cursor:pointer}
+.settings-row:last-child{border-bottom:none}
+.settings-row:active{background:var(--cream)}
+.sr-left{display:flex;align-items:center;gap:12px}
+.sr-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.si-terra{background:rgba(196,98,45,0.1)}
+.si-blue{background:rgba(45,78,196,0.1)}
+.si-green{background:rgba(74,124,89,0.1)}
+.si-gold{background:rgba(201,168,76,0.1)}
+.si-red{background:rgba(196,45,45,0.08)}
+.sr-label{font-size:14px;font-weight:600;color:var(--ink)}
+.sr-sub{font-size:11px;color:var(--ink-d);margin-top:1px}
+.sr-arrow{font-size:14px;color:var(--ink-d)}
+
+/* toast */
+.toast{position:fixed;top:110px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;border-radius:20px;padding:9px 18px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:opacity 0.2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="club-av">🏔️</div>
+    <div class="topbar-info">
+      <div class="topbar-name">Tirumala Trekkers</div>
+      <div class="topbar-badge">👑 Organiser Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <button class="t-btn" onclick="toast('Notifications')">🔔<div class="t-dot"></div></button>
+      <button class="t-btn" onclick="toast('Settings')">⚙️</button>
+    </div>
+  </div>
+
+  <!-- 4-TAB NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('home',this)">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-lbl">Home</div>
+      <div class="tab-bar"></div>
+    </button>
+    <button class="tab-btn" onclick="switchTab('members',this)">
+      <div class="tab-icon">👥</div>
+      <div class="tab-lbl">Members</div>
+      <div class="tab-bar"></div>
+      <div class="tab-badge">3</div>
+    </button>
+    <button class="tab-btn" onclick="switchTab('manage',this)">
+      <div class="tab-icon">📋</div>
+      <div class="tab-lbl">Manage</div>
+      <div class="tab-bar"></div>
+    </button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">
+      <div class="tab-icon">⚙️</div>
+      <div class="tab-lbl">Settings</div>
+      <div class="tab-bar"></div>
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 1 — HOME
+══════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Health banner -->
+  <div class="health-banner">
+    <div class="hb-icon">📊</div>
+    <div class="hb-info">
+      <div class="hb-title">Club Health</div>
+      <div class="hb-sub">Active · Growing steadily</div>
+    </div>
+    <div class="hb-score">82<span style="font-size:12px;opacity:0.6">/100</span></div>
+  </div>
+
+  <!-- Stats grid -->
+  <div class="sec-title">Overview</div>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-num">85</span>
+      <div class="stat-lbl">Total Members</div>
+      <div class="stat-trend">↑ +6 this month</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">12</span>
+      <div class="stat-lbl">Events Done</div>
+      <div class="stat-trend">↑ 4.2 avg rating</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">78%</span>
+      <div class="stat-lbl">Avg Attendance</div>
+      <div class="stat-trend">↑ Up from 71%</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">3</span>
+      <div class="stat-lbl">Founding Spots</div>
+      <div class="stat-trend" style="color:var(--terra)">⚡ Almost full</div>
+    </div>
+  </div>
+
+  <!-- Growth chart -->
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Member Growth</div>
+          <div class="chart-sub">Last 8 weeks</div>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;color:var(--terra);font-weight:500">85</div>
+      </div>
+      <div class="mini-chart">
+        <div class="bar" style="height:35%"></div>
+        <div class="bar" style="height:42%"></div>
+        <div class="bar" style="height:48%"></div>
+        <div class="bar" style="height:55%"></div>
+        <div class="bar" style="height:62%"></div>
+        <div class="bar" style="height:70%"></div>
+        <div class="bar" style="height:82%"></div>
+        <div class="bar active" style="height:100%"></div>
+      </div>
+      <div class="chart-labels">
+        <div class="bar-lbl">Jan</div><div class="bar-lbl">Feb</div>
+        <div class="bar-lbl">—</div><div class="bar-lbl">—</div>
+        <div class="bar-lbl">—</div><div class="bar-lbl">—</div>
+        <div class="bar-lbl">—</div><div class="bar-lbl">Mar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checklist -->
+  <div class="sec-title" style="padding-top:14px;">Get Going</div>
+  <div class="checklist" style="margin-top:0">
+    <div class="cl-title">Club Setup Checklist</div>
+    <div class="cl-item"><div class="cl-check done">✓</div><div class="cl-text done">Add club description</div></div>
+    <div class="cl-item"><div class="cl-check done">✓</div><div class="cl-text done">Set your schedule</div></div>
+    <div class="cl-item"><div class="cl-check done">✓</div><div class="cl-text done">Create your first event</div></div>
+    <div class="cl-item"><div class="cl-check todo"></div><div class="cl-text">Add FAQs for new members</div></div>
+    <div class="cl-item"><div class="cl-check todo"></div><div class="cl-text">Set up your public page</div></div>
+    <div class="cl-item"><div class="cl-check todo"></div><div class="cl-text">Share link on Instagram</div></div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="sec-title" style="padding-top:6px;">Quick Actions</div>
+  <div class="qa-grid">
+    <button class="qa-btn" onclick="switchTab('manage',document.querySelector('[onclick*=manage]'))">
+      <div class="qa-icon">📅</div><div class="qa-text">Create Event</div>
+    </button>
+    <button class="qa-btn" onclick="toast('Broadcast sent!')">
+      <div class="qa-icon">📢</div><div class="qa-text">Broadcast</div>
+    </button>
+    <button class="qa-btn" onclick="switchTab('members',document.querySelectorAll('.tab-btn')[1])">
+      <div class="qa-icon">✅</div><div class="qa-text">Review Requests</div>
+    </button>
+    <button class="qa-btn" onclick="toast('Opening public page…')">
+      <div class="qa-icon">🔗</div><div class="qa-text">Share Club Link</div>
+    </button>
+  </div>
+
+  <div style="height:20px"></div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 2 — MEMBERS
+══════════════════════════════ -->
+<div class="page" id="page-members">
+
+  <!-- Sub chips: Requests / Members -->
+  <div class="chip-row" style="padding-top:14px;">
+    <div class="chip active" onclick="switchSub('req',this)">Requests (3)</div>
+    <div class="chip" onclick="switchSub('mlist',this)">Members (85)</div>
+  </div>
+
+  <!-- REQUESTS sub-page -->
+  <div class="sub-page active" id="sub-req" style="overflow-y:visible">
+
+    <div class="req-card">
+      <div class="req-header">
+        <div class="req-av av-a">SK</div>
+        <div class="req-info">
+          <div class="req-name">Sai Kumar</div>
+          <div class="req-meta">Requested 2 hours ago</div>
+        </div>
+        <span class="pill pill-pending">Pending</span>
+      </div>
+      <div class="req-answer">
+        <div class="req-q">Why do you want to join?</div>
+        <div class="req-a">I love trekking and have done Talakona twice. Want to find a regular group to go with every week.</div>
+      </div>
+      <div class="req-actions">
+        <button class="accept-btn" onclick="toast('✅ Accepted!')">Accept</button>
+        <button class="reject-btn" onclick="toast('Request rejected')">Reject</button>
+      </div>
+    </div>
+
+    <div class="req-card">
+      <div class="req-header">
+        <div class="req-av av-b">PR</div>
+        <div class="req-info">
+          <div class="req-name">Padma Rao</div>
+          <div class="req-meta">Requested 5 hours ago</div>
+        </div>
+        <span class="pill pill-pending">Pending</span>
+      </div>
+      <div class="req-answer">
+        <div class="req-q">Why do you want to join?</div>
+        <div class="req-a">Complete beginner but very enthusiastic. My friend Priya is already a member and recommended this group.</div>
+      </div>
+      <div class="req-actions">
+        <button class="accept-btn" onclick="toast('✅ Accepted!')">Accept</button>
+        <button class="reject-btn" onclick="toast('Request rejected')">Reject</button>
+      </div>
+    </div>
+
+    <div class="req-card">
+      <div class="req-header">
+        <div class="req-av av-c">VM</div>
+        <div class="req-info">
+          <div class="req-name">Venkat Mohan</div>
+          <div class="req-meta">Requested yesterday</div>
+        </div>
+        <span class="pill pill-pending">Pending</span>
+      </div>
+      <div class="req-answer">
+        <div class="req-q">Why do you want to join?</div>
+        <div class="req-a">Done 20+ treks in Andhra. Looking for serious trekkers. Love challenging routes.</div>
+      </div>
+      <div class="req-actions">
+        <button class="accept-btn" onclick="toast('✅ Accepted!')">Accept</button>
+        <button class="reject-btn" onclick="toast('Request rejected')">Reject</button>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- MEMBERS LIST sub-page -->
+  <div class="sub-page" id="sub-mlist">
+    <div style="padding:12px 16px 6px;display:flex;align-items:center;gap:8px;">
+      <input style="flex:1;background:var(--cream);border:none;border-radius:10px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;" placeholder="🔍  Search members…" />
+    </div>
+    <div class="card" style="margin-top:8px">
+      <div class="member-card">
+        <div class="member-av av-a">RK<div class="founding-star">🏅</div></div>
+        <div class="member-info">
+          <div class="member-name">Ravi Kumar <span style="font-size:12px;">👑</span></div>
+          <div class="member-meta">Joined Jan 2024 · Organiser</div>
+        </div>
+        <div class="member-right"><div class="attend-count">12</div><div class="attend-lbl">events</div></div>
+      </div>
+      <div class="member-card">
+        <div class="member-av av-b">PS<div class="founding-star">🏅</div></div>
+        <div class="member-info">
+          <div class="member-name">Priya Sharma</div>
+          <div class="member-meta">Joined Feb 2024 · Founding</div>
+        </div>
+        <div class="member-right"><div class="attend-count">9</div><div class="attend-lbl">events</div></div>
+      </div>
+      <div class="member-card">
+        <div class="member-av av-c">AK</div>
+        <div class="member-info">
+          <div class="member-name">Arjun Kumar</div>
+          <div class="member-meta">Joined Mar 2024</div>
+        </div>
+        <div class="member-right"><div class="attend-count">7</div><div class="attend-lbl">events</div></div>
+      </div>
+      <div class="member-card">
+        <div class="member-av av-d">NR</div>
+        <div class="member-info">
+          <div class="member-name">Neha Reddy</div>
+          <div class="member-meta">Joined Mar 2024</div>
+        </div>
+        <div class="member-right"><div class="attend-count">5</div><div class="attend-lbl">events</div></div>
+      </div>
+      <div class="member-card">
+        <div class="member-av av-e">MK</div>
+        <div class="member-info">
+          <div class="member-name">Mohan Kumar</div>
+          <div class="member-meta">Joined Apr 2024</div>
+        </div>
+        <div class="member-right"><div class="attend-count">3</div><div class="attend-lbl">events</div></div>
+      </div>
+      <div class="member-card">
+        <div class="member-av av-f">SR</div>
+        <div class="member-info">
+          <div class="member-name">Sunita Rao</div>
+          <div class="member-meta">Joined Apr 2024</div>
+        </div>
+        <div class="member-right"><div class="attend-count">1</div><div class="attend-lbl">events</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:12px;font-size:12px;color:var(--ink-d)">Showing 6 of 85 members</div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 3 — MANAGE
+══════════════════════════════ -->
+<div class="page" id="page-manage">
+  <div class="sub-tab-row">
+    <div class="sub-tab active" onclick="switchManage('events',this)">Events</div>
+    <div class="sub-tab" onclick="switchManage('broadcast',this)">Broadcast</div>
+    <div class="sub-tab" onclick="switchManage('faqs',this)">FAQs</div>
+    <div class="sub-tab" onclick="switchManage('schedule',this)">Schedule</div>
+    <div class="sub-tab" onclick="switchManage('publicpage',this)">Public Page</div>
+  </div>
+
+  <!-- EVENTS -->
+  <div class="sub-page active" id="manage-events">
+    <div style="padding:12px 0 4px;">
+      <button class="add-btn" onclick="toast('Opening event creator…')">＋ Create New Event</button>
+    </div>
+    <div class="event-card">
+      <div class="ev-banner g1">🌊<span class="ev-status ev-upcoming">Upcoming</span><span class="ev-spots">3 spots left</span></div>
+      <div class="ev-body">
+        <div class="ev-title">Talakona Waterfall Trek</div>
+        <div class="ev-details">
+          <div class="ev-detail">📅 Sunday, 16 Mar · 5:30 AM</div>
+          <div class="ev-detail">📍 Alipiri Gate</div>
+          <div class="ev-detail">👥 17/20 booked</div>
+        </div>
+        <div class="ev-footer">
+          <div class="ev-price">₹149</div>
+          <div class="ev-actions">
+            <button class="ev-btn" onclick="toast('Editing event…')">✏️ Edit</button>
+            <button class="ev-btn primary" onclick="toast('Managing attendees…')">Attendees</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="event-card">
+      <div class="ev-banner g3">🌅<span class="ev-status ev-upcoming">Upcoming</span></div>
+      <div class="ev-body">
+        <div class="ev-title">Kapila Theertham Dawn Walk</div>
+        <div class="ev-details">
+          <div class="ev-detail">📅 Sunday, 23 Mar · 5:30 AM</div>
+          <div class="ev-detail">📍 Kapila Theertham</div>
+          <div class="ev-detail">👥 8/30 booked</div>
+        </div>
+        <div class="ev-footer">
+          <div class="ev-price" style="color:var(--green)">Free</div>
+          <div class="ev-actions">
+            <button class="ev-btn" onclick="toast('Editing event…')">✏️ Edit</button>
+            <button class="ev-btn primary" onclick="toast('Managing attendees…')">Attendees</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- BROADCAST -->
+  <div class="sub-page" id="manage-broadcast">
+    <div class="broadcast-card">
+      <div class="field-lbl">Announcement Title</div>
+      <input class="field-input" placeholder="e.g. Sunday trek is ON!" />
+      <div class="field-lbl">Message</div>
+      <textarea class="field-textarea" placeholder="Write your announcement to all 85 members…"></textarea>
+      <div class="toggle-row">
+        <div><div class="toggle-info">📌 Pin to channel</div><div class="toggle-sub">Stays at top of club channel</div></div>
+        <button class="toggle" onclick="this.classList.toggle('off')"></button>
+      </div>
+      <div class="toggle-row">
+        <div><div class="toggle-info">🔔 Push notification</div><div class="toggle-sub">Notify all members instantly</div></div>
+        <button class="toggle" onclick="this.classList.toggle('off')"></button>
+      </div>
+      <button class="broadcast-btn" onclick="toast('📢 Announcement sent to 85 members!')">📢 Post Announcement</button>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- FAQs -->
+  <div class="sub-page" id="manage-faqs">
+    <div style="padding:10px 0 4px;">
+      <button class="add-btn-outline" onclick="toast('Adding new FAQ…')">＋ Add FAQ</button>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need experience to join a trek?</div>
+      <div class="faq-a">No experience needed! We welcome complete beginners. We always go at the slowest person's pace.</div>
+      <div class="faq-actions"><button class="faq-btn" onclick="toast('Editing…')">✏️ Edit</button><button class="faq-btn" onclick="toast('Deleted')">🗑</button></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What should I bring?</div>
+      <div class="faq-a">Comfortable shoes, 2L water, light snack, sunscreen. We send a detailed checklist before every trek.</div>
+      <div class="faq-actions"><button class="faq-btn" onclick="toast('Editing…')">✏️ Edit</button><button class="faq-btn" onclick="toast('Deleted')">🗑</button></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I pay for events?</div>
+      <div class="faq-a">Payment is collected online when you book your spot. UPI and cards accepted.</div>
+      <div class="faq-actions"><button class="faq-btn" onclick="toast('Editing…')">✏️ Edit</button><button class="faq-btn" onclick="toast('Deleted')">🗑</button></div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="sub-page" id="manage-schedule">
+    <div class="card" style="margin-top:12px">
+      <div class="row-item"><div class="ri-icon" style="background:rgba(196,98,45,0.1)">📅</div><div class="ri-info"><div class="ri-name">Every Sunday</div><div class="ri-sub">5:30 AM · Alipiri Gate</div></div><div class="chevron">›</div></div>
+      <div class="row-item"><div class="ri-icon" style="background:rgba(74,124,89,0.1)">🌅</div><div class="ri-info"><div class="ri-name">Alternate Saturdays</div><div class="ri-sub">Easy trails · Beginners only</div></div><div class="chevron">›</div></div>
+    </div>
+    <div style="padding:12px 0 4px;"><button class="add-btn-outline" onclick="toast('Adding schedule…')">＋ Add Schedule Slot</button></div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- PUBLIC PAGE -->
+  <div class="sub-page" id="manage-publicpage">
+    <div class="link-card">
+      <div class="lc-label">Your public link</div>
+      <div class="lc-url">cultfam.app/c/tirumala-trekkers</div>
+      <div class="lc-btns">
+        <button class="lc-btn lc-copy" onclick="toast('✅ Link copied!')">📋 Copy</button>
+        <button class="lc-btn lc-view" onclick="toast('Opening public page…')">👁 View Page</button>
+      </div>
+    </div>
+    <div style="padding:14px 20px 6px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-d)">Page Sections</div>
+    <div class="page-section-item">
+      <div class="psi-header">
+        <div class="psi-drag"><span></span><span></span><span></span></div>
+        <div class="psi-emoji">🔥</div>
+        <div class="psi-info"><div class="psi-name">Featured This Week</div><div class="psi-meta">1 event · Full card</div></div>
+        <button class="psi-toggle" onclick="this.classList.toggle('off')"></button>
+      </div>
+    </div>
+    <div class="page-section-item">
+      <div class="psi-header">
+        <div class="psi-drag"><span></span><span></span><span></span></div>
+        <div class="psi-emoji">🌱</div>
+        <div class="psi-info"><div class="psi-name">Beginner Friendly</div><div class="psi-meta">3 events · Scroll row</div></div>
+        <button class="psi-toggle" onclick="this.classList.toggle('off')"></button>
+      </div>
+    </div>
+    <div class="page-section-item">
+      <div class="psi-header">
+        <div class="psi-drag"><span></span><span></span><span></span></div>
+        <div class="psi-emoji">⚡</div>
+        <div class="psi-info"><div class="psi-name">Advanced Treks</div><div class="psi-meta">2 events · Scroll row</div></div>
+        <button class="psi-toggle" onclick="this.classList.toggle('off')"></button>
+      </div>
+    </div>
+    <div style="padding:10px 0 4px;"><button class="add-btn-outline" onclick="toast('Adding section…')">＋ Add Section</button></div>
+    <div style="padding:0 16px;"><button class="add-btn" onclick="toast('✅ Page saved!')">Save Page</button></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     TAB 4 — SETTINGS
+══════════════════════════════ -->
+<div class="page" id="page-settings">
+  <div class="sec-title">Club Settings</div>
+
+  <div class="settings-section">
+    <div class="settings-label">Profile</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="toast('Editing cover photo…')">
+        <div class="sr-left"><div class="sr-icon si-terra">🖼️</div><div><div class="sr-label">Cover Photo</div><div class="sr-sub">Change your club banner</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Editing description…')">
+        <div class="sr-left"><div class="sr-icon si-terra">✏️</div><div><div class="sr-label">Club Description</div><div class="sr-sub">About your club</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Editing location…')">
+        <div class="sr-left"><div class="sr-icon si-green">📍</div><div><div class="sr-label">Location</div><div class="sr-sub">Alipiri Gate, Tirupati</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Editing category…')">
+        <div class="sr-left"><div class="sr-icon si-blue">🏷️</div><div><div class="sr-label">Category</div><div class="sr-sub">Trekking & Outdoor</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section" style="margin-top:14px">
+    <div class="settings-label">Membership</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="toast('Editing join questions…')">
+        <div class="sr-left"><div class="sr-icon si-gold">❓</div><div><div class="sr-label">Join Questions</div><div class="sr-sub">2 questions set</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Editing capacity…')">
+        <div class="sr-left"><div class="sr-icon si-blue">👥</div><div><div class="sr-label">Member Capacity</div><div class="sr-sub">No limit set</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Editing visibility…')">
+        <div class="sr-left"><div class="sr-icon si-green">🌍</div><div><div class="sr-label">Club Visibility</div><div class="sr-sub">Public · Discoverable</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section" style="margin-top:14px">
+    <div class="settings-label">Danger Zone</div>
+    <div class="settings-card">
+      <div class="settings-row" onclick="toast('Transfer ownership dialog…')">
+        <div class="sr-left"><div class="sr-icon si-gold">🔄</div><div><div class="sr-label">Transfer Ownership</div><div class="sr-sub">Make someone else organiser</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+      <div class="settings-row" onclick="toast('Are you sure? (demo)')">
+        <div class="sr-left"><div class="sr-icon si-red">🗑️</div><div><div class="sr-label" style="color:var(--red)">Delete Club</div><div class="sr-sub">This cannot be undone</div></div></div>
+        <div class="sr-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:30px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+}
+
+function switchSub(name, chip) {
+  const chips = chip.closest('.chip-row').querySelectorAll('.chip');
+  chips.forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  // hide all sub-pages in this tab, show the right one
+  const page = chip.closest('.page');
+  page.querySelectorAll('.sub-page').forEach(sp => sp.classList.remove('active'));
+  document.getElementById('sub-' + name).classList.add('active');
+}
+
+function switchManage(name, tab) {
+  const row = tab.closest('.sub-tab-row');
+  row.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('#page-manage .sub-page').forEach(sp => sp.classList.remove('active'));
+  document.getElementById('manage-' + name).classList.add('active');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>

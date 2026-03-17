@@ -1,0 +1,49 @@
+Clear. You want to keep your existing dashboard exactly as is — just add the Page Builder as a new card/section below the Co-organisers card in the Overview tab.
+
+Here's the prompt to paste into Replit Agent:
+
+---
+
+Open the organiser dashboard file. Read it completely before making any changes.
+
+Find the Co-organisers section in the Overview tab — the card that shows "Give trusted members dashboard access" with the member selector dropdown. Do not change anything in this card.
+
+**Directly below the Co-organisers card, add a new "Public Page" card with this exact structure:**
+
+A white card with rounded corners matching the existing card style. Inside:
+
+- Header row: a link icon (🔗) on the left, bold text "Public Page" next to it, and a green pill badge that says "Live" on the right
+- Subtitle text below: "Share your club page — strangers can discover and book your events without logging in"
+- A dark rounded box showing the club's shareable URL: `[current domain]/c/[club-slug]` — generate the slug from the club name (lowercase, hyphens, no special characters). If the clubs table doesn't have a slug column add it and auto-populate it from the club name.
+- A copy icon button on the right side of the URL box — clicking it copies the URL to clipboard and shows a brief "Copied!" tooltip
+- Two buttons below side by side:
+  - "View Page →" button (outlined, terra color) — opens `/c/[slug]` in a new tab
+  - "Edit Page →" button (filled terra background, white text) — navigates to a new route `/organizer/page-builder` which is the Page Builder screen
+
+**Then create the Page Builder screen at route `/organizer/page-builder`:**
+
+This is a new page only accessible to the club organiser. It has a back arrow at the top left that returns to the dashboard.
+
+The page shows:
+- Page title "Page Builder" with the club name below it
+- The shareable link bar at the top with copy button
+- A section called "Club Profile" with editable fields: club name, short description, schedule, location — all inline editable inputs that save on blur
+- A section called "Event Sections" showing a list of all sections from the `club_page_sections` table for this club
+- Each section row shows: drag handle (⠿), emoji, section title, event count, layout type badge, a visibility toggle switch, and a chevron to expand
+- Expanding a section shows: layout picker (Full Card / Scroll Row / List), editable title, editable description, list of assigned events with remove button, Add Event button that opens a modal checklist of all club events
+- An "Add New Section" button at the bottom
+- A "Save Changes" button that persists everything to the database
+
+**Database — add these tables if they don't exist:**
+
+```sql
+club_page_sections: id, club_id, title, description, emoji, layout (text: 'full' or 'scroll' or 'list'), position (integer), is_visible (boolean default true), created_at
+
+section_events: id, section_id, event_id, position (integer)
+```
+
+Add `slug` column to clubs table if missing. Auto-generate from club name.
+
+**Also create the public page route `GET /c/:slug`** — fully public, no auth required. If a non-logged-in user visits it, show the club page without redirecting to login. The page shows: club hero, stats, description, event sections with their events, sticky Join button. When they tap Book or Join, show a bottom sheet asking them to sign up or log in, then redirect back to this page after auth.
+
+Do not change anything else in the existing dashboard. Do not touch the tab structure, the Overview content above Co-organisers, or any other page.

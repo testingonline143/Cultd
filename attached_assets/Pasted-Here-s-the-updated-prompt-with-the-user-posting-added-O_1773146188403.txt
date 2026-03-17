@@ -1,0 +1,55 @@
+Here's the updated prompt with the user posting added:
+
+---
+
+Open the file that renders the `/home` or Feed page AND the file that handles post creation. Read both files completely before making any changes.
+
+**REMOVE these exact sections from the Feed page. Delete the JSX/HTML for each one completely:**
+1. The dark card that says "Welcome to CultFam" and "Find Your Tribe" with "Explore Clubs" button
+2. The dark card that says "Just Getting Started" / "Find Your First Tribe" with club circles and "Explore All Clubs" button
+3. The orange/terra card that says "There's more inside" with a lock icon and "Explore Clubs" button
+4. The "Discover New Clubs" section with the grid of club cards
+5. Any streak card or motivational quote card if present
+
+Do not remove the welcome header that shows the user's name and avatar at the top. Do not remove the post/community feed section. Do not remove the bottom navigation.
+
+---
+
+**ADD a "My Clubs" horizontal stories row** at the very top of the page content, below the welcome header and above everything else:
+
+- Query the `club_members` table to get all clubs the currently logged-in user has joined
+- Display them as a horizontally scrollable row of circles
+- Each circle is 64px wide and 64px tall, rounded (border-radius 50%)
+- Inside each circle show the club's emoji or image
+- Below each circle show the club name in small text (max 2 lines, truncate if longer)
+- If a club has any posts with `created_at` newer than the user's last visit, show a colored animated ring around that circle
+- The currently active/selected club circle must have a solid filled ring around it in the app's primary color
+- At the end of the row add a "+" circle with a dashed border that links to `/clubs`
+
+---
+
+**ADD club-based feed filtering with this exact behaviour:**
+
+- When the Feed page loads, automatically select the club the user joined first. Find this by getting the `club_members` row for this user with the earliest `created_at` timestamp. Set that club as the active selected club in component state.
+- Fetch all posts as normal from the existing API
+- Filter the posts array in the frontend to show only posts where `club_id` matches the currently selected club's id
+- Display only the filtered posts in the feed
+- When user taps a different club circle, update the selected club in component state. The feed re-renders automatically showing only that club's posts. The tapped circle becomes active (solid ring). The previous circle returns to default style.
+- It is always exactly one club selected at a time. There is no "All clubs" view.
+
+**Do not add any new API routes. Do not change the database schema. Filter only on the frontend using existing fetched data. Do not change the post card design or bottom navigation.**
+
+---
+
+**ALLOW regular members to create posts:**
+
+Currently only organisers can post. Change this so any user who is a member of a club can create a post in that club.
+
+- Find the post creation logic — it likely has a role check that restricts posting to organisers only. Remove that restriction.
+- Any logged-in user who is a member of a club can create a post in that club.
+- The post composer on the Feed page must be visible and functional for all logged-in users, not just organisers.
+- When a user submits a post, the `club_id` of the currently selected club (from the stories row) must be automatically attached to the post. The user does not need to manually select a club — it uses whichever club is currently active in the stories row.
+- Users must be able to attach images to their post. Add an image upload button to the composer. When an image is selected, show a preview before submitting. On submit, upload the image and save the image URL with the post.
+- The post must save to the existing `posts` table with the correct `user_id`, `club_id`, `content`, and `image_url`.
+
+Do not change anything else. Do not modify the organiser dashboard, event creation, or any other page.

@@ -1,0 +1,239 @@
+Build a mobile-first community platform homepage UI with realistic component structure and interactions.
+
+IMPORTANT DESIGN RULE
+
+Keep the exact same colors and visual theme used in the current design. Do not change the color palette. The background, accent color, card styles, and typography must remain exactly the same as the existing UI.
+
+Also maintain the same design language:
+
+- same font
+- same rounded cards
+- same spacing
+- same visual hierarchy
+
+The interface should feel like a modern social community platform combining clubs, events, and a feed.
+
+---
+
+APP STRUCTURE
+
+Create reusable UI components for:
+
+Header
+StreakCard
+MyClubsScroller
+EventCard
+FeedPost
+DiscoverClubsGrid
+BottomNavigation
+FloatingActionButton
+
+---
+
+HEADER
+
+Sticky header.
+
+Left side:
+User avatar.
+
+Next to avatar:
+
+Welcome back
+User Name
+
+Right side:
+
+Search icon
+Notification icon
+
+---
+
+STREAK CARD
+
+Large card showing user activity streak.
+
+Content:
+
+Consistency is Key
+12 Day Streak
+
+Description:
+
+You’re in the top 5% of your local community.
+
+Right side:
+
+Circular progress indicator showing progress toward a goal.
+
+Button:
+
+View Stats
+
+---
+
+MY CLUBS SECTION
+
+Horizontal scrolling list.
+
+Each item includes:
+
+Circular club avatar
+Club name
+
+Example clubs:
+
+Hikers
+Podcasters
+Developers Circle
+Yoga Tribe
+
+Last item should allow discovering or creating a new club.
+
+---
+
+UPCOMING EVENT CARD
+
+Large highlighted event card.
+
+Example content:
+
+Happening Tomorrow
+
+Event title
+
+Date badge
+
+Stacked avatars showing attendees
+
+Button:
+
+Register Now
+
+---
+
+COMMUNITY FEED
+
+Create a scrollable feed.
+
+Each post component should contain:
+
+Club avatar
+Club name
+Post time
+Location
+
+Image
+
+Caption text
+
+Example caption:
+
+A sunrise trek this morning was incredible. Thanks to everyone who joined.
+
+Below the caption include interaction buttons:
+
+Like
+Comment
+Share
+
+Include mock counts for likes and comments.
+
+---
+
+DISCOVER CLUBS SECTION
+
+Grid layout.
+
+Each club card should include:
+
+Icon
+Club name
+Member count
+Join Club button
+
+---
+
+BOTTOM NAVIGATION
+
+Keep bottom navigation identical for all users.
+
+Tabs:
+
+Explore
+Clubs
+Events
+Profile
+
+Navigation must remain unchanged regardless of user role.
+
+---
+
+FLOATING ACTION BUTTON
+
+Add a floating circular action button centered above the bottom navigation.
+
+The button should only appear if the user is a club creator or admin.
+
+Create a variable:
+
+isCreator = true or false
+
+Logic:
+
+If isCreator is true → show floating button
+If isCreator is false → hide the button
+
+---
+
+ACTION BUTTON MENU
+
+When the floating button is clicked, open a bottom sheet modal.
+
+Menu options:
+
+Create Club
+Create Event
+Create Post
+
+Each option should include an icon and label.
+
+---
+
+MOCK DATA
+
+Create example mock data objects for:
+
+User
+Clubs
+Events
+Feed posts
+
+Use realistic sample content such as trekking groups, reading clubs, and developer communities.
+
+---
+
+INTERACTIONS
+
+Add simple UI interactions:
+
+Hover states for buttons
+Clickable feed actions
+Opening modal for the create menu
+Horizontal scrolling for clubs section
+
+---
+
+GENERAL DESIGN REQUIREMENTS
+
+Maintain the same color palette and visual style already used in the UI.
+
+Focus on:
+
+clean spacing
+rounded cards
+soft shadows
+mobile-first responsiveness
+smooth scrolling sections
+
+The result should feel like a modern community platform where people discover clubs, attend events, and interact through posts.

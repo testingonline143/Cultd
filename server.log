@@ -1,0 +1,24 @@
+7:24:00 PM [express] serving on http://0.0.0.0:3000
+Error seeding database: error: password authentication failed for user "postgres"
+    at /tmp/cc-agent/64695686/project/dist/index.cjs:76:13330
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async /tmp/cc-agent/64695686/project/dist/index.cjs:76:28668
+    at async W$ (/tmp/cc-agent/64695686/project/dist/index.cjs:161:32759) {
+  length: 104,
+  severity: 'FATAL',
+  code: '28P01',
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'auth.c',
+  line: '329',
+  routine: 'auth_failed'
+}

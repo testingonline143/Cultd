@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CultFam — Redesign V2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --cream: #F5F0E8;
+  --cream2: #EDE8DC;
+  --cream3: #E4DDCE;
+  --terra: #C4622D;
+  --terra2: #A84E22;
+  --terra-light: #F0845A;
+  --terra-pale: rgba(196,98,45,0.1);
+  --ink: #1A1410;
+  --ink2: #2D2419;
+  --ink3: #3D3228;
+  --muted: #8A7A6A;
+  --muted2: #B5A898;
+  --gold: #C9A84C;
+  --gold-pale: rgba(201,168,76,0.15);
+  --green-accent: #3D6B45;
+  --white: #FDFAF5;
+  --border: rgba(26,20,16,0.1);
+  --border2: rgba(26,20,16,0.06);
+  --shadow: 0 4px 24px rgba(26,20,16,0.12);
+  --shadow2: 0 2px 12px rgba(26,20,16,0.08);
+}
+
+body {
+  background: #1A1410;
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* WRAPPER */
+.wrapper {
+  display: flex;
+  gap: 28px;
+  padding: 48px 40px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: radial-gradient(ellipse at 20% 50%, rgba(196,98,45,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+              #1A1410;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.phone {
+  width: 375px;
+  height: 812px;
+  background: var(--cream);
+  border-radius: 48px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 0 0 1.5px rgba(196,98,45,0.2),
+    0 40px 80px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+  flex-shrink: 0;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  background: var(--cream);
+}
+.screen::-webkit-scrollbar { display: none; }
+
+.label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* STATUS BAR */
+.sbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 28px 0;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cream);
+}
+
+/* ══════════════════════════════════
+   SCREEN 1 — HOME
+══════════════════════════════════ */
+
+.home-top {
+  padding: 20px 24px 0;
+}
+
+/* MASTHEAD */
+.masthead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.masthead-left {}
+
+.masthead-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--terra);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.masthead-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 0.95;
+  letter-spacing: -1px;
+}
+
+.masthead-title em {
+  font-style: italic;
+  color: var(--terra);
+}
+
+.masthead-av {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: 2px solid var(--terra);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ISSUE LINE */
+.issue-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.issue-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--terra);
+  animation: blink 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.issue-text {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.issue-count {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  color: var(--terra);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+/* HERO EVENT CARD */
+.hero-card {
+  margin: 0 24px;
+  background: var(--ink);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-img {
+  width: 100%;
+  height: 200px;
+  background:
+    linear-gradient(160deg, #2D1A0A 0%, #4A2A12 40%, #3D1F0A 70%, #1A0D05 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-img::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(196,98,45,0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(201,168,76,0.15) 0%, transparent 50%);
+}
+
+.hero-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, var(--ink) 100%);
+}
+
+.hero-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--terra);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 6px;
+  z-index: 2;
+}
+
+.hero-spots {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  color: #FFB347;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  z-index: 2;
+  border: 1px solid rgba(255,179,71,0.3);
+}
+
+.hero-body {
+  padding: 16px 18px 18px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-club {
+  font-size: 10px;
+  color: var(--terra-light);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.hero-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero-meta {
+  font-size: 12px;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+
+.hero-btn {
+  background: var(--terra);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* CATS PILLS */
+.pills-row {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pills-row::-webkit-scrollbar { display: none; }
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pill.active {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+
+/* SECTION HEAD */
+.sh {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 24px;
+  margin: 22px 0 12px;
+}
+
+.sh-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.sh-link {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--terra);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* CLUB CARDS ROW */
+.clubs-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.clubs-row::-webkit-scrollbar { display: none; }
+
+.ccard {
+  width: 148px;
+  flex-shrink: 0;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.ccard-img {
+  width: 100%;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  position: relative;
+}
+
+.ccard-img.trek { background: linear-gradient(135deg, #E8D5B8, #C4A882); }
+.ccard-img.cycle { background: linear-gradient(135deg, #B8D4E8, #82A8C4); }
+.ccard-img.photo { background: linear-gradient(135deg, #D4B8E8, #A882C4); }
+.ccard-img.fitness { background: linear-gradient(135deg, #B8E8C8, #82C498); }
+
+.ccard-body {
+  padding: 10px 12px;
+}
+
+.ccard-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.ccard-meta {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ccard-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ccard-members {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--terra);
+}
+
+.ccard-rating {
+  font-size: 10px;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* BOTTOM NAV */
+.bnav {
+  position: sticky;
+  bottom: 0;
+  background: rgba(245,240,232,0.95);
+  backdrop-filter: blur(16px);
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0 20px;
+  z-index: 200;
+}
+
+.bnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.bnav-icon { font-size: 20px; opacity: 0.4; }
+.bnav-item.active .bnav-icon { opacity: 1; }
+.bnav-label { font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.bnav-item.active .bnav-label { color: var(--terra); }
+.bnav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--terra); display: none; }
+.bnav-item.active .bnav-dot { display: block; }
+
+/* ══════════════════════════════════
+   SCREEN 2 — CLUB DETAIL
+══════════════════════════════════ */
+
+.club-hero-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.club-hero-bg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 90px;
+  position: relative;
+}
+
+.club-hero-bg.trek { background: linear-gradient(160deg, #E8D5B8 0%, #C4A882 50%, #A88860 100%); }
+.club-hero-bg.cycle { background: linear-gradient(160deg, #B8D4E8, #7AAAC8); }
+
+.club-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 30%, var(--cream) 100%);
+}
+
+.club-back {
+  position: absolute;
+  top: 54px;
+  left: 20px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 10;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.club-share {
+  position: absolute;
+  top: 54px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 10;
+  border: 1px solid var(--border);
+}
+
+.club-hero-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px 20px;
+  z-index: 5;
+}
+
+.club-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--terra);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.club-name-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 0.95;
+  letter-spacing: -1.5px;
+}
+
+.club-tagline {
+  font-size: 13px;
+  color: var(--ink3);
+  margin-top: 5px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* STATS */
+.stats3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 24px;
+  margin-top: 16px;
+}
+
+.stat-box {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+}
+
+.stat-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.stat-n.terra { color: var(--terra); }
+.stat-n.gold { color: var(--gold); }
+
+.stat-l {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  padding: 0 24px;
+  margin-top: 20px;
+  border-bottom: 1.5px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 0;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1.5px;
+  white-space: nowrap;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tab.on {
+  color: var(--terra);
+  border-bottom-color: var(--terra);
+}
+
+/* EVENT FEATURED */
+.feat-event {
+  margin: 18px 24px 0;
+  background: var(--ink);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.feat-event-img {
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(135deg, #2D1A0A, #4A2A12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  position: relative;
+}
+
+.feat-event-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, var(--ink) 100%);
+}
+
+.feat-event-body {
+  padding: 0 16px 16px;
+}
+
+.feat-event-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.feat-event-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feat-event-meta {
+  font-size: 12px;
+  color: var(--muted2);
+  line-height: 1.6;
+}
+
+.feat-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--terra-light);
+  letter-spacing: 1px;
+}
+
+.book-sm {
+  background: var(--terra);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* VENUE CARD */
+.venue-c {
+  margin: 12px 24px 0;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.venue-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: linear-gradient(135deg, #E8D5B8, #C4A882);
+}
+
+.venue-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.venue-sub { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* STICKY JOIN */
+.sticky {
+  position: sticky;
+  bottom: 0;
+  background: var(--cream);
+  border-top: 1.5px solid var(--border);
+  padding: 14px 24px 24px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 100;
+}
+
+.sticky-price-wrap { flex: 1; }
+.sticky-amount { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--terra); letter-spacing: 1px; line-height: 1; }
+.sticky-sublabel { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+
+.big-btn {
+  flex: 2;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: italic;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+  transition: all 0.2s;
+}
+
+.big-btn:hover { background: var(--terra); }
+
+/* ══════════════════════════════════
+   SCREEN 3 — EVENT DETAIL
+══════════════════════════════════ */
+
+.ev-hero {
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(160deg, #2D1A0A 0%, #5A3018 40%, #3D200C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ev-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 40% 50%, rgba(196,98,45,0.4) 0%, transparent 60%);
+}
+
+.ev-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, var(--cream) 100%);
+}
+
+.ev-back {
+  position: absolute;
+  top: 54px;
+  left: 20px;
+  width: 36px;
+  height: 36px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 10;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.ev-body {
+  padding: 0 24px;
+  position: relative;
+  z-index: 5;
+  margin-top: -30px;
+}
+
+.ev-cat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--terra-pale);
+  color: var(--terra);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(196,98,45,0.2);
+  margin-bottom: 8px;
+}
+
+.ev-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+  margin-bottom: 16px;
+}
+
+/* JOINING PILL */
+.joining-pill {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.av-stack { display: flex; }
+.av-s {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--cream);
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+}
+.av-s:first-child { margin-left: 0; }
+.av-s.a { background: #C4622D; }
+.av-s.b { background: #3D6B45; }
+.av-s.c { background: #C9A84C; }
+
+.joining-text-s {
+  font-size: 12px;
+  color: var(--ink3);
+  font-weight: 500;
+  margin-left: 10px;
+}
+
+.spots-pill {
+  background: rgba(255,107,53,0.1);
+  color: #D4521A;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 100px;
+  border: 1px solid rgba(196,98,45,0.25);
+}
+
+/* INFO CARDS */
+.ic {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.ic-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.ic-row + .ic-row { border-top: 1px solid var(--border2); }
+
+.ic-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--terra-pale);
+  border: 1px solid rgba(196,98,45,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.ic-lbl { font-size: 9px; color: var(--muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+.ic-val { font-size: 13px; color: var(--ink); font-weight: 600; line-height: 1.4; }
+
+/* HOST */
+.host-c {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.host-av {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #E8D5B8, #C4A882);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  position: relative;
+  border: 2px solid var(--terra);
+}
+
+.crown { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 14px; }
+
+.host-n { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.host-r { font-size: 11px; color: var(--muted); }
+
+.wa-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(37,211,102,0.12);
+  border: 1.5px solid rgba(37,211,102,0.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #1A8A3A;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+/* PEOPLE LIST */
+.people-c {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.people-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.person + .person { border-top: 1px solid var(--border2); }
+
+.p-av {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+
+.p-av.a { background: linear-gradient(135deg, #E8D5B8, #C4A882); }
+.p-av.b { background: linear-gradient(135deg, #B8D4E8, #82A8C4); }
+.p-av.c { background: linear-gradient(135deg, #D4B8E8, #A882C4); }
+
+.p-name { font-size: 14px; font-weight: 600; color: var(--ink); flex: 1; }
+.p-tag { font-size: 11px; color: var(--terra); background: var(--terra-pale); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+
+/* ══════════════════════════════════
+   SCREEN 4 — MOMENTS + ABOUT
+══════════════════════════════════ */
+
+.moments-masonry {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.m-tile {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+}
+
+.m-tile.h1 { height: 160px; }
+.m-tile.h2 { height: 120px; }
+.m-tile.h3 { height: 200px; grid-row: span 2; }
+
+.m-tile.warm { background: linear-gradient(135deg, #E8D5B8, #C4A882); }
+.m-tile.cool { background: linear-gradient(135deg, #B8D4E8, #82A8C4); }
+.m-tile.purple { background: linear-gradient(135deg, #D4B8E8, #A882C4); }
+.m-tile.green { background: linear-gradient(135deg, #B8E8C8, #82C498); }
+
+.m-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 10px;
+  background: linear-gradient(to top, rgba(26,20,16,0.75), transparent);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.m-av-s {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--terra);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.m-name { font-size: 9px; font-weight: 700; color: white; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-likes { font-size: 9px; color: rgba(255,255,255,0.7); }
+
+/* VALUES */
+.vals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.val-c {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+}
+
+.val-icon { font-size: 20px; margin-bottom: 6px; }
+.val-text { font-size: 12px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+
+/* FAQs */
+.faq-c {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 24px;
+}
+
+.faq-i {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.faq-q { font-size: 13px; font-weight: 600; color: var(--ink); flex: 1; padding-right: 10px; line-height: 1.4; }
+.faq-arr { color: var(--terra); font-size: 14px; flex-shrink: 0; }
+
+/* SECTION DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 20px 24px;
+}
+
+/* PAGE TITLE */
+.pt {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: 2px;
+  padding: 18px 24px 10px;
+}
+
+/* WHO ARE WE */
+.who-c {
+  margin: 0 24px;
+  background: var(--ink);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.who-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted2);
+  line-height: 1.8;
+}
+
+.who-text strong { color: var(--cream); font-style: normal; }
+
+/* FOUND SPOTS */
+.found-card {
+  margin: 12px 24px 0;
+  background: linear-gradient(135deg, var(--terra-pale), rgba(201,168,76,0.08));
+  border: 1.5px solid rgba(196,98,45,0.2);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.found-left {}
+.found-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.found-sub { font-size: 12px; color: var(--muted); }
+.found-right { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--terra); letter-spacing: 1px; }
+
+/* SPACER */
+.sp { height: var(--h, 16px); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ══ PHONE 1: HOME ══ -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="sbar">
+          <span style="font-weight:700;color:#1A1410;">9:41</span>
+          <span>●●● 5G ■■</span>
+        </div>
+
+        <div class="home-top">
+          <div class="masthead">
+            <div class="masthead-left">
+              <div class="masthead-eyebrow">Tirupati · Est. 2026</div>
+              <div class="masthead-title">Find Your<br><em>Tribe.</em></div>
+            </div>
+            <div class="masthead-av">🔥</div>
+          </div>
+
+          <!-- LIVE STRIP -->
+          <div class="issue-line">
+            <div class="issue-dot"></div>
+            <div class="issue-text">14 members active now · Trekkers at Alipiri · Lens Club shooting</div>
+            <div class="issue-count">LIVE</div>
+          </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="pills-row">
+          <div class="pill active">✦ All</div>
+          <div class="pill">🏃 Fitness</div>
+          <div class="pill">🎨 Arts</div>
+          <div class="pill">📚 Books</div>
+          <div class="pill">🚴 Cycling</div>
+          <div class="pill">📷 Photo</div>
+        </div>
+
+        <!-- HERO EVENT -->
+        <div class="sh">
+          <div class="sh-title">Happening Soon</div>
+          <div class="sh-link">All →</div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-img">
+            🌄
+            <div class="hero-badge">🔴 This Sunday</div>
+            <div class="hero-spots">⚡ 4 spots left</div>
+          </div>
+          <div class="hero-body">
+            <div class="hero-club">Tirumala Trekkers</div>
+            <div class="hero-title">Sunrise Trek to<br>Silathoranam Rock</div>
+            <div class="hero-footer">
+              <div class="hero-meta">
+                📅 Sun, 8 Mar · 5:30 AM<br>
+                📍 Alipiri Steps · 11 joining
+              </div>
+              <button class="hero-btn">₹99 →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRENDING -->
+        <div class="sh">
+          <div class="sh-title">Trending Tribes</div>
+          <div class="sh-link">Explore →</div>
+        </div>
+
+        <div class="clubs-row">
+          <div class="ccard">
+            <div class="ccard-img trek">🏔️</div>
+            <div class="ccard-body">
+              <div class="ccard-name">Tirumala Trekkers</div>
+              <div class="ccard-meta">Every Sun, 5:30 AM</div>
+              <div class="ccard-footer">
+                <div class="ccard-members">84 members</div>
+                <div class="ccard-rating">⭐ 4.8</div>
+              </div>
+            </div>
+          </div>
+          <div class="ccard">
+            <div class="ccard-img cycle">🚴</div>
+            <div class="ccard-body">
+              <div class="ccard-name">Tirupati Cyclists</div>
+              <div class="ccard-meta">Sat & Sun, 5:45 AM</div>
+              <div class="ccard-footer">
+                <div class="ccard-members">67 members</div>
+                <div class="ccard-rating">⭐ 4.9</div>
+              </div>
+            </div>
+          </div>
+          <div class="ccard">
+            <div class="ccard-img photo">📷</div>
+            <div class="ccard-body">
+              <div class="ccard-name">Lens & Light</div>
+              <div class="ccard-meta">2nd Sun, 6:00 AM</div>
+              <div class="ccard-footer">
+                <div class="ccard-members">39 members</div>
+                <div class="ccard-rating">⭐ 4.7</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+
+        <div class="bnav">
+          <div class="bnav-item active">
+            <div class="bnav-icon">🏠</div>
+            <div class="bnav-dot"></div>
+            <div class="bnav-label">Home</div>
+          </div>
+          <div class="bnav-item">
+            <div class="bnav-icon">🔍</div>
+            <div class="bnav-label">Explore</div>
+          </div>
+          <div class="bnav-item">
+            <div class="bnav-icon">📅</div>
+            <div class="bnav-label">Events</div>
+          </div>
+          <div class="bnav-item">
+            <div class="bnav-icon">➕</div>
+            <div class="bnav-label">Create</div>
+          </div>
+          <div class="bnav-item">
+            <div class="bnav-icon">👤</div>
+            <div class="bnav-label">Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="label">01 — Home Feed</div>
+  </div>
+
+  <!-- ══ PHONE 2: CLUB DETAIL ══ -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="club-hero-wrap">
+          <div class="club-hero-bg trek">🏔️</div>
+          <div class="club-back">←</div>
+          <div class="club-share">↗</div>
+          <div class="club-hero-text">
+            <div class="club-cat">🏔️ Trekking</div>
+            <div class="club-name-big">Tirumala<br>Trekkers</div>
+            <div class="club-tagline">Every trail tells a story.</div>
+          </div>
+        </div>
+
+        <!-- FOUNDING SPOTS -->
+        <div class="found-card">
+          <div class="found-left">
+            <div class="found-title">⭐ Founding Member Spots</div>
+            <div class="found-sub">Join now · Get founding badge forever</div>
+          </div>
+          <div class="found-right">1/20</div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats3">
+          <div class="stat-box">
+            <div class="stat-n terra">84</div>
+            <div class="stat-l">Members</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-n">21</div>
+            <div class="stat-l">Active</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-n gold">4.8</div>
+            <div class="stat-l">Rating</div>
+          </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <div class="tab on">Meet-ups</div>
+          <div class="tab">Schedule</div>
+          <div class="tab">Moments</div>
+          <div class="tab">About</div>
+          <div class="tab">FAQs</div>
+        </div>
+
+        <!-- NEXT EVENT -->
+        <div class="pt">Next Meet-up</div>
+        <div class="feat-event">
+          <div class="feat-event-img">🌄</div>
+          <div class="feat-event-body">
+            <div class="feat-event-title">Sunrise Trek to Silathoranam Rock</div>
+            <div class="feat-event-row">
+              <div class="feat-event-meta">
+                📅 Sun, 8 Mar · 5:30 AM<br>
+                📍 Alipiri Steps · 11 joining
+              </div>
+              <div class="feat-price">₹99</div>
+            </div>
+            <button class="book-sm">Book My Spot →</button>
+          </div>
+        </div>
+
+        <!-- VENUE -->
+        <div class="pt" style="padding-top:14px;">Usually Meet At</div>
+        <div class="venue-c">
+          <div class="venue-thumb">⛰️</div>
+          <div>
+            <div class="venue-name">Alipiri Steps</div>
+            <div class="venue-sub">Every Sunday · 5:30–7:30 AM<br>Tirupati, Andhra Pradesh</div>
+          </div>
+        </div>
+
+        <div style="height:90px;"></div>
+
+        <div class="sticky">
+          <div class="sticky-price-wrap">
+            <div class="sticky-amount">₹99</div>
+            <div class="sticky-sublabel">Per Session</div>
+          </div>
+          <button class="big-btn">Join This Tribe →</button>
+        </div>
+      </div>
+    </div>
+    <div class="label">02 — Club Detail</div>
+  </div>
+
+  <!-- ══ PHONE 3: EVENT DETAIL ══ -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="ev-hero">
+          <div class="ev-back">←</div>
+          🌄
+        </div>
+
+        <div class="ev-body">
+          <div class="ev-cat-tag">🏔️ Trekking · Tirumala Trekkers</div>
+          <div class="ev-title">Sunrise Trek to<br>Silathoranam Rock</div>
+
+          <!-- JOINING -->
+          <div class="joining-pill">
+            <div style="display:flex;align-items:center;">
+              <div class="av-stack">
+                <div class="av-s a">R</div>
+                <div class="av-s b">P</div>
+                <div class="av-s c">K</div>
+              </div>
+              <span class="joining-text-s">+9 people joining</span>
+            </div>
+            <div class="spots-pill">⚡ 4 left</div>
+          </div>
+
+          <!-- INFO -->
+          <div class="ic">
+            <div class="ic-row">
+              <div class="ic-icon">📅</div>
+              <div>
+                <div class="ic-lbl">Date & Time</div>
+                <div class="ic-val">Sunday, 8 March · 5:30 AM – 7:30 AM</div>
+              </div>
+            </div>
+            <div class="ic-row">
+              <div class="ic-icon">📍</div>
+              <div>
+                <div class="ic-lbl">Location</div>
+                <div class="ic-val">Alipiri Steps, Tirupati<br><span style="color:var(--terra);font-size:12px;">View on Maps ↗</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HOST -->
+          <div class="host-c">
+            <div class="host-av">
+              👨
+              <div class="crown">👑</div>
+            </div>
+            <div>
+              <div class="host-n">Govardhan</div>
+              <div class="host-r">Club Leader · Responds in 24hrs</div>
+            </div>
+            <div class="wa-btn">💬 Talk</div>
+          </div>
+
+          <!-- ABOUT -->
+          <div class="ic" style="margin-bottom:10px;">
+            <div class="ic-lbl" style="margin-bottom:8px;">About This Meet-up</div>
+            <div style="font-size:13px;color:var(--ink3);line-height:1.7;">
+              Join us for a stunning sunrise trek to Silathoranam Rock — a natural arch unique to Tirumala Hills. All fitness levels welcome. Bring water, wear good shoes. We'll share a group photo at the top! 🌄<br><br>
+              <span style="font-weight:700;color:var(--ink);">Note:</span> Entry to Tirumala is free. Carry ID proof.
+            </div>
+          </div>
+
+          <!-- PEOPLE -->
+          <div class="people-c">
+            <div class="people-title">People Coming</div>
+            <div class="person">
+              <div class="p-av a">👩</div>
+              <div class="p-name">Priya Sharma</div>
+              <div class="p-tag">First trek!</div>
+            </div>
+            <div class="person">
+              <div class="p-av b">👨</div>
+              <div class="p-name">Ravi Kumar</div>
+              <div class="p-tag">Regular</div>
+            </div>
+            <div class="person">
+              <div class="p-av c">🧑</div>
+              <div class="p-name">+9 more joining</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:90px;"></div>
+
+        <div class="sticky">
+          <div class="sticky-price-wrap">
+            <div class="sticky-amount">₹99</div>
+            <div class="sticky-sublabel">Community Fee</div>
+          </div>
+          <button class="big-btn">Book My Spot →</button>
+        </div>
+      </div>
+    </div>
+    <div class="label">03 — Event Detail</div>
+  </div>
+
+  <!-- ══ PHONE 4: MOMENTS + ABOUT ══ -->
+  <div class="col">
+    <div class="phone">
+      <div class="screen">
+        <div class="sbar">
+          <span style="font-weight:700;color:#1A1410;">← Tirumala Trekkers</span>
+          <span>↗ ?</span>
+        </div>
+
+        <div class="tabs" style="margin-top:8px;">
+          <div class="tab">Meet-ups</div>
+          <div class="tab">Schedule</div>
+          <div class="tab on">Moments</div>
+          <div class="tab">About</div>
+          <div class="tab">FAQs</div>
+        </div>
+
+        <div class="pt">Club Moments</div>
+
+        <div class="moments-masonry">
+          <div class="m-tile h3 warm">
+            🌄
+            <div class="m-overlay">
+              <div class="m-av-s">P</div>
+              <div class="m-name">Pallavi Singh</div>
+              <div class="m-likes">♥ 14</div>
+            </div>
+          </div>
+          <div class="m-tile h1 cool">
+            🏔️
+            <div class="m-overlay">
+              <div class="m-av-s">S</div>
+              <div class="m-name">Supriya</div>
+              <div class="m-likes">♥ 3</div>
+            </div>
+          </div>
+          <div class="m-tile h2 green">
+            🌿
+            <div class="m-overlay">
+              <div class="m-av-s">A</div>
+              <div class="m-name">Aakar</div>
+              <div class="m-likes">♥ 7</div>
+            </div>
+          </div>
+          <div class="m-tile h1 warm">
+            ⛰️
+            <div class="m-overlay">
+              <div class="m-av-s">K</div>
+              <div class="m-name">Kavitha</div>
+              <div class="m-likes">♥ 11</div>
+            </div>
+          </div>
+          <div class="m-tile h2 purple">
+            🌺
+            <div class="m-overlay">
+              <div class="m-av-s">M</div>
+              <div class="m-name">Meena</div>
+              <div class="m-likes">♥ 6</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:14px 24px;">
+          <button style="background:transparent;border:1.5px solid var(--ink);color:var(--ink);padding:10px 28px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-family:'Outfit',sans-serif;">View All Moments</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- WHO ARE WE -->
+        <div class="pt">Who Are We</div>
+        <div class="who-c">
+          <div class="who-text">
+            Welcome to <strong>Tirumala Trekkers</strong> — a space where every trail tells a story. We believe the best conversations happen at 5,000 feet above sea level. No judgement, just fresh air and good people 🌿✨
+          </div>
+        </div>
+
+        <!-- VALUES -->
+        <div class="pt" style="padding-top:16px;">Our Values</div>
+        <div class="vals">
+          <div class="val-c">
+            <div class="val-icon">🌿</div>
+            <div class="val-text">Nature Over Notifications</div>
+          </div>
+          <div class="val-c">
+            <div class="val-icon">🤝</div>
+            <div class="val-text">Every Pace Welcome</div>
+          </div>
+          <div class="val-c">
+            <div class="val-icon">📵</div>
+            <div class="val-text">Offline is Luxury</div>
+          </div>
+          <div class="val-c">
+            <div class="val-icon">🔥</div>
+            <div class="val-text">Show Up Squad</div>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="pt" style="padding-top:16px;">FAQs</div>
+        <div class="faq-c">
+          <div class="faq-i">
+            <div class="faq-q">Do I need experience to join?</div>
+            <div class="faq-arr">▾</div>
+          </div>
+          <div class="faq-i">
+            <div class="faq-q">What should I bring to the trek?</div>
+            <div class="faq-arr">▾</div>
+          </div>
+          <div class="faq-i">
+            <div class="faq-q">Can I come alone?</div>
+            <div class="faq-arr">▾</div>
+          </div>
+          <div class="faq-i">
+            <div class="faq-q">What if it rains on trek day?</div>
+            <div class="faq-arr">▾</div>
+          </div>
+        </div>
+
+        <div style="height:90px;"></div>
+
+        <div class="sticky" style="gap:10px;">
+          <button class="big-btn" style="flex:1;background:transparent;border:1.5px solid var(--ink);color:var(--ink);">Follow</button>
+          <button class="big-btn" style="flex:2;">Join Tribe →</button>
+        </div>
+      </div>
+    </div>
+    <div class="label">04 — Moments & About</div>
+  </div>
+
+</div>
+
+</body>
+</html>

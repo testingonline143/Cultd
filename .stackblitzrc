@@ -1,0 +1,7 @@
+{
+  "installCommand": "npm install",
+  "startCommand": "npm run dev",
+  "env": {
+    "PORT": "5000"
+  }
+}

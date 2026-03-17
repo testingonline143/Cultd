@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sangh — Find Your Tribe in Tirupati</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f1a0f;
+  --forest: #1c3a1c;
+  --moss: #2d5a2d;
+  --fern: #4a8c4a;
+  --leaf: #6dbf6d;
+  --mist: #c8e6c8;
+  --cream: #f6f2eb;
+  --paper: #faf8f4;
+  --sand: #e8dfd0;
+  --clay: #b8733a;
+  --ember: #d4854a;
+  --dusk: #8b5e3c;
+  --text: #1a2a1a;
+  --muted: #5a6b5a;
+  --light: #8a9e8a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--paper);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  padding: 0 24px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(246,242,235,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 900;
+  color: var(--forest);
+  letter-spacing: -0.5px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--fern);
+  display: inline-block;
+}
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+
+.nav-city {
+  font-size: 12px; font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 4px 12px;
+  background: var(--mist);
+  border-radius: 100px;
+}
+
+.nav-cta {
+  background: var(--forest);
+  color: var(--cream);
+  border: none; border-radius: 100px;
+  padding: 9px 18px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: var(--moss); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  padding: 100px 24px 60px;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 40%, rgba(74,140,74,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 60%, rgba(184,115,58,0.07) 0%, transparent 55%),
+    var(--paper);
+  overflow: hidden;
+}
+
+/* Decorative circles */
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero-blob-1 {
+  width: 500px; height: 500px;
+  top: -200px; right: -150px;
+  background: radial-gradient(circle, rgba(74,140,74,0.06) 0%, transparent 70%);
+}
+.hero-blob-2 {
+  width: 300px; height: 300px;
+  bottom: -100px; left: -80px;
+  background: radial-gradient(circle, rgba(184,115,58,0.05) 0%, transparent 70%);
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--fern);
+  margin-bottom: 28px;
+  padding: 6px 16px;
+  border: 1px solid rgba(74,140,74,0.3);
+  border-radius: 100px;
+  background: rgba(74,140,74,0.05);
+}
+
+.hero-eyebrow::before { content: '◉'; font-size: 8px; }
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(44px, 9vw, 88px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -3px;
+  color: var(--forest);
+  margin-bottom: 24px;
+  max-width: 700px;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--clay);
+}
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--muted);
+  max-width: 440px;
+  line-height: 1.7;
+  margin-bottom: 44px;
+  font-weight: 400;
+}
+
+/* Matching widget */
+.match-widget {
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 20px;
+  padding: 20px 24px;
+  max-width: 480px; width: 100%;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.match-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--muted); margin-bottom: 14px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.match-options {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.match-chip {
+  padding: 7px 14px; border-radius: 100px;
+  border: 1.5px solid var(--sand);
+  background: var(--paper);
+  font-size: 13px; font-weight: 500;
+  color: var(--muted);
+  cursor: pointer; transition: all 0.15s;
+}
+.match-chip:hover, .match-chip.selected {
+  background: var(--forest); color: var(--cream);
+  border-color: var(--forest);
+}
+
+.match-btn {
+  width: 100%;
+  background: var(--clay);
+  color: white; border: none;
+  border-radius: 12px; padding: 13px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.match-btn:hover { background: var(--ember); }
+
+.hero-stats {
+  display: flex; gap: 32px;
+  flex-wrap: wrap; justify-content: center;
+}
+
+.stat {
+  text-align: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--sand);
+}
+.stat:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--forest); line-height: 1;
+}
+.stat-label { font-size: 12px; color: var(--light); margin-top: 4px; }
+
+/* ── SECTION ── */
+.section {
+  padding: 72px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--fern); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--fern); }
+
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700; letter-spacing: -1px;
+  color: var(--forest); margin-bottom: 40px;
+  line-height: 1.1;
+}
+
+/* ── FILTERS ── */
+.filters {
+  display: flex; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 36px;
+}
+
+.filter-btn {
+  padding: 8px 18px; border-radius: 100px;
+  border: 1.5px solid var(--sand);
+  background: white;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.18s;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.filter-btn:hover { border-color: var(--fern); color: var(--forest); }
+.filter-btn.active {
+  background: var(--forest); color: var(--cream);
+  border-color: var(--forest);
+}
+
+/* ── CLUB CARDS ── */
+.clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.club-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--sand);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.club-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(28,58,28,0.10);
+  border-color: var(--mist);
+}
+
+.card-top {
+  padding: 20px 20px 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+
+.card-emoji-wrap {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+
+.card-health {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600;
+  padding: 5px 10px; border-radius: 100px;
+}
+.health-green { background: #e8f5e8; color: #2d6a2d; }
+.health-yellow { background: #fef9e7; color: #9a7800; }
+.health-red { background: #fdecea; color: #c0392b; }
+
+.health-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.health-green .health-dot { background: #4caf50; }
+.health-yellow .health-dot { background: #f9a825; }
+.health-red .health-dot { background: #e53935; }
+
+.card-body { padding: 16px 20px 20px; }
+
+.card-category {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--light); margin-bottom: 6px;
+}
+
+.card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 700;
+  color: var(--forest); margin-bottom: 8px;
+  letter-spacing: -0.3px; line-height: 1.2;
+}
+
+.card-desc {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.6; margin-bottom: 16px;
+}
+
+.card-meta {
+  display: flex; gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--sand);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-size: 12px; color: var(--light);
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Founding badge */
+.founding-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600;
+  color: var(--clay);
+  background: rgba(184,115,58,0.08);
+  border: 1px solid rgba(184,115,58,0.2);
+  padding: 4px 10px; border-radius: 100px;
+  margin-bottom: 12px;
+}
+
+.card-actions {
+  display: flex; gap: 8px;
+}
+
+.btn-view {
+  flex: 1;
+  background: var(--forest); color: var(--cream);
+  border: none; border-radius: 10px; padding: 11px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s;
+}
+.btn-view:hover { background: var(--moss); }
+
+.btn-wa {
+  width: 42px; height: 42px;
+  background: #25D366; color: white;
+  border: none; border-radius: 10px;
+  font-size: 18px; cursor: pointer;
+  transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.btn-wa:hover { background: #20b85a; }
+
+/* ── MODAL ── */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  z-index: 200;
+  background: rgba(15,26,15,0.65);
+  backdrop-filter: blur(6px);
+  padding: 16px;
+  overflow-y: auto;
+}
+.overlay.open {
+  display: flex;
+  align-items: flex-start; justify-content: center;
+  padding-top: 56px;
+}
+
+.modal {
+  background: var(--paper);
+  border-radius: 24px;
+  width: 100%; max-width: 580px;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+  padding: 28px 28px 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+
+.modal-emoji-wrap {
+  width: 72px; height: 72px; border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+
+.modal-close {
+  background: var(--sand); border: none;
+  border-radius: 50%; width: 34px; height: 34px;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); transition: all 0.15s;
+}
+.modal-close:hover { background: var(--mist); }
+
+.modal-body { padding: 20px 28px 28px; }
+
+.modal-category {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--fern); margin-bottom: 6px;
+}
+
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 30px; font-weight: 900;
+  color: var(--forest); margin-bottom: 6px;
+  letter-spacing: -1px; line-height: 1.1;
+}
+
+.modal-health-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+
+.modal-desc {
+  font-size: 14px; color: var(--muted);
+  line-height: 1.75; margin-bottom: 24px;
+}
+
+/* Organizer card */
+.organizer-card {
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 14px; padding: 16px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+
+.org-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--mist);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+.org-info { flex: 1; }
+.org-name { font-weight: 600; font-size: 14px; color: var(--forest); }
+.org-meta { font-size: 12px; color: var(--light); margin-top: 2px; }
+
+.org-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 100px;
+  background: var(--mist); color: var(--forest);
+}
+
+/* Details grid */
+.details-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 20px;
+}
+
+.detail-item {
+  background: white; border: 1px solid var(--sand);
+  border-radius: 12px; padding: 14px;
+}
+
+.detail-label {
+  font-size: 11px; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--light); margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 14px; font-weight: 600; color: var(--forest);
+}
+
+/* Founding spots */
+.founding-bar {
+  background: rgba(184,115,58,0.06);
+  border: 1px solid rgba(184,115,58,0.15);
+  border-radius: 14px; padding: 16px;
+  margin-bottom: 20px;
+}
+
+.founding-top {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 10px;
+}
+
+.founding-title {
+  font-size: 13px; font-weight: 600; color: var(--clay);
+  display: flex; align-items: center; gap: 6px;
+}
+
+.founding-count {
+  font-size: 13px; font-weight: 600; color: var(--clay);
+}
+
+.founding-progress {
+  background: rgba(184,115,58,0.15);
+  border-radius: 100px; height: 6px; overflow: hidden;
+}
+
+.founding-fill {
+  background: var(--clay);
+  border-radius: 100px; height: 100%;
+  transition: width 1s ease;
+}
+
+.founding-sub {
+  font-size: 12px; color: var(--muted); margin-top: 6px;
+}
+
+/* Action buttons */
+.modal-actions { display: flex; gap: 10px; margin-bottom: 16px; }
+
+.btn-join {
+  flex: 1; background: var(--forest); color: var(--cream);
+  border: none; border-radius: 12px; padding: 15px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-join:hover { background: var(--moss); transform: translateY(-1px); }
+
+.btn-whatsapp {
+  background: #25D366; color: white;
+  border: none; border-radius: 12px;
+  padding: 15px 18px; font-size: 20px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-whatsapp:hover { background: #20b85a; }
+
+/* Join Form */
+.join-form { display: none; }
+.join-form.show { display: block; }
+
+.form-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--forest); margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.form-input {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--sand);
+  border-radius: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px; color: var(--text);
+  background: white; outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 10px;
+}
+.form-input:focus { border-color: var(--fern); }
+.form-input::placeholder { color: var(--light); }
+
+.btn-submit {
+  width: 100%; background: var(--fern); color: white;
+  border: none; border-radius: 12px; padding: 14px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-submit:hover { background: var(--moss); }
+
+.success-state {
+  display: none; text-align: center; padding: 24px 0;
+}
+.success-state.show { display: block; }
+.success-icon { font-size: 48px; margin-bottom: 12px; }
+.success-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--forest); margin-bottom: 8px;
+}
+.success-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  background: var(--forest);
+  padding: 80px 24px;
+}
+
+.how-inner {
+  max-width: 1000px; margin: 0 auto;
+}
+
+.how-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--leaf); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.how-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--leaf); }
+
+.how-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700; color: var(--cream);
+  letter-spacing: -1.5px; margin-bottom: 56px;
+  line-height: 1.1; max-width: 500px;
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2px;
+}
+
+.how-step {
+  padding: 32px 28px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.how-step:hover { background: rgba(255,255,255,0.06); }
+
+.step-num {
+  font-family: 'Fraunces', serif;
+  font-size: 48px; font-weight: 900;
+  color: rgba(255,255,255,0.08);
+  line-height: 1; margin-bottom: 16px;
+}
+
+.step-icon { font-size: 28px; margin-bottom: 12px; }
+
+.step-title {
+  font-weight: 600; font-size: 16px;
+  color: var(--cream); margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 13px; color: rgba(255,255,255,0.5);
+  line-height: 1.65;
+}
+
+/* ── VS SECTION ── */
+.vs-section {
+  background: var(--ink);
+  padding: 80px 24px;
+}
+
+.vs-inner { max-width: 900px; margin: 0 auto; }
+
+.vs-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--leaf); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.vs-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--leaf); }
+
+.vs-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 700; color: var(--cream);
+  letter-spacing: -1.5px; margin-bottom: 48px;
+  line-height: 1.1;
+}
+
+.vs-table {
+  width: 100%; border-collapse: collapse;
+}
+
+.vs-table th {
+  padding: 14px 20px; text-align: left;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.vs-table th:first-child { color: rgba(255,255,255,0.4); }
+.vs-table th:nth-child(2) { color: rgba(255,255,255,0.3); text-align: center; }
+.vs-table th:nth-child(3) { color: rgba(255,255,255,0.3); text-align: center; }
+.vs-table th:last-child {
+  color: var(--leaf); text-align: center;
+  background: rgba(74,140,74,0.1);
+  border-radius: 8px 8px 0 0;
+}
+
+.vs-table td {
+  padding: 13px 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 14px; color: rgba(255,255,255,0.6);
+}
+
+.vs-table td:nth-child(2), .vs-table td:nth-child(3) { text-align: center; }
+.vs-table td:last-child {
+  text-align: center;
+  background: rgba(74,140,74,0.07);
+  color: var(--leaf); font-weight: 600;
+}
+
+.vs-check { color: #4caf50; }
+.vs-cross { color: rgba(255,255,255,0.2); }
+
+/* ── ORGANIZER CTA ── */
+.org-section {
+  padding: 80px 24px;
+  max-width: 800px; margin: 0 auto;
+}
+
+.org-card {
+  background: white;
+  border: 1px solid var(--sand);
+  border-radius: 24px; padding: 48px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+
+.org-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--fern), var(--clay));
+}
+
+.org-icon { font-size: 52px; margin-bottom: 20px; }
+
+.org-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700; color: var(--forest);
+  letter-spacing: -1px; margin-bottom: 14px;
+  line-height: 1.1;
+}
+
+.org-desc {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.7; max-width: 500px;
+  margin: 0 auto 32px;
+}
+
+.org-perks {
+  display: flex; gap: 12px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 32px;
+}
+
+.org-perk {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--muted);
+  padding: 6px 14px; border-radius: 100px;
+  background: var(--paper); border: 1px solid var(--sand);
+}
+
+.btn-org-cta {
+  background: var(--forest); color: var(--cream);
+  border: none; border-radius: 100px;
+  padding: 16px 36px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-org-cta:hover { background: var(--moss); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(28,58,28,0.2); }
+
+/* ── ORG MODAL ── */
+.org-modal {
+  display: none; position: fixed; inset: 0; z-index: 300;
+  background: rgba(15,26,15,0.65);
+  backdrop-filter: blur(6px);
+  padding: 16px; overflow-y: auto;
+  align-items: flex-start; justify-content: center;
+  padding-top: 56px;
+}
+.org-modal.open { display: flex; }
+
+.org-modal-inner {
+  background: var(--paper);
+  border-radius: 24px; width: 100%; max-width: 480px;
+  padding: 36px; position: relative;
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.org-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--sand); border: none;
+  border-radius: 50%; width: 34px; height: 34px;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+}
+
+.org-modal-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--forest); margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.org-modal-sub {
+  font-size: 13px; color: var(--muted);
+  margin-bottom: 24px; line-height: 1.5;
+}
+
+.form-select {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--sand);
+  border-radius: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px; color: var(--text);
+  background: white; outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+}
+.form-select:focus { border-color: var(--fern); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--forest);
+  padding: 32px 24px; text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 900;
+  color: var(--cream); margin-bottom: 6px;
+}
+
+.footer-sub {
+  font-size: 13px; color: rgba(255,255,255,0.4);
+}
+
+/* ── ANIMATIONS ── */
+.fade-up {
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+.fade-up.in { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  h1 { letter-spacing: -2px; }
+  .hero-stats { gap: 0; }
+  .stat { padding: 0 12px; }
+  .details-grid { grid-template-columns: 1fr; }
+  .modal-body { padding: 16px 20px 24px; }
+  .org-card { padding: 32px 20px; }
+  .modal-actions { flex-direction: column; }
+  .vs-table { font-size: 12px; }
+  .vs-table td, .vs-table th { padding: 10px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    Sangh
+  </div>
+  <div class="nav-right">
+    <span class="nav-city">Tirupati</span>
+    <button class="nav-cta" onclick="openOrgModal()">List Your Club</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+
+  <div class="hero-eyebrow">Tirupati's Club Discovery Platform</div>
+
+  <h1>Find where<br>you <em>belong</em></h1>
+
+  <p class="hero-sub">Discover active clubs in Tirupati — trekking, books, cycling, photography and more. Real communities, real people.</p>
+
+  <!-- Matching Widget -->
+  <div class="match-widget fade-up">
+    <div class="match-title">✦ Find your best match</div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--light);margin-bottom:8px;font-weight:500;">What are you into?</div>
+      <div class="match-options" id="interestChips">
+        <span class="match-chip" onclick="toggleChip(this)">🏔️ Trekking</span>
+        <span class="match-chip" onclick="toggleChip(this)">📚 Books</span>
+        <span class="match-chip" onclick="toggleChip(this)">🚴 Cycling</span>
+        <span class="match-chip" onclick="toggleChip(this)">📷 Photography</span>
+        <span class="match-chip" onclick="toggleChip(this)">💪 Fitness</span>
+        <span class="match-chip" onclick="toggleChip(this)">🎨 Art</span>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--light);margin-bottom:8px;font-weight:500;">When are you free?</div>
+      <div class="match-options" id="timeChips">
+        <span class="match-chip" onclick="toggleSingle(this,'timeChips')">🌅 Early Morning</span>
+        <span class="match-chip" onclick="toggleSingle(this,'timeChips')">🌇 Evening</span>
+        <span class="match-chip" onclick="toggleSingle(this,'timeChips')">📅 Weekends</span>
+      </div>
+    </div>
+    <button class="match-btn" onclick="runMatch()">Show My Matches →</button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Active Clubs</div></div>
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Members</div></div>
+    <div class="stat"><div class="stat-num">Free</div><div class="stat-label">To Join</div></div>
+    <div class="stat"><div class="stat-num">8%</div><div class="stat-label">Commission Only</div></div>
+  </div>
+</section>
+
+<!-- CLUBS SECTION -->
+<section class="section" id="clubs">
+  <div class="section-label">Explore</div>
+  <h2 class="section-title" id="sectionTitle">All Clubs in Tirupati</h2>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filter('all',this)">🌿 All</button>
+    <button class="filter-btn" onclick="filter('trekking',this)">🏔️ Trekking</button>
+    <button class="filter-btn" onclick="filter('books',this)">📚 Books</button>
+    <button class="filter-btn" onclick="filter('cycling',this)">🚴 Cycling</button>
+    <button class="filter-btn" onclick="filter('photography',this)">📷 Photography</button>
+    <button class="filter-btn" onclick="filter('fitness',this)">💪 Fitness</button>
+    <button class="filter-btn" onclick="filter('art',this)">🎨 Art</button>
+  </div>
+
+  <div class="clubs-grid" id="clubGrid"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="how-inner">
+    <div class="how-label">Process</div>
+    <h2 class="how-title">From stranger to<br><em>tribe member</em> in minutes</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="step-num">01</div>
+        <div class="step-icon">🔍</div>
+        <div class="step-title">Discover</div>
+        <div class="step-desc">Browse clubs by category or use our matching tool to find what fits your lifestyle and schedule.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">02</div>
+        <div class="step-icon">✅</div>
+        <div class="step-title">Check Health</div>
+        <div class="step-desc">See the Club Health Score — know if a club is actively meeting before you invest your time.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🤝</div>
+        <div class="step-title">Join</div>
+        <div class="step-desc">Submit your interest in 20 seconds. Grab a Founding Member spot if you're early enough.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">04</div>
+        <div class="step-icon">🌿</div>
+        <div class="step-title">Belong</div>
+        <div class="step-desc">Show up, meet your people, build something lasting. Your club is your home in Tirupati.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS SECTION -->
+<section class="vs-section">
+  <div class="vs-inner">
+    <div class="vs-label">Why Sangh</div>
+    <h2 class="vs-title">Built for <em style="color:var(--leaf)">Tirupati</em>.<br>Not imported from Gurgaon.</h2>
+    <table class="vs-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Meetup</th>
+          <th>Misfits</th>
+          <th>✦ Sangh</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Tirupati / Tier 2 cities</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-check">✓ Only us</td>
+        </tr>
+        <tr>
+          <td>Free for organizers</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">Partial</td>
+          <td class="vs-check">✓ Always</td>
+        </tr>
+        <tr>
+          <td>Commission rate</td>
+          <td class="vs-cross">High</td>
+          <td class="vs-cross">30–40%</td>
+          <td class="vs-check">8% only</td>
+        </tr>
+        <tr>
+          <td>Club Health Score</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-check">✓</td>
+        </tr>
+        <tr>
+          <td>Founding Member badges</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-check">✓</td>
+        </tr>
+        <tr>
+          <td>Organizer reputation</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-check">✓</td>
+        </tr>
+        <tr>
+          <td>WhatsApp-native join</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-cross">✗</td>
+          <td class="vs-check">✓</td>
+        </tr>
+        <tr>
+          <td>Permanent club homes</td>
+          <td class="vs-cross">Events only</td>
+          <td class="vs-cross">Events only</td>
+          <td class="vs-check">✓ Always live</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ORGANIZER CTA -->
+<section class="org-section">
+  <div class="org-card fade-up">
+    <div class="org-icon">🏕️</div>
+    <h2 class="org-title">Running a club in Tirupati?</h2>
+    <p class="org-desc">List your club free. Get discovered by hundreds of people actively looking for exactly what you're building. No fees, no complexity.</p>
+    <div class="org-perks">
+      <span class="org-perk">✓ Free forever</span>
+      <span class="org-perk">✓ 5 minute setup</span>
+      <span class="org-perk">✓ More members</span>
+      <span class="org-perk">✓ 8% commission only</span>
+    </div>
+    <button class="btn-org-cta" onclick="openOrgModal()">List My Club for Free →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">◉ Sangh</div>
+  <div class="footer-sub">Find Your Tribe in Tirupati, Andhra Pradesh 🌿</div>
+</footer>
+
+<!-- CLUB DETAIL MODAL -->
+<div class="overlay" id="clubOverlay" onclick="closeOverlay(event,'clubOverlay')">
+  <div class="modal" id="clubModal">
+    <div class="modal-header">
+      <div class="modal-emoji-wrap" id="mEmoji"></div>
+      <button class="modal-close" onclick="document.getElementById('clubOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-category" id="mCategory"></div>
+      <h2 class="modal-title" id="mTitle"></h2>
+      <div class="modal-health-row" id="mHealthRow"></div>
+      <p class="modal-desc" id="mDesc"></p>
+
+      <!-- Organizer -->
+      <div class="organizer-card">
+        <div class="org-avatar" id="mOrgAvatar"></div>
+        <div class="org-info">
+          <div class="org-name" id="mOrgName"></div>
+          <div class="org-meta" id="mOrgMeta"></div>
+        </div>
+        <div class="org-badge" id="mOrgBadge"></div>
+      </div>
+
+      <!-- Details -->
+      <div class="details-grid">
+        <div class="detail-item">
+          <div class="detail-label">📅 Schedule</div>
+          <div class="detail-value" id="mSchedule"></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">📍 Location</div>
+          <div class="detail-value" id="mLocation"></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">👥 Members</div>
+          <div class="detail-value" id="mMembers"></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">🗓️ Active Since</div>
+          <div class="detail-value" id="mSince"></div>
+        </div>
+      </div>
+
+      <!-- Founding bar -->
+      <div class="founding-bar" id="mFoundingBar">
+        <div class="founding-top">
+          <div class="founding-title">⭐ Founding Member Spots</div>
+          <div class="founding-count" id="mFoundingCount"></div>
+        </div>
+        <div class="founding-progress">
+          <div class="founding-fill" id="mFoundingFill"></div>
+        </div>
+        <div class="founding-sub" id="mFoundingSub"></div>
+      </div>
+
+      <!-- Actions -->
+      <div id="actionWrap">
+        <div class="modal-actions">
+          <button class="btn-join" onclick="showJoinForm()">✋ I Want to Join</button>
+          <button class="btn-whatsapp" id="mWaBtn">💬</button>
+        </div>
+        <p style="font-size:12px;color:var(--light);text-align:center">Or tap 💬 to WhatsApp the organizer directly</p>
+      </div>
+
+      <!-- Join form -->
+      <div class="join-form" id="joinForm">
+        <div class="form-title">Join the Club 🌿</div>
+        <input type="text" class="form-input" placeholder="Your Name" id="jName">
+        <input type="tel" class="form-input" placeholder="Phone Number (+91)" id="jPhone">
+        <button class="btn-submit" onclick="submitJoin()">Send Join Request →</button>
+      </div>
+
+      <!-- Success -->
+      <div class="success-state" id="successState">
+        <div class="success-icon">🌱</div>
+        <div class="success-title">You're in the tribe!</div>
+        <div class="success-sub">The organizer will add you to the WhatsApp group within 24 hours. Welcome to Sangh.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORGANIZER MODAL -->
+<div class="org-modal" id="orgModal" onclick="closeOverlay(event,'orgModal')">
+  <div class="org-modal-inner">
+    <button class="org-modal-close" onclick="document.getElementById('orgModal').classList.remove('open')">✕</button>
+    <div style="font-size:36px;margin-bottom:16px">🏕️</div>
+    <div class="org-modal-title">List Your Club</div>
+    <div class="org-modal-sub">Free forever. We'll reach out within 24 hours to get you set up.</div>
+    <input type="text" class="form-input" placeholder="Club Name" id="oClubName">
+    <input type="text" class="form-input" placeholder="Your Name" id="oName">
+    <input type="tel" class="form-input" placeholder="WhatsApp Number" id="oPhone">
+    <select class="form-select" id="oCategory">
+      <option value="">Select Category</option>
+      <option>🏔️ Trekking</option>
+      <option>📚 Books</option>
+      <option>🚴 Cycling</option>
+      <option>📷 Photography</option>
+      <option>💪 Fitness</option>
+      <option>🎨 Art</option>
+      <option>✍️ Writing</option>
+      <option>🎵 Music</option>
+      <option>Other</option>
+    </select>
+    <input type="text" class="form-input" placeholder="Meetup frequency (e.g. Every Sunday)" id="oFreq">
+    <button class="btn-submit" onclick="submitOrg()" style="margin-top:4px">Submit Club →</button>
+    <div id="orgSuccess" style="display:none;margin-top:16px;text-align:center;padding:20px;background:rgba(74,140,74,0.08);border-radius:12px;border:1px solid var(--mist)">
+      <div style="font-size:32px;margin-bottom:8px">🌿</div>
+      <strong style="color:var(--forest)">Received! We'll contact you within 24 hours.</strong>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const clubs = [
+  {
+    id:1, name:"Tirumala Trekkers", cat:"trekking", emoji:"🏔️",
+    bg:"#e8f4e8",
+    health:"green", healthLabel:"Very Active", lastActive:"Met last Sunday",
+    desc:"Weekly treks around Tirumala hills, Talakona waterfalls, and the Eastern Ghats. All fitness levels welcome — we go at the slowest person's pace. No experience needed, just willingness to show up.",
+    organizer:"Ravi Kumar", orgYears:"3 years running", orgAvatar:"👨‍🦱", orgResponse:"Responds within 2 hrs",
+    members:84, schedule:"Every Sunday, 5:30 AM", location:"Alipiri Gate",
+    since:"2022", waNum:"919000000001",
+    foundingTaken:16, foundingTotal:20,
+    tags:["trekking","morning","weekends"]
+  },
+  {
+    id:2, name:"Tirupati Reads", cat:"books", emoji:"📚",
+    bg:"#fef9e7",
+    health:"green", healthLabel:"Very Active", lastActive:"Met last Saturday",
+    desc:"A warm book club meeting monthly to discuss fiction, non-fiction, and Telugu literature. Currently reading 'The God of Small Things'. All languages and genres welcome — just bring your opinions.",
+    organizer:"Priya Sharma", orgYears:"2 years running", orgAvatar:"👩", orgResponse:"Responds within 4 hrs",
+    members:52, schedule:"First Saturday, 6:00 PM", location:"Café Tirupati, TP Area",
+    since:"2023", waNum:"919000000002",
+    foundingTaken:11, foundingTotal:20,
+    tags:["books","evenings","weekends"]
+  },
+  {
+    id:3, name:"Tirupati Cyclists", cat:"cycling", emoji:"🚴",
+    bg:"#e8f0fe",
+    health:"green", healthLabel:"Very Active", lastActive:"Rode yesterday",
+    desc:"Early morning rides through Tirupati city and surrounding villages. Routes from 20km to 60km. Road bikes, MTBs, and hybrids welcome. Safety first — helmet always required.",
+    organizer:"Suresh Reddy", orgYears:"4 years running", orgAvatar:"👨", orgResponse:"Responds within 1 hr",
+    members:67, schedule:"Sat & Sun, 5:45 AM", location:"RTC Bus Stand",
+    since:"2021", waNum:"919000000003",
+    foundingTaken:14, foundingTotal:20,
+    tags:["cycling","morning","weekends"]
+  },
+  {
+    id:4, name:"Lens & Light Tirupati", cat:"photography", emoji:"📷",
+    bg:"#f3e8ff",
+    health:"yellow", healthLabel:"Moderate", lastActive:"Met 2 weeks ago",
+    desc:"Photography walks around Tirupati's temples, markets, and nature. Phone cameras to DSLRs welcome. Monthly photo walks plus editing workshops and print exhibitions.",
+    organizer:"Anitha Devi", orgYears:"2 years running", orgAvatar:"👩‍🦱", orgResponse:"Responds within 6 hrs",
+    members:39, schedule:"2nd Sunday, 6:00 AM", location:"Govindaraja Temple Gate",
+    since:"2023", waNum:"919000000004",
+    foundingTaken:8, foundingTotal:20,
+    tags:["photography","morning","weekends"]
+  },
+  {
+    id:5, name:"Tirupati Fitness Tribe", cat:"fitness", emoji:"💪",
+    bg:"#fdecea",
+    health:"green", healthLabel:"Very Active", lastActive:"Met this morning",
+    desc:"Outdoor bootcamp, yoga, and running at Bairagipatteda Park. Free community fitness for all ages. Trained volunteers lead sessions. Whether you're 18 or 65, you belong here.",
+    organizer:"Venkat Rao", orgYears:"5 years running", orgAvatar:"👨‍🦲", orgResponse:"Responds within 30 min",
+    members:120, schedule:"Mon–Sat, 6:00 AM", location:"Bairagipatteda Park",
+    since:"2020", waNum:"919000000005",
+    foundingTaken:20, foundingTotal:20,
+    tags:["fitness","morning","weekdays"]
+  },
+  {
+    id:6, name:"Telugu Writers Circle", cat:"books", emoji:"✍️",
+    bg:"#fff3e0",
+    health:"yellow", healthLabel:"Moderate", lastActive:"Met 3 weeks ago",
+    desc:"For aspiring Telugu writers — poetry, short stories, essays. Share your work in a safe, encouraging space. We've published a small zine with member pieces. All experience levels welcome.",
+    organizer:"Lakshmi Prasad", orgYears:"1 year running", orgAvatar:"👩‍🏫", orgResponse:"Responds within 8 hrs",
+    members:28, schedule:"3rd Sunday, 5:30 PM", location:"District Library",
+    since:"2024", waNum:"919000000006",
+    foundingTaken:6, foundingTotal:20,
+    tags:["books","evenings","weekends"]
+  },
+  {
+    id:7, name:"Tirupati Sketchers", cat:"art", emoji:"🎨",
+    bg:"#fce4ec",
+    health:"red", healthLabel:"Quiet", lastActive:"No activity in a month",
+    desc:"Urban sketching and watercolour sessions across Tirupati's temples, streets, and markets. No skill level required — just curiosity and a sketchbook. Art supplies shared for beginners.",
+    organizer:"Deepika Nair", orgYears:"1 year running", orgAvatar:"👩‍🎨", orgResponse:"Responds within 12 hrs",
+    members:22, schedule:"2nd & 4th Sunday, 7:00 AM", location:"TTD Kalyanamastu",
+    since:"2024", waNum:"919000000007",
+    foundingTaken:4, foundingTotal:20,
+    tags:["art","morning","weekends"]
+  },
+];
+
+let currentClub = null;
+let activeFilter = 'all';
+
+// ─── HEALTH BADGE ────────────────────────────────────────────────────────────
+function healthBadge(h, label, lastActive) {
+  const cls = `card-health health-${h}`;
+  return `<span class="${cls}"><span class="health-dot"></span>${label}</span>`;
+}
+
+function healthBadgeFull(h, label, lastActive) {
+  return `<span class="card-health health-${h}"><span class="health-dot"></span>${label}</span><span style="font-size:12px;color:var(--light)">${lastActive}</span>`;
+}
+
+// ─── RENDER CARDS ────────────────────────────────────────────────────────────
+function renderClubs(cats = ['all']) {
+  const grid = document.getElementById('clubGrid');
+  const filtered = cats.includes('all') ? clubs : clubs.filter(c => cats.includes(c.cat));
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--light)">
+      <div style="font-size:40px;margin-bottom:12px">🔍</div>
+      <div style="font-size:16px">No clubs match this filter yet.<br>More coming soon!</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => {
+    const foundingLeft = c.foundingTotal - c.foundingTaken;
+    const foundingPct = (c.foundingTaken / c.foundingTotal) * 100;
+    return `
+    <div class="club-card" onclick="openClub(${c.id})">
+      <div class="card-top">
+        <div class="card-emoji-wrap" style="background:${c.bg}">${c.emoji}</div>
+        ${healthBadge(c.health, c.healthLabel, c.lastActive)}
+      </div>
+      <div class="card-body">
+        <div class="card-category">${c.cat.charAt(0).toUpperCase()+c.cat.slice(1)}</div>
+        <div class="card-title">${c.name}</div>
+        <div class="card-desc">${c.desc.substring(0,90)}...</div>
+        ${foundingLeft > 0 ? `<div class="founding-badge">⭐ ${foundingLeft} Founding spots left</div>` : ''}
+        <div class="card-meta">
+          <span class="meta-item">📅 ${c.schedule.split(',')[0]}</span>
+          <span class="meta-item">👥 ${c.members} members</span>
+          <span class="meta-item">📍 ${c.location.split(',')[0]}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-view">View Club →</button>
+          <button class="btn-wa" onclick="event.stopPropagation();window.open('https://wa.me/${c.waNum}','_blank')">💬</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTER ──────────────────────────────────────────────────────────────────
+function filter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sectionTitle').textContent =
+    cat === 'all' ? 'All Clubs in Tirupati' : `${cat.charAt(0).toUpperCase()+cat.slice(1)} Clubs in Tirupati`;
+  renderClubs([cat]);
+}
+
+// ─── MATCHING ────────────────────────────────────────────────────────────────
+function toggleChip(el) { el.classList.toggle('selected'); }
+
+function toggleSingle(el, groupId) {
+  document.querySelectorAll(`#${groupId} .match-chip`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function runMatch() {
+  const interests = [...document.querySelectorAll('#interestChips .match-chip.selected')].map(c => c.textContent.trim().toLowerCase());
+  const time = document.querySelector('#timeChips .match-chip.selected')?.textContent.trim().toLowerCase() || '';
+
+  let matched = clubs;
+
+  if (interests.length > 0) {
+    const catMap = {'trekking':'trekking','books':'books','cycling':'cycling','photography':'photography','fitness':'fitness','art':'art'};
+    const cats = interests.map(i => Object.keys(catMap).find(k => i.includes(k))).filter(Boolean);
+    if (cats.length > 0) matched = clubs.filter(c => cats.includes(c.cat));
+  }
+
+  if (time.includes('morning')) matched = matched.filter(c => c.tags.includes('morning'));
+  else if (time.includes('evening')) matched = matched.filter(c => c.tags.includes('evenings'));
+  else if (time.includes('weekend')) matched = matched.filter(c => c.tags.includes('weekends'));
+
+  if (matched.length === 0) matched = clubs;
+
+  document.getElementById('clubs').scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    document.getElementById('sectionTitle').textContent = `${matched.length} Clubs Match You ✦`;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    const grid = document.getElementById('clubGrid');
+    grid.innerHTML = matched.map(c => {
+      const foundingLeft = c.foundingTotal - c.foundingTaken;
+      return `
+      <div class="club-card" onclick="openClub(${c.id})">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:${c.bg}">${c.emoji}</div>
+          ${healthBadge(c.health, c.healthLabel)}
+        </div>
+        <div class="card-body">
+          <div class="card-category">${c.cat.charAt(0).toUpperCase()+c.cat.slice(1)}</div>
+          <div class="card-title">${c.name}</div>
+          <div class="card-desc">${c.desc.substring(0,90)}...</div>
+          ${foundingLeft > 0 ? `<div class="founding-badge">⭐ ${foundingLeft} Founding spots left</div>` : ''}
+          <div class="card-meta">
+            <span class="meta-item">📅 ${c.schedule.split(',')[0]}</span>
+            <span class="meta-item">👥 ${c.members} members</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-view">View Club →</button>
+            <button class="btn-wa" onclick="event.stopPropagation();window.open('https://wa.me/${c.waNum}','_blank')">💬</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }, 400);
+}
+
+// ─── OPEN CLUB ───────────────────────────────────────────────────────────────
+function openClub(id) {
+  const c = clubs.find(x => x.id === id);
+  currentClub = c;
+
+  document.getElementById('mEmoji').style.background = c.bg;
+  document.getElementById('mEmoji').textContent = c.emoji;
+  document.getElementById('mCategory').textContent = c.cat.charAt(0).toUpperCase()+c.cat.slice(1);
+  document.getElementById('mTitle').textContent = c.name;
+  document.getElementById('mHealthRow').innerHTML = healthBadgeFull(c.health, c.healthLabel, c.lastActive);
+  document.getElementById('mDesc').textContent = c.desc;
+  document.getElementById('mOrgAvatar').textContent = c.orgAvatar;
+  document.getElementById('mOrgName').textContent = c.organizer;
+  document.getElementById('mOrgMeta').textContent = c.orgYears + ' · ' + c.orgResponse;
+  document.getElementById('mOrgBadge').textContent = c.orgYears.split(' ')[0] + 'yr organizer';
+  document.getElementById('mSchedule').textContent = c.schedule;
+  document.getElementById('mLocation').textContent = c.location;
+  document.getElementById('mMembers').textContent = c.members + ' members';
+  document.getElementById('mSince').textContent = 'Since ' + c.since;
+
+  const left = c.foundingTotal - c.foundingTaken;
+  const pct = (c.foundingTaken / c.foundingTotal) * 100;
+  document.getElementById('mFoundingCount').textContent = left > 0 ? `${left} of ${c.foundingTotal} left` : 'All taken!';
+  document.getElementById('mFoundingSub').textContent = left > 0 ? `Join now to get your Founding Member badge permanently on your profile.` : `All founding spots are taken. You can still join!`;
+  document.getElementById('mFoundingFill').style.width = '0%';
+
+  document.getElementById('mWaBtn').onclick = () => window.open(`https://wa.me/${c.waNum}`, '_blank');
+
+  // Reset states
+  document.getElementById('joinForm').classList.remove('show');
+  document.getElementById('successState').classList.remove('show');
+  document.getElementById('actionWrap').style.display = 'block';
+  document.getElementById('jName').value = '';
+  document.getElementById('jPhone').value = '';
+
+  document.getElementById('clubOverlay').classList.add('open');
+
+  setTimeout(() => {
+    document.getElementById('mFoundingFill').style.width = pct + '%';
+  }, 350);
+}
+
+function showJoinForm() {
+  document.getElementById('actionWrap').style.display = 'none';
+  document.getElementById('joinForm').classList.add('show');
+}
+
+function submitJoin() {
+  const name = document.getElementById('jName').value.trim();
+  const phone = document.getElementById('jPhone').value.trim();
+  if (!name || !phone) { alert('Please enter your name and phone number'); return; }
+  document.getElementById('joinForm').classList.remove('show');
+  document.getElementById('successState').classList.add('show');
+}
+
+// ─── ORG MODAL ───────────────────────────────────────────────────────────────
+function openOrgModal() {
+  document.getElementById('orgModal').classList.add('open');
+}
+
+function submitOrg() {
+  const name = document.getElementById('oClubName').value.trim();
+  if (!name) { alert('Please enter your club name'); return; }
+  document.getElementById('orgSuccess').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('orgModal').classList.remove('open');
+    document.getElementById('orgSuccess').style.display = 'none';
+  }, 2500);
+}
+
+function closeOverlay(e, id) {
+  if (e.target === document.getElementById(id)) {
+    document.getElementById(id).classList.remove('open');
+  }
+}
+
+// ─── SCROLL ANIMATIONS ───────────────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderClubs(['all']);
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+
+> rest-express@1.0.0 build
+> tsx script/build.ts
+
+building client...
+vite v7.3.1 building client environment for production...
+transforming...
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+✓ 3138 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/public/index.html                                1.54 kB │ gzip:   0.66 kB
+../dist/public/assets/index-RlsyW6yf.css                86.47 kB │ gzip:  14.73 kB
+../dist/public/assets/check-54vkXD_W.js                  0.12 kB │ gzip:   0.13 kB
+../dist/public/assets/chevron-up-CRYYeifr.js             0.12 kB │ gzip:   0.14 kB
+../dist/public/assets/chevron-down-CFv6-5gE.js           0.12 kB │ gzip:   0.14 kB
+../dist/public/assets/chevron-right-BUI2-B0e.js          0.13 kB │ gzip:   0.14 kB
+../dist/public/assets/chevron-left-DsrCeINc.js           0.13 kB │ gzip:   0.14 kB
+../dist/public/assets/loader-circle-ouLrk3ny.js          0.14 kB │ gzip:   0.15 kB
+../dist/public/assets/index-C-0AJ6K2.js                  0.14 kB │ gzip:   0.14 kB
+../dist/public/assets/message-circle-DCGb9vCZ.js         0.14 kB │ gzip:   0.15 kB
+../dist/public/assets/isToday-BfdSKJKn.js                0.15 kB │ gzip:   0.14 kB
+../dist/public/assets/arrow-left-DYk1phBF.js             0.16 kB │ gzip:   0.16 kB
+../dist/public/assets/arrow-right-CzJ-v83o.js            0.16 kB │ gzip:   0.16 kB
+../dist/public/assets/search-BISW2YbO.js                 0.16 kB │ gzip:   0.16 kB
+../dist/public/assets/circle-check-DGP2vsYL.js           0.17 kB │ gzip:   0.16 kB
+../dist/public/assets/skeleton-Co2IEKbg.js               0.17 kB │ gzip:   0.16 kB
+../dist/public/assets/clock-DWoLhPi2.js                  0.18 kB │ gzip:   0.17 kB
+../dist/public/assets/message-square-DuRYhrt1.js         0.18 kB │ gzip:   0.16 kB
+../dist/public/assets/clock-3-BuozABPi.js                0.18 kB │ gzip:   0.17 kB
+../dist/public/assets/megaphone-BX8IYrPI.js              0.19 kB │ gzip:   0.18 kB
+../dist/public/assets/circle-plus-C-b5FKMK.js            0.20 kB │ gzip:   0.17 kB
+../dist/public/assets/circle-x-CUbThyoU.js               0.20 kB │ gzip:   0.17 kB
+../dist/public/assets/trending-up-ClEJzKVw.js            0.20 kB │ gzip:   0.18 kB
+../dist/public/assets/bell-9_5b7OpM.js                   0.21 kB │ gzip:   0.18 kB
+../dist/public/assets/star-Dp2O-EA-.js                   0.21 kB │ gzip:   0.18 kB
+../dist/public/assets/copy-W8ukWCaB.js                   0.23 kB │ gzip:   0.20 kB
+../dist/public/assets/activity-DBu_67rX.js               0.23 kB │ gzip:   0.20 kB
+../dist/public/assets/heart-8JoxoeMi.js                  0.24 kB │ gzip:   0.21 kB
+../dist/public/assets/link-2-avzmAbKh.js                 0.24 kB │ gzip:   0.20 kB
+../dist/public/assets/globe-B_zbNl15.js                  0.24 kB │ gzip:   0.19 kB
+../dist/public/assets/camera-XAWsfTdw.js                 0.25 kB │ gzip:   0.21 kB
+../dist/public/assets/circle-alert-CRvbq07T.js           0.25 kB │ gzip:   0.18 kB
+../dist/public/assets/chart-column-DEBe5YO3.js           0.25 kB │ gzip:   0.19 kB
+../dist/public/assets/user-check-BOjE5ZYI.js             0.25 kB │ gzip:   0.22 kB
+../dist/public/assets/map-pin-B6xQkOEb.js                0.25 kB │ gzip:   0.22 kB
+../dist/public/assets/user-minus-Wj0WXQK-.js             0.25 kB │ gzip:   0.22 kB
+../dist/public/assets/log-out-DOdv0plr.js                0.26 kB │ gzip:   0.22 kB
+../dist/public/assets/log-in-DKLiZFCL.js                 0.26 kB │ gzip:   0.22 kB
+../dist/public/assets/download-B2ZufVMl.js               0.26 kB │ gzip:   0.22 kB
+../dist/public/assets/triangle-alert-xopHMn6k.js         0.26 kB │ gzip:   0.21 kB
+../dist/public/assets/shield-CLILm32v.js                 0.27 kB │ gzip:   0.22 kB
+../dist/public/assets/repeat-DvFWTMGw.js                 0.27 kB │ gzip:   0.20 kB
+../dist/public/assets/pencil-CFJmFP_u.js                 0.27 kB │ gzip:   0.22 kB
+../dist/public/assets/send-BD89PaU3.js                   0.29 kB │ gzip:   0.22 kB
+../dist/public/assets/ticket-DmZWgzuw.js                 0.32 kB │ gzip:   0.21 kB
+../dist/public/assets/share-2-uMLDALs5.js                0.35 kB │ gzip:   0.23 kB
+../dist/public/assets/trash-2-Dl-dNmY-.js                0.35 kB │ gzip:   0.24 kB
+../dist/public/assets/crown-eBumrS9u.js                  0.36 kB │ gzip:   0.25 kB
+../dist/public/assets/zap-C-DzSjhH.js                    0.38 kB │ gzip:   0.27 kB
+../dist/public/assets/medal-CWIJ4yFr.js                  0.43 kB │ gzip:   0.28 kB
+../dist/public/assets/sparkles-DQtMF7M_.js               0.51 kB │ gzip:   0.29 kB
+../dist/public/assets/not-found-C8Q4Cjas.js              0.67 kB │ gzip:   0.37 kB
+../dist/public/assets/badge-DepIOFAN.js                  0.73 kB │ gzip:   0.40 kB
+../dist/public/assets/constants-BMrtjK2H.js              0.80 kB │ gzip:   0.30 kB
+../dist/public/assets/card-eST8atvT.js                   1.00 kB │ gzip:   0.37 kB
+../dist/public/assets/button-mPR1Nszy.js                 1.16 kB │ gzip:   0.59 kB
+../dist/public/assets/formatDistanceToNow-C-mWfXCb.js    2.26 kB │ gzip:   0.91 kB
+../dist/public/assets/avatar-Cppxe1Zn.js                 2.34 kB │ gzip:   1.07 kB
+../dist/public/assets/image-upload-BmAPVfmp.js           2.52 kB │ gzip:   1.24 kB
+../dist/public/assets/notifications-BYkqEa26.js          4.89 kB │ gzip:   1.88 kB
+../dist/public/assets/navbar-BWl0MNh2.js                 5.00 kB │ gzip:   1.71 kB
+../dist/public/assets/member-profile-BXym_v7G.js         5.31 kB │ gzip:   1.68 kB
+../dist/public/assets/events-DKjErXVk.js                 5.48 kB │ gzip:   1.91 kB
+../dist/public/assets/matched-clubs-DRyNtjMM.js          5.66 kB │ gzip:   1.81 kB
+../dist/public/assets/AnnouncementsTab-D4rGhNkd.js       5.76 kB │ gzip:   1.95 kB
+../dist/public/assets/MembersTab-CTzy-m_L.js             5.78 kB │ gzip:   2.12 kB
+../dist/public/assets/RequestsTab-BKQxZ1bb.js            7.88 kB │ gzip:   2.34 kB
+../dist/public/assets/organizer-Dge4p7cq.js              8.49 kB │ gzip:   2.85 kB
+../dist/public/assets/onboarding-vsrN-vQa.js             9.27 kB │ gzip:   2.69 kB
+../dist/public/assets/OverviewTab-DmBc9fue.js            9.61 kB │ gzip:   2.46 kB
+../dist/public/assets/EditTab-B0mBYxBP.js               10.27 kB │ gzip:   2.55 kB
+../dist/public/assets/InsightsTab-V-quNtmu.js           11.79 kB │ gzip:   2.47 kB
+../dist/public/assets/public-club-DkD99ugP.js           14.49 kB │ gzip:   3.63 kB
+../dist/public/assets/scan-event-Dw3KC2oU.js            16.02 kB │ gzip:   4.42 kB
+../dist/public/assets/explore-BFciKpr5.js               16.48 kB │ gzip:   3.87 kB
+../dist/public/assets/ContentTab-C6SZLjgn.js            17.47 kB │ gzip:   3.46 kB
+../dist/public/assets/home-34aJs0kF.js                  17.84 kB │ gzip:   5.62 kB
+../dist/public/assets/format-BD_2emg0.js                19.61 kB │ gzip:   5.60 kB
+../dist/public/assets/home-feed-CwddJTIN.js             22.95 kB │ gzip:   6.58 kB
+../dist/public/assets/event-detail-BdvNoPrE.js          23.81 kB │ gzip:   6.03 kB
+../dist/public/assets/page-builder-C8Un2L7A.js          24.54 kB │ gzip:   5.93 kB
+../dist/public/assets/EventsTab-BYanDHx8.js             28.00 kB │ gzip:   6.39 kB
+../dist/public/assets/profile-9_ull782.js               28.10 kB │ gzip:   6.51 kB
+../dist/public/assets/create-DHl8q8-u.js                39.09 kB │ gzip:  12.00 kB
+../dist/public/assets/club-detail-0RjeMoiT.js           66.10 kB │ gzip:  15.43 kB
+../dist/public/assets/schema-BU8_HV52.js               104.58 kB │ gzip:  25.51 kB
+../dist/public/assets/index-DNm0LeSR.js                113.80 kB │ gzip:  37.46 kB
+../dist/public/assets/index-ylRfu5Gt.js                330.74 kB │ gzip: 107.44 kB
+../dist/public/assets/index-CmCfdT7W.js                334.94 kB │ gzip: 100.08 kB
+../dist/public/assets/admin-B92Epjwu.js                446.39 kB │ gzip: 118.33 kB
+✓ built in 14.69s
+building server...
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server/og.ts:41:32:
+      41 │ ...mplatePath = path.resolve(import.meta.dirname, "public", "index...
+         ╵                              ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server/og.ts:43:32:
+      43 │ ...mplatePath = path.resolve(import.meta.dirname, "..", "client", ...
+         ╵                              ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+2 warnings
+
+  dist/index.cjs  1.4mb ⚠️
+
+⚡ Done in 339ms
