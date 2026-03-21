@@ -100,12 +100,43 @@ export function registerAdminRoutes(
 
   app.patch("/api/admin/clubs/:id/deactivate", isAuthenticated, isAdmin, async (req, res) => {
     try {
-      const updated = await storage.updateClub(req.params.id as string, { isActive: false });
+      const clubId = req.params.id as string;
+      const updated = await storage.updateClub(clubId, { isActive: false });
       if (!updated) return res.status(404).json({ message: "Club not found" });
-      res.json(updated);
+      const cancelledRsvps = await storage.cancelFutureRsvpsForClub(clubId);
+      const uniqueUsers = new Map<string, string>();
+      for (const r of cancelledRsvps) {
+        if (r.userId && !uniqueUsers.has(r.userId)) {
+          uniqueUsers.set(r.userId, r.eventTitle);
+        }
+      }
+      await Promise.all(
+        Array.from(uniqueUsers.entries()).map(([userId]) =>
+          storage.createNotification({
+            userId,
+            type: "club_deactivated",
+            title: "Club Deactivated",
+            message: `${updated.name} has been deactivated. Your upcoming event registration(s) have been cancelled.`,
+            linkUrl: `/explore`,
+            isRead: false,
+          })
+        )
+      );
+      res.json({ ...updated, cancelledRsvpCount: cancelledRsvps.length, notifiedUserCount: uniqueUsers.size });
     } catch (err) {
       console.error("Error deactivating club:", err);
       res.status(500).json({ message: "Failed to deactivate club" });
+    }
+  });
+
+  app.post("/api/admin/clubs/:id/reconcile-members", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const updated = await storage.reconcileMemberCount(req.params.id as string);
+      if (!updated) return res.status(404).json({ message: "Club not found" });
+      res.json({ clubId: req.params.id, memberCount: updated.memberCount });
+    } catch (err) {
+      console.error("Error reconciling member count:", err);
+      res.status(500).json({ message: "Failed to reconcile member count" });
     }
   });
 

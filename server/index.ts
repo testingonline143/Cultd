@@ -86,6 +86,13 @@ app.use((req, res, next) => {
   seedDatabase().catch(err => {
     console.error("Delayed database seeding failed:", err);
   });
+
+  const { storage } = await import("./storage");
+  storage.getClubs({ limit: 1000 })
+    .then(allClubs => Promise.all(allClubs.map(c => storage.reconcileMemberCount(c.id))))
+    .then(results => console.log(`[startup] Reconciled memberCount for ${results.length} clubs`))
+    .catch(err => console.error("[startup] memberCount reconciliation failed:", err));
+
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {

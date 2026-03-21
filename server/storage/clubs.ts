@@ -90,6 +90,16 @@ export const clubsStorage = {
     return updated;
   },
 
+  async reconcileMemberCount(clubId: string): Promise<Club | undefined> {
+    const [updated] = await db.update(clubs)
+      .set({
+        memberCount: sql`(SELECT count(*)::int FROM ${joinRequests} WHERE ${joinRequests.clubId} = ${clubId} AND ${joinRequests.status} = 'approved')`,
+      })
+      .where(eq(clubs.id, clubId))
+      .returning();
+    return updated;
+  },
+
   async getClubsByCreator(creatorUserId: string): Promise<Club[]> {
     return db.select().from(clubs).where(eq(clubs.creatorUserId, creatorUserId));
   },

@@ -393,7 +393,10 @@ export function registerEventRoutes(
         return res.json({ success: true, alreadyCheckedIn: true, name: rsvp.userName, checkedInAt: rsvp.checkedInAt });
       }
       const updated = await storage.checkInRsvpByToken(token);
-      res.json({ success: true, name: rsvp.userName, checkedInAt: updated?.checkedInAt });
+      if (!updated) {
+        return res.status(409).json({ success: false, alreadyCheckedIn: true, message: "Already checked in by another scan" });
+      }
+      res.json({ success: true, name: rsvp.userName, checkedInAt: updated.checkedInAt });
     } catch (err) {
       console.error("Error checking in:", err);
       res.status(500).json({ success: false, message: "Failed to check in" });
@@ -426,7 +429,10 @@ export function registerEventRoutes(
         return res.json({ success: true, alreadyCheckedIn: true });
       }
       const updated = await storage.checkInRsvpById(rsvpId);
-      res.json({ success: true, checkedInAt: updated?.checkedInAt });
+      if (!updated) {
+        return res.status(409).json({ success: false, alreadyCheckedIn: true, message: "Already checked in by another scan" });
+      }
+      res.json({ success: true, checkedInAt: updated.checkedInAt });
     } catch (err) {
       console.error("Error manual check-in:", err);
       res.status(500).json({ success: false, message: "Failed to check in" });

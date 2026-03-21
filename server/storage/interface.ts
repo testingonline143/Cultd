@@ -25,6 +25,7 @@ export interface IStorage {
   updateClub(id: string, data: Partial<InsertClub>): Promise<Club | undefined>;
   incrementMemberCount(clubId: string): Promise<Club | undefined>;
   decrementMemberCount(clubId: string): Promise<Club | undefined>;
+  reconcileMemberCount(clubId: string): Promise<Club | undefined>;
   createJoinRequest(request: InsertJoinRequest): Promise<JoinRequest>;
   getJoinRequests(): Promise<JoinRequest[]>;
   getJoinRequestsByClub(clubId: string): Promise<JoinRequest[]>;
@@ -71,6 +72,7 @@ export interface IStorage {
   getRsvpByToken(token: string): Promise<(EventRsvp & { userName: string | null }) | undefined>;
   checkInRsvpByToken(token: string): Promise<EventRsvp | undefined>;
   checkInRsvpById(rsvpId: string): Promise<EventRsvp | undefined>;
+  cancelFutureRsvpsForClub(clubId: string): Promise<{ userId: string | null; eventTitle: string; eventId: string }[]>;
   updateUserRole(userId: string, role: string): Promise<User | undefined>;
   getClubRatings(clubId: string): Promise<ClubRating[]>;
   getClubAverageRating(clubId: string): Promise<{ average: number; count: number }>;
