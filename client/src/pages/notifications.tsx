@@ -71,8 +71,8 @@ export default function Notifications() {
 
   return (
     <div
-      className="min-h-screen pb-24"
-      style={{ background: "var(--bg-warm)" }}
+      className="min-h-screen"
+      style={{ background: "var(--bg-warm)", paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
     >
       <div className="max-w-lg mx-auto px-4 pt-6">
         <div className="flex items-center justify-between gap-2 mb-6 flex-wrap">

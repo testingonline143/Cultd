@@ -14,8 +14,8 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
-        <div className="max-w-2xl mx-auto px-4 py-8 space-y-4">
+      <div className="min-h-screen bg-background">
+        <div className="max-w-2xl mx-auto px-4 py-8 space-y-4" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
           <div className="glass-card rounded-2xl p-6">
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 rounded-full animate-pulse" style={{ background: "var(--warm-border)" }} />
@@ -37,7 +37,7 @@ export default function Profile() {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-background pb-24 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
         <div className="glass-card rounded-2xl p-8 text-center max-w-sm w-full space-y-4">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto border-2" style={{ background: 'var(--terra-pale)', borderColor: 'var(--terra)' }}>
             <UserIcon className="w-8 h-8" style={{ color: 'var(--terra)' }} />
@@ -64,7 +64,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8 pb-24 space-y-8">
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
         {/* Account — avatar, name, bio, actions */}
         <section data-testid="section-account">
           <ProfileHeader user={user} />

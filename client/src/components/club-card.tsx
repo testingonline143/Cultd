@@ -51,8 +51,7 @@ export function ClubCard({ club, index }: ClubCardProps) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
       <div
-        className="overflow-visible transition-all hover-elevate cursor-pointer"
-        style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", borderRadius: "18px" }}
+        className="overflow-visible transition-all hover-elevate cursor-pointer card-native"
         data-testid={`card-club-${club.id}`}
         onClick={() => navigate(`/club/${club.id}`)}
       >
@@ -130,17 +129,6 @@ export function ClubCard({ club, index }: ClubCardProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              className="flex-1 rounded-[10px] py-2.5 text-[13px] font-semibold transition-all"
-              style={{ background: "var(--terra)", color: "white" }}
-              data-testid={`button-view-club-${club.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/club/${club.id}`);
-              }}
-            >
-              View Club
-            </button>
             <Button
               size="icon"
               variant="ghost"

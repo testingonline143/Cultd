@@ -55,7 +55,7 @@ export default function Events() {
   }, [events, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-background pb-24 px-6 pt-6">
+    <div className="min-h-screen bg-background px-6 pt-6" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display italic text-3xl font-bold" style={{ color: "var(--ink)" }} data-testid="text-page-title">
           Event Schedule
@@ -83,7 +83,7 @@ export default function Events() {
       {eventsLoading ? (
         <div className="flex flex-col gap-4 mt-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-[18px] p-4 h-32 animate-pulse" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} />
+            <div key={i} className="rounded-[18px] p-4 h-32 animate-pulse card-native" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
@@ -112,8 +112,7 @@ export default function Events() {
             return (
               <div
                 key={event.id}
-                className="rounded-[18px] p-4 mb-4 flex gap-4 relative"
-                style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}
+                className="card-native p-4 mb-4 flex gap-4 relative"
                 data-testid={`card-event-${event.id}`}
               >
                 <div className="flex-shrink-0 text-center w-16">

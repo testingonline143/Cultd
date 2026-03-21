@@ -292,7 +292,7 @@ export default function Explore() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
       <div className="max-w-lg mx-auto px-6 py-6">
         <h1 className="font-display italic text-3xl font-bold mb-6" style={{ color: "var(--ink)" }} data-testid="text-explore-title">
           Discover Clubs
@@ -305,11 +305,15 @@ export default function Explore() {
             placeholder="Search tribes..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); setAllClubs([]); }}
-            className="w-full pl-10 pr-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 placeholder:opacity-60"
+            className="w-full pl-10 pr-4 focus:outline-none focus:ring-2 placeholder:opacity-60 no-scrollbar"
             style={{
+              height: 48,
+              borderRadius: 999,
               background: "var(--warm-white)",
-              border: "1.5px solid var(--warm-border)",
+              boxShadow: "0 2px 10px rgba(26,20,16,0.07), 0 1px 3px rgba(26,20,16,0.05)",
+              border: "none",
               color: "var(--ink)",
+              fontSize: 14,
               "--tw-ring-color": "rgba(196,98,45,0.3)",
             } as React.CSSProperties}
             data-testid="input-explore-search"
@@ -408,7 +412,7 @@ export default function Explore() {
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 rounded-[18px] animate-pulse" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid={`skeleton-club-${i}`} />
+              <div key={i} className="h-64 rounded-[18px] animate-pulse card-native" data-testid={`skeleton-club-${i}`} />
             ))}
           </div>
         ) : clubs.length === 0 ? (
@@ -459,7 +463,7 @@ export default function Explore() {
                   className="block"
                   data-testid={`card-club-${club.id}`}
                 >
-                  <div className="rounded-[18px] overflow-hidden hover-elevate" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}>
+                  <div className="rounded-[18px] overflow-hidden hover-elevate card-native">
                     <div className="relative h-48 flex items-center justify-center" style={{ background: gradient }}>
                       <span className="text-6xl select-none" data-testid={`emoji-club-${club.id}`}>{club.emoji}</span>
                       <span className="absolute top-3 left-3 rounded-md px-2.5 py-1 text-[10px] font-bold tracking-[1.5px] uppercase text-white" style={{ background: "var(--terra)" }} data-testid={`badge-category-${club.id}`}>
@@ -488,9 +492,6 @@ export default function Explore() {
                           <span className="inline-flex items-center gap-1 text-xs font-bold" style={{ color: "var(--terra)" }} data-testid={`badge-members-${club.id}`}>
                             <Users className="w-3.5 h-3.5" />
                             {club.memberCount}
-                          </span>
-                          <span className="font-semibold text-sm" style={{ color: "var(--terra)" }} data-testid={`link-view-club-${club.id}`}>
-                            View Club
                           </span>
                         </div>
                       </div>

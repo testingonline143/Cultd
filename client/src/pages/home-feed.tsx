@@ -36,8 +36,7 @@ function getEventLabel(date: Date): string {
 function MomentCardSkeleton() {
   return (
     <div
-      className="rounded-[20px] overflow-hidden mb-4"
-      style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}
+      className="rounded-[20px] overflow-hidden mb-4 card-native"
     >
       <div className="flex items-center gap-3 p-4 pb-3">
         <Skeleton className="w-11 h-11 rounded-full shrink-0" />
@@ -346,16 +345,15 @@ export default function HomeFeed() {
   });
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "var(--cream)" }}>
+    <div className="min-h-screen" style={{ background: "var(--cream)", paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}>
 
       {/* Sticky Header */}
       <div
         className="sticky top-0 z-40 flex items-center justify-between px-5 py-4"
         style={{
-          background: "rgba(245,240,232,0.95)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          borderBottom: "1px solid var(--warm-border)",
+          background: "rgba(245,240,232,0.92)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
         }}
         data-testid="header-home"
       >
@@ -385,15 +383,14 @@ export default function HomeFeed() {
         </div>
         <button
           onClick={() => navigate("/notifications")}
-          className="relative w-10 h-10 flex items-center justify-center rounded-full"
-          style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}
+          className="relative w-10 h-10 flex items-center justify-center rounded-full card-native"
           data-testid="button-notifications"
         >
           <Bell className="w-5 h-5" style={{ color: "var(--ink)" }} />
           {unreadCount > 0 && (
             <span
               className="absolute -top-1 -right-1 min-w-[16px] h-4 flex items-center justify-center rounded-full text-white font-bold px-1"
-              style={{ fontSize: "9px", background: "var(--terra)" }}
+              style={{ fontSize: "11px", background: "var(--terra)" }}
               data-testid="badge-notification-count"
             >
               {unreadCount > 99 ? "99+" : unreadCount}
@@ -591,8 +588,7 @@ export default function HomeFeed() {
         {/* Post Composer */}
         {user && selectedClub && (
           <div
-            className="rounded-[20px] p-4"
-            style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}
+            className="rounded-[20px] p-4 card-native"
             data-testid="section-post-composer"
           >
             <div className="flex items-start gap-3">
@@ -688,7 +684,7 @@ export default function HomeFeed() {
                   data-testid={`card-happening-soon-${event.id}`}
                 >
                   <div className="rounded-xl px-3 py-2 text-center shrink-0" style={{ background: 'rgba(255,255,255,0.15)' }}>
-                    <p className="text-[9px] font-bold uppercase text-white/80 leading-none mb-0.5">
+                    <p className="text-[11px] font-bold uppercase text-white/80 leading-none mb-0.5">
                       {format(eventDate, "MMM")}
                     </p>
                     <p className="text-xl font-black text-white leading-none">{format(eventDate, "d")}</p>
@@ -702,7 +698,7 @@ export default function HomeFeed() {
                         {event.title}
                       </p>
                       {event.recurrenceRule && (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-white/15 text-white/90" data-testid={`badge-recurring-${event.id}`}>
+                        <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-white/15 text-white/90" data-testid={`badge-recurring-${event.id}`}>
                           <Repeat className="w-2.5 h-2.5" />
                           {event.recurrenceRule === "weekly" ? "Weekly" : event.recurrenceRule === "biweekly" ? "Bi-weekly" : "Monthly"}
                         </span>
@@ -872,8 +868,7 @@ export default function HomeFeed() {
             {filteredMoments.map((moment) => (
               <div
                 key={moment.id}
-                className="rounded-[20px] overflow-hidden mb-4"
-                style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}
+                className="rounded-[20px] overflow-hidden mb-4 card-native"
                 data-testid={`post-${moment.id}`}
               >
                 <div className="flex items-center gap-3 p-4 pb-3">

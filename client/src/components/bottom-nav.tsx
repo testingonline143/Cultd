@@ -53,18 +53,24 @@ export function BottomNav() {
         className="flex flex-col items-center gap-1 px-3 py-1 transition-colors relative flex-1"
         data-testid={`tab-${tab.label.toLowerCase()}`}
       >
-        <Icon
-          className="w-5 h-5"
-          style={{ opacity: isActive ? 1 : 0.4, color: isActive ? "var(--terra)" : "var(--ink)" }}
-        />
-        {isActive && (
-          <span className="w-1 h-1 rounded-full" style={{ background: "var(--terra)" }} />
-        )}
+        <div
+          className="flex items-center justify-center rounded-full transition-all"
+          style={{
+            width: isActive ? 44 : 28,
+            height: 28,
+            background: isActive ? "rgba(196,98,45,0.12)" : "transparent",
+          }}
+        >
+          <Icon
+            className="w-5 h-5"
+            style={{ opacity: isActive ? 1 : 0.45, color: isActive ? "var(--terra)" : "var(--ink)" }}
+          />
+        </div>
         <span
           className="font-bold tracking-wider uppercase"
           style={{
-            fontSize: "9px",
-            letterSpacing: "1px",
+            fontSize: "11px",
+            letterSpacing: "0.6px",
             color: isActive ? "var(--terra)" : "var(--muted-warm)",
           }}
         >
@@ -80,9 +86,9 @@ export function BottomNav() {
         className="fixed bottom-0 left-0 right-0 z-50"
         style={{
           background: "rgba(245,240,232,0.97)",
-          borderTop: "1.5px solid rgba(26,20,16,0.1)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          paddingBottom: "env(safe-area-inset-bottom)",
         }}
         data-testid="nav-bottom"
       >
