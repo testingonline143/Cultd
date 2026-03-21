@@ -161,6 +161,7 @@ export default function HomeFeed() {
     queryKey: ["/api/clubs", "suggested"],
     queryFn: async () => {
       const res = await fetch("/api/clubs?limit=3");
+      if (!res.ok) return [];
       const data = await res.json();
       return (data.clubs ?? []).filter((c: Club) => c.isActive);
     },
