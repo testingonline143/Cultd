@@ -141,15 +141,16 @@ export function registerOrganizerRoutes(
       }
       await storage.deleteJoinRequest(req.params.requestId);
       if (request.userId) {
-        const club = await storage.getClub(req.params.clubId);
-        await storage.createNotification({
-          userId: request.userId,
-          type: "club_removal",
-          title: "Removed from club",
-          message: `You've been removed from ${club?.name ?? "the club"} by the organizer`,
-          linkUrl: `/club/${req.params.clubId}`,
-          isRead: false,
-        });
+        storage.getClub(req.params.clubId).then(club => {
+          storage.createNotification({
+            userId: request.userId!,
+            type: "club_removal",
+            title: "Removed from club",
+            message: `You've been removed from ${club?.name ?? "the club"} by the organizer`,
+            linkUrl: `/club/${req.params.clubId}`,
+            isRead: false,
+          }).catch(err => console.error("Failed to send removal notification:", err));
+        }).catch(err => console.error("Failed to fetch club for removal notification:", err));
       }
       res.json({ success: true });
     } catch (err) {
