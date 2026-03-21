@@ -49,7 +49,6 @@ expertMode = true
 
 [userenv.shared]
 ADMIN_USER_ID = "55804750"
-CHECKIN_SECRET = "59ddee780ed825f4786208246deb26d57fae60f9fdfc4fa8056df77d234df767"
 
 [postMerge]
 path = "scripts/post-merge.sh"
