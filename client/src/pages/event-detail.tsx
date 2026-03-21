@@ -453,7 +453,7 @@ export default function EventDetail() {
       </div>
 
       <div className="relative z-[5] px-6 -mt-8">
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[1.5px] px-2.5 py-1.5 rounded-md mb-2" style={{ background: 'var(--terra-pale)', color: 'var(--terra)', border: '1px solid rgba(196,98,45,0.2)' }}>
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[1.5px] px-2.5 py-1.5 rounded-md mb-2" style={{ background: 'var(--terra-pale)', color: 'var(--terra)', border: '1px solid rgba(196,98,45,0.2)' }}>
           {club?.emoji && <span>{club.emoji}</span>} {club?.category || "Event"} {club && <span>&middot; {club.name}</span>}
         </span>
 
@@ -654,7 +654,7 @@ export default function EventDetail() {
             <MessageCircle className="w-4 h-4" style={{ color: 'var(--terra)' }} />
             <span className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)]">Discussion</span>
             {comments.length > 0 && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--terra-pale)', color: 'var(--terra)' }}>{comments.length}</span>
+              <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--terra-pale)', color: 'var(--terra)' }}>{comments.length}</span>
             )}
           </div>
           {comments.length === 0 && (
@@ -675,14 +675,14 @@ export default function EventDetail() {
                 <div key={c.id} className="flex items-start gap-2.5" data-testid={`comment-${c.id}`}>
                   <Avatar className="w-7 h-7 shrink-0">
                     <AvatarImage src={c.userImageUrl || undefined} />
-                    <AvatarFallback className="text-[10px] font-bold" style={{ background: 'var(--terra-pale)', color: 'var(--terra)' }}>
+                    <AvatarFallback className="text-[11px] font-bold" style={{ background: 'var(--terra-pale)', color: 'var(--terra)' }}>
                       {c.userName.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-1.5 mb-0.5">
                       <span className="text-[12px] font-semibold text-[var(--ink)]">{c.userName}</span>
-                      <span className="text-[10px] text-[var(--muted-warm)]">{timeAgo}</span>
+                      <span className="text-[11px] text-[var(--muted-warm)]">{timeAgo}</span>
                     </div>
                     <p className="text-[12px] text-[var(--ink3)] leading-relaxed break-words">{c.text}</p>
                   </div>
@@ -712,7 +712,7 @@ export default function EventDetail() {
                 />
                 {commentText.length > 250 && (
                   <span
-                    className="absolute bottom-1.5 right-2.5 text-[10px] font-semibold tabular-nums"
+                    className="absolute bottom-1.5 right-2.5 text-[11px] font-semibold tabular-nums"
                     style={{ color: commentText.length >= 300 ? 'var(--error, #ef4444)' : 'var(--muted-warm)' }}
                     data-testid="text-comment-char-count"
                   >
@@ -744,7 +744,7 @@ export default function EventDetail() {
                 <CreditCard className="w-5 h-5" style={{ color: "var(--terra)" }} />
                 <h3 className="font-display text-lg font-bold" style={{ color: "var(--ink)" }}>Order Summary</h3>
                 {pendingPaymentOrder.isTestMode && isOrganizerOrAdmin && (
-                  <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">TEST MODE</span>
+                  <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">TEST MODE</span>
                 )}
               </div>
               <div className="rounded-2xl p-4 space-y-2 mb-4" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}>
@@ -891,7 +891,7 @@ export default function EventDetail() {
                   <div className="font-mono text-[32px] text-[var(--terra)] leading-none tracking-wide">
                     {spotsLeft > 0 ? `${spotsLeft} left` : "Full"}
                   </div>
-                  <div className="text-[10px] text-[var(--muted-warm)] font-semibold tracking-wider">
+                  <div className="text-[11px] text-[var(--muted-warm)] font-semibold tracking-wider">
                     {waitlistCount > 0 ? `${waitlistCount} waiting` : `of ${eventData.maxCapacity} spots`}
                   </div>
                 </>
@@ -936,7 +936,7 @@ export default function EventDetail() {
                   data-testid="badge-waitlisted"
                 >
                   <div className="text-xs font-bold" style={{ color: 'var(--gold)' }}>On Waitlist</div>
-                  <div className="text-[10px]" style={{ color: 'var(--muted-warm)' }}>#{justWaitlisted ?? "?"} in line</div>
+                  <div className="text-[11px]" style={{ color: 'var(--muted-warm)' }}>#{justWaitlisted ?? "?"} in line</div>
                 </div>
                 <button
                   onClick={() => cancelRsvpMutation.mutate()}
@@ -1082,7 +1082,7 @@ export default function EventDetail() {
             <div className="flex items-center gap-2 mb-1">
               <ClipboardList className="w-4 h-4 text-[var(--terra)]" />
               <h3 className="text-sm font-bold text-foreground">Quick Registration</h3>
-              <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ background: pendingFormMandatory ? 'var(--terra-pale)' : 'var(--cream)', color: pendingFormMandatory ? 'var(--terra)' : 'var(--muted-warm)' }}>
+              <span className="ml-auto text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: pendingFormMandatory ? 'var(--terra-pale)' : 'var(--cream)', color: pendingFormMandatory ? 'var(--terra)' : 'var(--muted-warm)' }}>
                 {pendingFormMandatory ? "Required to RSVP" : "Optional"}
               </span>
             </div>

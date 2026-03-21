@@ -26,20 +26,20 @@ function fmt(paise: number) {
 function StatusBadge({ status }: { status: string }) {
   if (status === "transferred") {
     return (
-      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200" data-testid="badge-paid">
+      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200" data-testid="badge-paid">
         <CheckCircle2 className="w-2.5 h-2.5" /> Paid
       </span>
     );
   }
   if (status === "pending") {
     return (
-      <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200" data-testid="badge-pending">
+      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200" data-testid="badge-pending">
         <Clock className="w-2.5 h-2.5" /> Pending
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200" data-testid="badge-failed">
+    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200" data-testid="badge-failed">
       <XCircle className="w-2.5 h-2.5" /> Failed
     </span>
   );
@@ -100,11 +100,11 @@ export default function MyPayments() {
                     <div className="text-sm font-bold truncate" style={{ color: "var(--ink)" }} data-testid={`payment-event-${payment.id}`}>
                       {payment.eventTitle}
                     </div>
-                    <div className="text-[10px] mt-0.5" style={{ color: "var(--muted-warm)" }}>
+                    <div className="text-[11px] mt-0.5" style={{ color: "var(--muted-warm)" }}>
                       {payment.clubName} · {new Date(payment.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                     </div>
                     {payment.ticketTypeName && (
-                      <div className="mt-1 inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full" style={{ background: "var(--terra-pale)", color: "var(--terra)" }} data-testid={`payment-ticket-type-${payment.id}`}>
+                      <div className="mt-1 inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full" style={{ background: "var(--terra-pale)", color: "var(--terra)" }} data-testid={`payment-ticket-type-${payment.id}`}>
                         <Ticket className="w-2.5 h-2.5" />
                         {payment.ticketTypeName}
                       </div>
@@ -135,7 +135,7 @@ export default function MyPayments() {
 
                 <div className="flex items-center gap-1.5 mt-2">
                   <Ticket className="w-3 h-3" style={{ color: "var(--muted-warm)" }} />
-                  <span className="text-[10px] font-mono" style={{ color: "var(--muted-warm)" }} data-testid={`payment-id-${payment.id}`}>
+                  <span className="text-[11px] font-mono" style={{ color: "var(--muted-warm)" }} data-testid={`payment-id-${payment.id}`}>
                     {payment.razorpayPaymentId}
                   </span>
                 </div>

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, Users, MapPin, Calendar, PlusCircle, X, Loader2, CheckCircle2 } from "lucide-react";
 import { Link } from "wouter";
@@ -243,6 +243,13 @@ export default function Explore() {
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [page, setPage] = useState(1);
   const [allClubs, setAllClubs] = useState<(Club & { recentJoins?: number })[]>([]);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const buildParams = (p: number) => {
     const queryParams = new URLSearchParams();
@@ -293,12 +300,21 @@ export default function Explore() {
 
   return (
     <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
-      <div className="max-w-lg mx-auto px-6 py-6">
-        <h1 className="font-display italic text-3xl font-bold mb-6" style={{ color: "var(--ink)" }} data-testid="text-explore-title">
+      <div
+        className="sticky top-0 z-40 max-w-lg mx-auto px-6 pt-6 pb-3"
+        style={{
+          background: "rgba(245,240,232,0.92)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          transition: "box-shadow 0.2s ease",
+        }}
+      >
+        <h1 className="font-display italic text-3xl font-bold mb-4" style={{ color: "var(--ink)" }} data-testid="text-explore-title">
           Discover Clubs
         </h1>
 
-        <div className="relative mb-4">
+        <div className="relative mb-3">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--muted-warm)" }} />
           <input
             type="text"
@@ -341,14 +357,16 @@ export default function Explore() {
           <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
         </div>
 
-        <div className="flex items-center gap-3 mb-3 flex-wrap">
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
           <select
             value={activeCity}
             onChange={(e) => handleFilterChange(() => setActiveCity(e.target.value))}
-            className="px-3 py-2 rounded-xl text-sm focus:outline-none focus:ring-2"
+            className="px-3 py-2 text-sm focus:outline-none focus:ring-2"
             style={{
+              borderRadius: 999,
               background: "var(--warm-white)",
-              border: "1.5px solid var(--warm-border)",
+              boxShadow: "0 2px 8px rgba(26,20,16,0.06)",
+              border: "none",
               color: "var(--ink)",
               "--tw-ring-color": "rgba(196,98,45,0.3)",
             } as React.CSSProperties}
@@ -360,7 +378,7 @@ export default function Explore() {
             ))}
           </select>
 
-          <div className="flex rounded-xl overflow-hidden" style={{ border: "1.5px solid var(--warm-border)", background: "var(--warm-white)" }} data-testid="toggle-vibe">
+          <div className="flex rounded-full overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(26,20,16,0.06)", background: "var(--warm-white)" }} data-testid="toggle-vibe">
             {[
               { value: "all", label: "All" },
               { value: "casual", label: "Casual" },
@@ -384,8 +402,8 @@ export default function Explore() {
         </div>
 
         <div className="flex items-center gap-2 mb-6 flex-wrap" data-testid="filter-time-of-day">
-          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Time:</span>
-          <div className="flex rounded-xl overflow-hidden" style={{ border: "1.5px solid var(--warm-border)", background: "var(--warm-white)" }}>
+          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Time:</span>
+          <div className="flex rounded-full overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(26,20,16,0.06)", background: "var(--warm-white)" }}>
             {[
               { value: "all", label: "Any" },
               { value: "morning", label: "Morning" },
@@ -408,7 +426,9 @@ export default function Explore() {
             ))}
           </div>
         </div>
+      </div>
 
+      <div className="max-w-lg mx-auto px-6 pt-4">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             {[1, 2, 3].map((i) => (
@@ -466,7 +486,7 @@ export default function Explore() {
                   <div className="rounded-[18px] overflow-hidden hover-elevate card-native">
                     <div className="relative h-48 flex items-center justify-center" style={{ background: gradient }}>
                       <span className="text-6xl select-none" data-testid={`emoji-club-${club.id}`}>{club.emoji}</span>
-                      <span className="absolute top-3 left-3 rounded-md px-2.5 py-1 text-[10px] font-bold tracking-[1.5px] uppercase text-white" style={{ background: "var(--terra)" }} data-testid={`badge-category-${club.id}`}>
+                      <span className="absolute top-3 left-3 rounded-md px-2.5 py-1 text-[11px] font-bold tracking-[1.5px] uppercase text-white" style={{ background: "var(--terra)" }} data-testid={`badge-category-${club.id}`}>
                         {club.category}
                       </span>
                     </div>

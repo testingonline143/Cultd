@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Bell, CheckCheck, Calendar, Users, Star, Info, CheckCircle, ArrowUpCircle, UserX } from "lucide-react";
@@ -37,6 +38,13 @@ function timeAgo(dateStr: string | Date | null): string {
 
 export default function Notifications() {
   const [, navigate] = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const { data: notifications, isLoading } = useQuery<Notification[]>({
     queryKey: ["/api/notifications"],
@@ -74,8 +82,17 @@ export default function Notifications() {
       className="min-h-screen"
       style={{ background: "var(--bg-warm)", paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}
     >
-      <div className="max-w-lg mx-auto px-4 pt-6">
-        <div className="flex items-center justify-between gap-2 mb-6 flex-wrap">
+      <div
+        className="sticky top-0 z-40 px-4 pt-6 pb-3 max-w-lg mx-auto"
+        style={{
+          background: "rgba(245,240,232,0.92)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          transition: "box-shadow 0.2s ease",
+        }}
+      >
+        <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
           <div className="flex items-center gap-2">
             <Bell className="w-5 h-5" style={{ color: "var(--terra)" }} />
             <h1
@@ -111,6 +128,8 @@ export default function Notifications() {
             </Button>
           )}
         </div>
+      </div>
+      <div className="max-w-lg mx-auto px-4">
 
         {isLoading ? (
           <div className="space-y-3">

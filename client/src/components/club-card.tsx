@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Users, MapPin, Star, Clock, Share2 } from "lucide-react";
+import { Users, MapPin, Clock, Share2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ function shareClub(club: Club, e: React.MouseEvent) {
 
 export function ClubCard({ club, index }: ClubCardProps) {
   const [, navigate] = useLocation();
-  const foundingSpotsLeft = (club.foundingTotal ?? 20) - (club.foundingTaken ?? 0);
 
   return (
     <motion.div
@@ -54,23 +53,6 @@ export function ClubCard({ club, index }: ClubCardProps) {
             style={{ background: CATEGORY_GRADIENTS[club.category] || club.bgColor || "var(--warm-white)" }}
           >
             {club.emoji}
-          </div>
-          <div className="flex items-center gap-2">
-            {foundingSpotsLeft > 0 && (
-              <div className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ color: "var(--gold)", background: "var(--gold-pale)" }}>
-                <Star className="w-3 h-3" />
-                {foundingSpotsLeft} left
-              </div>
-            )}
-            {club.recentJoins != null && club.recentJoins > 0 && (
-              <div
-                className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                style={{ color: "var(--terra)", background: "var(--terra-pale)" }}
-                data-testid={`badge-recent-joins-${club.id}`}
-              >
-                +{club.recentJoins}
-              </div>
-            )}
           </div>
         </div>
 

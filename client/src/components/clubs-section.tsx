@@ -44,7 +44,7 @@ function ScrollClubCard({ club, index }: { club: ClubWithActivity; index: number
           </span>
           {foundingSpotsLeft > 0 && (
             <div
-              className="absolute top-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
+              className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "rgba(255,255,255,0.2)", color: "white", backdropFilter: "blur(8px)" }}
               data-testid={`badge-founding-${club.id}`}
             >

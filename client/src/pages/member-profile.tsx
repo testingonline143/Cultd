@@ -208,7 +208,7 @@ export default function MemberProfile() {
                     </p>
                     <Badge
                       variant="secondary"
-                      className="text-[10px] mt-0.5 no-default-active-elevate"
+                      className="text-[11px] mt-0.5 no-default-active-elevate"
                       data-testid={`badge-club-category-${club.id}`}
                     >
                       {club.category}

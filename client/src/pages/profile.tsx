@@ -187,7 +187,7 @@ function ProfileHeader({ user }: { user: User }) {
             </div>
           )}
         </button>
-        <span className="text-[10px] text-muted-foreground mt-1 block text-center sm:hidden">Tap to change</span>
+        <span className="text-[11px] text-muted-foreground mt-1 block text-center sm:hidden">Tap to change</span>
         <input
           ref={fileInputRef}
           type="file"
@@ -275,13 +275,13 @@ function ProfileHeader({ user }: { user: User }) {
               {user.bio && <p className="text-sm text-foreground mt-2" data-testid="text-profile-bio">{user.bio}</p>}
               <div className="flex items-center gap-2 flex-wrap mt-2">
                 {totalAttended > 0 && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--terra-pale)', color: 'var(--terra)', border: '1px solid rgba(196,98,45,0.25)' }} data-testid="badge-attended-total">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'var(--terra-pale)', color: 'var(--terra)', border: '1px solid rgba(196,98,45,0.25)' }} data-testid="badge-attended-total">
                     <CheckCircle2 className="w-3 h-3" />
                     {totalAttended} event{totalAttended === 1 ? "" : "s"} attended
                   </span>
                 )}
                 {isAnyFoundingMember && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.15)', color: '#92400e', border: '1px solid rgba(251,191,36,0.4)' }} data-testid="badge-founding-member">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(251,191,36,0.15)', color: '#92400e', border: '1px solid rgba(251,191,36,0.4)' }} data-testid="badge-founding-member">
                     ⚡ Founding Member
                   </span>
                 )}
@@ -784,7 +784,7 @@ function AttendanceSection() {
               </div>
               <div className="text-right shrink-0">
                 <div className="text-sm font-bold text-foreground" data-testid={`text-attended-${stat.clubId}`}>{stat.attended}/{stat.totalRsvps}</div>
-                <div className="text-[10px] text-muted-foreground">attended</div>
+                <div className="text-[11px] text-muted-foreground">attended</div>
               </div>
             </div>
           );

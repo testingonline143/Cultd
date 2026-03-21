@@ -339,11 +339,11 @@ function ClubDetailContent({ club }: { club: Club }) {
 
         <div className="absolute bottom-0 left-0 right-0 px-6 pb-5 z-[5]">
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <span className="inline-flex items-center gap-1.5 text-white text-[10px] font-bold uppercase tracking-[1.5px] px-2.5 py-1 rounded-md" style={{ background: 'var(--terra)' }} data-testid="badge-category">
+            <span className="inline-flex items-center gap-1.5 text-white text-[11px] font-bold uppercase tracking-[1.5px] px-2.5 py-1 rounded-md" style={{ background: 'var(--terra)' }} data-testid="badge-category">
               {club.category}
             </span>
             {club.schedule && (
-              <span className="rounded-md px-2.5 py-1 text-[10px] font-medium text-[var(--ink3)]" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }} data-testid="badge-schedule">
+              <span className="rounded-md px-2.5 py-1 text-[11px] font-medium text-[var(--ink3)]" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }} data-testid="badge-schedule">
                 {club.schedule}
               </span>
             )}
@@ -382,19 +382,19 @@ function ClubDetailContent({ club }: { club: Club }) {
           <div className="font-mono text-[28px] leading-none tracking-wide text-[var(--terra)]" data-testid="text-member-count">
             {club.memberCount}
           </div>
-          <div className="text-[10px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Members</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Members</div>
         </div>
         <div className="rounded-[14px] p-3 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[28px] leading-none tracking-wide text-[var(--ink)]" data-testid="text-active-count">
             {activeCount}
           </div>
-          <div className="text-[10px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Active</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Active</div>
         </div>
         <div className="rounded-[14px] p-3 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[28px] leading-none tracking-wide text-[var(--gold)]" data-testid="text-avg-rating">
             {ratingCount > 0 ? avgRating.toFixed(1) : "—"}
           </div>
-          <div className="text-[10px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">
             {ratingCount > 0 ? `${ratingCount} ${ratingCount === 1 ? "review" : "reviews"}` : "No ratings"}
           </div>
         </div>
@@ -442,7 +442,7 @@ function ClubDetailContent({ club }: { club: Club }) {
         <div className="px-6 mt-4" data-testid="section-members-preview">
           <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
             <h2 className="text-xs font-bold text-[var(--muted-warm)] uppercase tracking-wider">Members</h2>
-            <Badge variant="secondary" className="text-[10px] no-default-active-elevate" data-testid="badge-total-members">
+            <Badge variant="secondary" className="text-[11px] no-default-active-elevate" data-testid="badge-total-members">
               {club.memberCount} total
             </Badge>
           </div>
@@ -456,7 +456,7 @@ function ClubDetailContent({ club }: { club: Club }) {
                       {member.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-[10px] text-[var(--ink3)] text-center truncate w-full font-medium">{member.name.split(' ')[0]}</span>
+                  <span className="text-[11px] text-[var(--ink3)] text-center truncate w-full font-medium">{member.name.split(' ')[0]}</span>
                 </>
               );
               return member.userId ? (
@@ -480,7 +480,7 @@ function ClubDetailContent({ club }: { club: Club }) {
                 <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
                   <span className="text-xs font-bold text-[var(--muted-warm)]">+{club.memberCount - membersPreview.length}</span>
                 </div>
-                <span className="text-[10px] text-[var(--muted-warm)] text-center font-medium">more</span>
+                <span className="text-[11px] text-[var(--muted-warm)] text-center font-medium">more</span>
               </div>
             )}
           </div>
@@ -493,7 +493,7 @@ function ClubDetailContent({ club }: { club: Club }) {
           <div className="flex-1 min-w-0">
             <div className="font-display font-bold text-sm text-[var(--terra)]">{pinnedAnnouncement.title}</div>
             <p className="text-xs text-[var(--ink3)] mt-0.5 leading-relaxed line-clamp-2">{pinnedAnnouncement.body}</p>
-            <div className="text-[10px] text-[var(--muted-warm)] mt-1">
+            <div className="text-[11px] text-[var(--muted-warm)] mt-1">
               From organiser · {pinnedAnnouncement.createdAt ? getRelativeTime(String(pinnedAnnouncement.createdAt)) : ""}
             </div>
           </div>
@@ -624,7 +624,7 @@ function ClubDetailContent({ club }: { club: Club }) {
                   </span>
                 </div>
                 <div>
-                  <div className="text-[10px] text-[var(--muted-warm)] uppercase tracking-wider font-semibold">Leader</div>
+                  <div className="text-[11px] text-[var(--muted-warm)] uppercase tracking-wider font-semibold">Leader</div>
                   <div className="font-display font-bold text-[var(--ink)]">{club.organizerName}</div>
                 </div>
               </div>
@@ -951,7 +951,7 @@ function ClubDetailContent({ club }: { club: Club }) {
             <>
               <div className="flex-1">
                 <div className="font-mono text-[32px] leading-none tracking-wide text-[var(--terra)]">FREE</div>
-                <div className="text-[10px] font-semibold text-[var(--muted-warm)] tracking-wider">FOUNDING MEMBER</div>
+                <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider">FOUNDING MEMBER</div>
               </div>
               <button
                 onClick={() => setShowJoinForm(true)}
@@ -1208,7 +1208,7 @@ function ScheduleTab({ clubId, fallbackSchedule }: { clubId: string; fallbackSch
           data-testid={`schedule-entry-${entry.id}`}
         >
           <div className="w-12 h-12 rounded-lg flex flex-col items-center justify-center shrink-0" style={{ background: 'var(--terra-pale)' }}>
-            <span className="text-[10px] font-bold text-[var(--terra)] uppercase">{entry.dayOfWeek.slice(0, 3)}</span>
+            <span className="text-[11px] font-bold text-[var(--terra)] uppercase">{entry.dayOfWeek.slice(0, 3)}</span>
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-display text-sm font-bold text-[var(--ink)]">{entry.activity}</div>
@@ -1329,7 +1329,7 @@ function MomentsTab({
           <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Moments</h2>
           {isMember && !isOrganiser && (
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              className="text-[11px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "var(--terra-pale)", color: "var(--terra)" }}
             >
               Member
@@ -1337,7 +1337,7 @@ function MomentsTab({
           )}
           {isOrganiser && (
             <span
-              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+              className="text-[11px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "var(--terra)", color: "white" }}
             >
               Organiser
@@ -1428,7 +1428,7 @@ function MomentsTab({
             {authorDisplay && (
               <div className="px-3.5 pt-3 pb-1 flex items-center gap-2">
                 <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                   style={{ background: isMyMoment ? "var(--terra)" : "var(--ink2)" }}
                 >
                   {authorDisplay.charAt(0).toUpperCase()}
@@ -1466,7 +1466,7 @@ function MomentsTab({
                 <p className="text-sm leading-relaxed" style={{ color: "var(--ink)" }}>{moment.caption}</p>
                 <div className="flex items-center gap-1.5 mt-1.5">
                   <Clock className="w-3 h-3" style={{ color: "var(--muted-warm)" }} />
-                  <span className="text-[10px] font-medium" style={{ color: "var(--muted-warm)" }}>{timeAgo}</span>
+                  <span className="text-[11px] font-medium" style={{ color: "var(--muted-warm)" }}>{timeAgo}</span>
                 </div>
               </div>
             </div>
@@ -1580,7 +1580,7 @@ function CommentsSection({ momentId, isOrganiser }: { momentId: string; isOrgani
                       <span className="text-[12px] font-bold" style={{ color: "var(--ink)" }} data-testid={`comment-author-${c.id}`}>
                         {c.userName.split(" ")[0]}
                       </span>
-                      <span className="text-[10px]" style={{ color: "var(--muted-warm)" }}>{timeAgo}</span>
+                      <span className="text-[11px]" style={{ color: "var(--muted-warm)" }}>{timeAgo}</span>
                     </div>
                     <p className="text-[13px] leading-snug mt-0.5" style={{ color: "var(--ink3)" }} data-testid={`comment-content-${c.id}`}>
                       {c.content}
@@ -1772,7 +1772,7 @@ function MembersTab({ clubId }: { clubId: string }) {
                     <span className="absolute -bottom-1 -right-1 text-[11px] bg-amber-400 text-amber-900 rounded-full px-1 font-bold leading-tight" title="Founding Member" data-testid={`badge-founding-${member.userId || i}`}>⚡</span>
                   )}
                 </div>
-                <span className="text-[10px] text-[var(--ink3)] text-center truncate w-full font-medium" data-testid={`text-member-name-${member.userId || i}`}>
+                <span className="text-[11px] text-[var(--ink3)] text-center truncate w-full font-medium" data-testid={`text-member-name-${member.userId || i}`}>
                   {member.name.split(' ')[0]}
                 </span>
                 {member.isFoundingMember && (
@@ -1960,7 +1960,7 @@ function GalleryTab({ clubId }: { clubId: string }) {
 
 function ClubDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
       <div className="h-72 w-full bg-gradient-to-b from-[#E8D5B8] to-background flex items-center justify-center">
         <Skeleton className="w-20 h-20 rounded-full" />
       </div>

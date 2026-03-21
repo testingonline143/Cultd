@@ -699,7 +699,7 @@ export default function HomeFeed() {
                     <p className="text-xl font-black text-white leading-none">{format(eventDate, "d")}</p>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-white/70 mb-0.5">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-white/70 mb-0.5">
                       {getEventLabel(eventDate).toUpperCase()} · {diffHrs > 0 ? `in ${diffHrs}h` : "very soon"}
                     </p>
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -733,7 +733,7 @@ export default function HomeFeed() {
           >
             <div className="flex items-center gap-2 mb-1">
               <Medal className="w-4 h-4" style={{ color: "var(--terra)" }} />
-              <span className="text-[10px] font-bold tracking-[2px] uppercase" style={{ color: "var(--terra)" }}>
+              <span className="text-[11px] font-bold tracking-[2px] uppercase" style={{ color: "var(--terra)" }}>
                 Give a Kudo
               </span>
             </div>
@@ -791,7 +791,7 @@ export default function HomeFeed() {
                           }}
                           data-testid={`button-kudo-receiver-${a.userId}`}
                         >
-                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>
+                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>
                             {(a.userName || "?").charAt(0).toUpperCase()}
                           </span>
                           {a.userName || "Member"}

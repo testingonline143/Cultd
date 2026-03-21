@@ -96,7 +96,7 @@ export default function PublicClub() {
   };
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--cream)" }}>
+    <div className="min-h-screen" style={{ background: "var(--cream)", paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
       <div className="relative h-64 w-full overflow-hidden">
         <button
           onClick={() => setShowShareSheet(true)}
@@ -120,7 +120,7 @@ export default function PublicClub() {
           </>
         )}
         <div className="absolute bottom-0 left-0 right-0 px-6 pb-5 z-[5]">
-          <span className="inline-flex items-center gap-1.5 text-white text-[10px] font-bold uppercase tracking-[1.5px] px-2.5 py-1 rounded-md mb-1.5" style={{ background: 'var(--terra)' }} data-testid="badge-category">
+          <span className="inline-flex items-center gap-1.5 text-white text-[11px] font-bold uppercase tracking-[1.5px] px-2.5 py-1 rounded-md mb-1.5" style={{ background: 'var(--terra)' }} data-testid="badge-category">
             {club.category}
           </span>
           <h1 className="font-display text-3xl font-black text-[var(--ink)] leading-[0.95] tracking-tight" data-testid="text-club-name">
@@ -226,7 +226,7 @@ export default function PublicClub() {
             {schedule.map((entry) => (
               <div key={entry.id} className="rounded-xl p-3 flex items-center gap-3" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }}>
                 <div className="w-12 text-center">
-                  <div className="text-[10px] font-bold text-[var(--terra)] uppercase">{entry.dayOfWeek.slice(0, 3)}</div>
+                  <div className="text-[11px] font-bold text-[var(--terra)] uppercase">{entry.dayOfWeek.slice(0, 3)}</div>
                   <div className="text-xs text-[var(--muted-warm)]">{entry.startTime}</div>
                 </div>
                 <div className="flex-1">
@@ -250,7 +250,7 @@ export default function PublicClub() {
                 <img src={m.imageUrl!} alt={m.caption || ""} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
                 {m.caption && (
                   <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-[10px] text-white line-clamp-2">{m.caption}</p>
+                    <p className="text-[11px] text-white line-clamp-2">{m.caption}</p>
                   </div>
                 )}
               </div>
@@ -270,7 +270,7 @@ export default function PublicClub() {
       )}
 
       <div className="text-center mt-8 pb-4">
-        <p className="text-[10px] text-[var(--muted-warm)] tracking-wider">Powered by <span className="font-bold text-[var(--terra)]">CultFam</span></p>
+        <p className="text-[11px] text-[var(--muted-warm)] tracking-wider">Powered by <span className="font-bold text-[var(--terra)]">CultFam</span></p>
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-40" style={{ background: "linear-gradient(to top, var(--cream) 80%, transparent)" }}>
@@ -378,7 +378,7 @@ export default function PublicClub() {
               <LogIn className="w-4 h-4" />
               Sign in with Google
             </a>
-            <p className="text-center text-[10px] text-[var(--muted-warm)] mt-3">You'll be redirected back here after signing in</p>
+            <p className="text-center text-[11px] text-[var(--muted-warm)] mt-3">You'll be redirected back here after signing in</p>
           </div>
         </>
       )}

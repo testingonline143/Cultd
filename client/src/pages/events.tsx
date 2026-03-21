@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, MapPin, Users, Plus, Repeat } from "lucide-react";
 import { format, isToday, isSaturday, isSunday, isThisWeek } from "date-fns";
@@ -15,8 +15,15 @@ interface EventWithRsvps extends Event {
 
 export default function Events() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
+  const [scrolled, setScrolled] = useState(false);
   const [, navigate] = useLocation();
   const { user } = useAuth();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const isOrganiser = user?.role === "organiser" || user?.role === "admin";
 
   const { data: events = [], isLoading: eventsLoading } = useQuery<EventWithRsvps[]>({
@@ -55,14 +62,24 @@ export default function Events() {
   }, [events, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-background px-6 pt-6" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display italic text-3xl font-bold" style={{ color: "var(--ink)" }} data-testid="text-page-title">
-          Event Schedule
-        </h1>
-      </div>
+    <div className="min-h-screen bg-background" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
+      <div
+        className="sticky top-0 z-40 px-6 pt-6 pb-3"
+        style={{
+          background: "rgba(245,240,232,0.92)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          transition: "box-shadow 0.2s ease",
+        }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="font-display italic text-3xl font-bold" style={{ color: "var(--ink)" }} data-testid="text-page-title">
+            Event Schedule
+          </h1>
+        </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar" data-testid="filter-pills">
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar" data-testid="filter-pills">
         {FILTERS.map((filter) => (
           <button
             key={filter}
@@ -78,8 +95,10 @@ export default function Events() {
             {filter}
           </button>
         ))}
+        </div>
       </div>
 
+      <div className="px-6">
       {eventsLoading ? (
         <div className="flex flex-col gap-4 mt-4">
           {[1, 2, 3].map((i) => (
@@ -112,7 +131,8 @@ export default function Events() {
             return (
               <div
                 key={event.id}
-                className="card-native p-4 mb-4 flex gap-4 relative"
+                className="card-native p-4 mb-4 flex gap-4 relative cursor-pointer active:scale-[0.98] active:shadow-none transition-all"
+                onClick={() => navigate(`/event/${event.id}`)}
                 data-testid={`card-event-${event.id}`}
               >
                 <div className="flex-shrink-0 text-center w-16">
@@ -163,7 +183,7 @@ export default function Events() {
                     FREE
                   </span>
                   {event.recurrenceRule && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(196,98,45,0.1)", color: "var(--terra)" }} data-testid={`badge-recurring-${event.id}`}>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(196,98,45,0.1)", color: "var(--terra)" }} data-testid={`badge-recurring-${event.id}`}>
                       <Repeat className="w-2.5 h-2.5" />
                       {event.recurrenceRule === "weekly" ? "Weekly" : event.recurrenceRule === "biweekly" ? "Bi-weekly" : "Monthly"}
                     </span>
@@ -174,6 +194,7 @@ export default function Events() {
           })}
         </div>
       )}
+      </div>
     </div>
   );
 }

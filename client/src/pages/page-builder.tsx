@@ -275,7 +275,7 @@ export default function PageBuilder() {
           </button>
           <div>
             <h1 className="font-display text-lg font-bold text-[var(--ink)]">Page Builder</h1>
-            <p className="text-[10px] text-[var(--muted-warm)]">{club.name}</p>
+            <p className="text-[11px] text-[var(--muted-warm)]">{club.name}</p>
           </div>
         </div>
         {publicUrl && (
@@ -337,7 +337,7 @@ export default function PageBuilder() {
             {profileMutation.isPending && <Loader2 className="w-3 h-3 animate-spin text-[var(--terra)]" />}
           </div>
           <div>
-            <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Club Name</label>
+            <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Club Name</label>
             <input
               type="text"
               value={editName}
@@ -350,7 +350,7 @@ export default function PageBuilder() {
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Tagline</label>
+            <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Tagline</label>
             <input
               type="text"
               value={editShortDesc}
@@ -364,7 +364,7 @@ export default function PageBuilder() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Schedule</label>
+              <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Schedule</label>
               <input
                 type="text"
                 value={editSchedule}
@@ -377,7 +377,7 @@ export default function PageBuilder() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Location</label>
+              <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider">Location</label>
               <input
                 type="text"
                 value={editLocation}
@@ -397,7 +397,7 @@ export default function PageBuilder() {
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-display text-sm font-bold text-[var(--ink)] flex items-center gap-2">
             Sections
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>{sections.length}</span>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>{sections.length}</span>
           </h2>
           <button
             onClick={() => setShowNewSection(true)}
@@ -437,7 +437,7 @@ export default function PageBuilder() {
               data-testid="input-section-desc"
             />
             <div className="mt-3">
-              <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider mb-1.5 block">Layout</label>
+              <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider mb-1.5 block">Layout</label>
               <div className="flex gap-2">
                 {LAYOUT_OPTIONS.map(opt => {
                   const Icon = opt.icon;
@@ -498,7 +498,7 @@ export default function PageBuilder() {
                   <div className="flex-1 min-w-0">
                     <div className="font-display text-sm font-bold text-[var(--ink)] truncate">{section.title}</div>
                     {section.description && <p className="text-xs text-[var(--muted-warm)] truncate">{section.description}</p>}
-                    <span className="text-[9px] text-[var(--muted-warm)] uppercase tracking-wider">{section.layout || "full"}</span>
+                    <span className="text-[11px] text-[var(--muted-warm)] uppercase tracking-wider">{section.layout || "full"}</span>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <button
@@ -546,7 +546,7 @@ export default function PageBuilder() {
                       data-testid={`input-edit-desc-${section.id}`}
                     />
                     <div>
-                      <label className="text-[10px] font-bold text-[var(--muted-warm)] uppercase tracking-wider mb-1 block">Layout</label>
+                      <label className="text-[11px] font-bold text-[var(--muted-warm)] uppercase tracking-wider mb-1 block">Layout</label>
                       <div className="flex gap-2">
                         {LAYOUT_OPTIONS.map(opt => {
                           const Icon = opt.icon;
@@ -554,7 +554,7 @@ export default function PageBuilder() {
                             <button
                               key={opt.value}
                               onClick={() => setEditSectionLayout(opt.value)}
-                              className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-lg text-[10px] font-semibold transition-all ${editSectionLayout === opt.value ? "ring-2 ring-[var(--terra)]" : ""}`}
+                              className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${editSectionLayout === opt.value ? "ring-2 ring-[var(--terra)]" : ""}`}
                               style={{ background: editSectionLayout === opt.value ? "var(--terra-pale)" : "var(--warm-white)", color: editSectionLayout === opt.value ? "var(--terra)" : "var(--muted-warm)" }}
                               data-testid={`button-edit-layout-${opt.value}-${section.id}`}
                             >
@@ -584,7 +584,7 @@ export default function PageBuilder() {
                           <Calendar className="w-3.5 h-3.5 text-[var(--terra)] shrink-0" />
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-semibold text-[var(--ink)] truncate">{evt.eventTitle}</div>
-                            <div className="text-[10px] text-[var(--muted-warm)]">
+                            <div className="text-[11px] text-[var(--muted-warm)]">
                               {new Date(evt.eventStartsAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                               {evt.eventLocation && ` · ${evt.eventLocation}`}
                             </div>

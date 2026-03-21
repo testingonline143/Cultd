@@ -98,7 +98,7 @@ export function UpcomingEvents() {
                 <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 50%, var(--ink) 100%)" }} />
               </div>
               <div className="p-4 pt-0">
-                <div className="text-[10px] font-semibold tracking-[1.5px] uppercase mb-1.5" style={{ color: "var(--terra-light)" }}>{event.clubName}</div>
+                <div className="text-[11px] font-semibold tracking-[1.5px] uppercase mb-1.5" style={{ color: "var(--terra-light)" }}>{event.clubName}</div>
                 <h3 className="font-display font-bold text-sm mb-2 line-clamp-2" style={{ color: "var(--cream)" }}>{event.title}</h3>
                 <div className="space-y-1.5 mb-3">
                   <div className="flex items-center gap-2 text-xs" style={{ color: "var(--muted-warm2)" }}>
@@ -135,7 +135,7 @@ export function UpcomingEvents() {
                     Count Me In
                   </button>
                 ) : !isAuthenticated ? (
-                  <p className="text-[10px] text-center italic" style={{ color: "var(--muted-warm2)" }}>Sign in to RSVP</p>
+                  <p className="text-[11px] text-center italic" style={{ color: "var(--muted-warm2)" }}>Sign in to RSVP</p>
                 ) : null}
               </div>
             </motion.div>

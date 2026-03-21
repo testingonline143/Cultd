@@ -277,7 +277,7 @@ export default function ScanEvent() {
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Attendance</span>
               {attendance.checkedIn === attendance.totalRsvps && attendance.totalRsvps > 0 && (
-                <span className="text-[10px] font-bold text-[var(--terra)] bg-[rgba(196,98,45,0.1)] px-2 py-0.5 rounded-full uppercase tracking-wider" data-testid="badge-event-full">
+                <span className="text-[11px] font-bold text-[var(--terra)] bg-[rgba(196,98,45,0.1)] px-2 py-0.5 rounded-full uppercase tracking-wider" data-testid="badge-event-full">
                   All In
                 </span>
               )}
@@ -297,8 +297,8 @@ export default function ScanEvent() {
               />
             </div>
             <div className="flex justify-between mt-1.5">
-              <span className="text-[10px] text-muted-foreground">{attendance.checkedIn} arrived</span>
-              <span className="text-[10px] text-muted-foreground">{attendance.notYetArrived} pending</span>
+              <span className="text-[11px] text-muted-foreground">{attendance.checkedIn} arrived</span>
+              <span className="text-[11px] text-muted-foreground">{attendance.notYetArrived} pending</span>
             </div>
           </div>
         )}
@@ -467,7 +467,7 @@ export default function ScanEvent() {
               {pending.length > 0 && (
                 <>
                   <div className="px-1 py-1.5">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
                       Waiting · {pending.length}
                     </span>
                   </div>
@@ -488,7 +488,7 @@ export default function ScanEvent() {
               {arrived.length > 0 && (
                 <>
                   <div className="px-1 py-1.5 mt-1">
-                    <span className="text-[10px] font-bold text-[var(--terra)] uppercase tracking-widest">
+                    <span className="text-[11px] font-bold text-[var(--terra)] uppercase tracking-widest">
                       Arrived · {arrived.length}
                     </span>
                   </div>
