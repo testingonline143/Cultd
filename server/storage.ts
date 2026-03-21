@@ -142,7 +142,7 @@ export interface IStorage {
   likeMoment(momentId: string, userId: string): Promise<void>;
   unlikeMoment(momentId: string, userId: string): Promise<void>;
   getMomentLikeStatus(momentId: string, userId: string): Promise<boolean>;
-  getPublicClubMembers(clubId: string): Promise<{ userId: string | null; name: string; profileImageUrl: string | null; joinedAt: Date | null; isFoundingMember: boolean | null }[]>;
+  getPublicClubMembers(clubId: string): Promise<{ name: string; profileImageUrl: string | null }[]>;
   getUserFoundingClubs(userId: string): Promise<{ clubId: string; clubName: string; isFoundingMember: boolean | null }[]>;
   getEventComments(eventId: string): Promise<EventComment[]>;
   createEventComment(eventId: string, userId: string, userName: string, userImageUrl: string | null, text: string): Promise<EventComment>;
@@ -1517,13 +1517,10 @@ export class DatabaseStorage implements IStorage {
     return !!row;
   }
 
-  async getPublicClubMembers(clubId: string): Promise<{ userId: string | null; name: string; profileImageUrl: string | null; joinedAt: Date | null; isFoundingMember: boolean | null }[]> {
+  async getPublicClubMembers(clubId: string): Promise<{ name: string; profileImageUrl: string | null }[]> {
     const rows = await db.select({
-      userId: joinRequests.userId,
       name: joinRequests.name,
       profileImageUrl: users.profileImageUrl,
-      joinedAt: joinRequests.createdAt,
-      isFoundingMember: joinRequests.isFoundingMember,
     }).from(joinRequests)
       .leftJoin(users, eq(joinRequests.userId, users.id))
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")))

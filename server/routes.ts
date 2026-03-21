@@ -29,16 +29,25 @@ const upload = multer({
   },
 });
 
-const isAdmin: RequestHandler = (req: any, res, next) => {
-  const adminId = process.env.ADMIN_USER_ID;
-  if (!adminId) {
-    return res.status(403).json({ message: "Admin not configured" });
-  }
-  const userId = req.user?.claims?.sub;
-  if (userId !== adminId) {
+const isAdmin: RequestHandler = async (req: any, res, next) => {
+  try {
+    const userId = req.user?.claims?.sub;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const adminEnvId = process.env.ADMIN_USER_ID;
+    if (adminEnvId && userId === adminEnvId) {
+      return next();
+    }
+    const user = await storage.getUser(userId);
+    if (user?.role === "admin") {
+      return next();
+    }
     return res.status(403).json({ message: "Forbidden" });
+  } catch (err) {
+    console.error("Error checking admin access:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  next();
 };
 
 function requireClubManager(clubIdParam = "clubId"): RequestHandler {
@@ -165,9 +174,17 @@ export async function registerRoutes(
         }
       }
       const { answer1, answer2 } = req.body;
-      const request = await storage.createJoinRequest({ ...validated, userId, status: "pending", answer1: answer1 || null, answer2: answer2 || null });
-      await storage.approveJoinRequestWithFoundingCheck(request.id, validated.clubId);
       const club = await storage.getClub(validated.clubId);
+      const isFoundingMember = ((club?.foundingTaken ?? 0) < (club?.foundingTotal ?? 20));
+      const request = await storage.createJoinRequest({
+        ...validated,
+        userId,
+        status: "approved",
+        isFoundingMember,
+        answer1: answer1 || null,
+        answer2: answer2 || null,
+      });
+      await storage.incrementMemberCount(validated.clubId);
       res.json({ success: true, message: "You've joined the club!", data: request, club });
     } catch (err) {
       if (err instanceof ZodError) {
@@ -191,9 +208,15 @@ export async function registerRoutes(
   });
 
   app.get("/api/admin/status", isAuthenticated, async (req: any, res) => {
-    const configured = !!(process.env.ADMIN_USER_ID && process.env.ADMIN_USER_ID.trim().length > 0);
-    const isCurrentUserAdmin = configured && req.user?.claims?.sub === process.env.ADMIN_USER_ID;
-    res.json({ configured, isCurrentUserAdmin });
+    const userId = req.user?.claims?.sub;
+    const adminEnvId = process.env.ADMIN_USER_ID;
+    const isEnvAdmin = !!(adminEnvId && userId === adminEnvId);
+    let isDbAdmin = false;
+    if (!isEnvAdmin && userId) {
+      const user = await storage.getUser(userId);
+      isDbAdmin = user?.role === "admin";
+    }
+    res.json({ configured: true, isCurrentUserAdmin: isEnvAdmin || isDbAdmin });
   });
 
   app.get("/api/admin/join-requests", isAuthenticated, isAdmin, async (_req, res) => {
