@@ -1,21 +1,27 @@
 import type { Express, RequestHandler } from "express";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { authStorage } from "./storage";
 
-// We create a server-side Supabase client just to verify tokens and fetch user data if needed
-// Note: We use the ANON key here because we just need to verify JWTs matching the project
-export const supabase = createClient(
-  process.env.SUPABASE_URL || "",
-  process.env.SUPABASE_ANON_KEY || ""
-);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn("[auth] SUPABASE_URL or SUPABASE_ANON_KEY not set — authentication will be unavailable.");
+}
+
+export const supabase: SupabaseClient = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createClient("https://placeholder.supabase.co", "placeholder-key-that-wont-be-used");
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  // We no longer need express-session or passport because Supabase uses JWTs 
-  // passed via the Authorization header.
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return res.status(503).json({ message: "Authentication not configured — set SUPABASE_URL and SUPABASE_ANON_KEY" });
+  }
+
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Unauthorized - Missing token" });
@@ -31,8 +37,6 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized - Invalid token" });
     }
 
-    // Attach user information to the request for downward compatibility
-    // Replit auth stored claims on req.user.claims, so we mock it here
     (req as any).user = {
       claims: {
         sub: user.id,
