@@ -1,5 +1,5 @@
 import type { Express, RequestHandler } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import { insertJoinRequestSchema, CATEGORY_EMOJI } from "@shared/schema";
 import { ZodError } from "zod";
@@ -258,42 +258,39 @@ export function registerClubRoutes(
     }
   });
 
-  app.get("/api/clubs/:id/ratings", async (req, res) => {
+  app.get("/api/clubs/:id/ratings", async (req: any, res) => {
     try {
-      const [ratings, average] = await Promise.all([
-        storage.getClubRatings(req.params.id),
-        storage.getClubAverageRating(req.params.id),
-      ]);
-      res.json({ ratings, average: average.average, count: average.count });
+      const { average, count } = await storage.getClubAverageRating(req.params.id);
+      let userRating = null;
+      let hasJoined = false;
+      if (req.user?.claims?.sub) {
+        userRating = await storage.getUserRating(req.params.id, req.user.claims.sub);
+        hasJoined = await storage.hasUserJoinedClub(req.params.id, req.user.claims.sub);
+      }
+      res.json({ average, count, userRating, hasJoined });
     } catch (err) {
       console.error("Error fetching ratings:", err);
       res.status(500).json({ message: "Failed to fetch ratings" });
     }
   });
 
-  app.post("/api/clubs/:id/rate", isAuthenticated, async (req: any, res) => {
+  app.post("/api/clubs/:id/ratings", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const hasJoined = await storage.hasUserJoinedClub(req.params.id, userId);
+      if (!hasJoined) {
+        return res.status(403).json({ message: "You must join this club before rating" });
+      }
       const { rating, review } = req.body;
       if (!rating || rating < 1 || rating > 5) {
         return res.status(400).json({ message: "Rating must be between 1 and 5" });
       }
-      const clubRating = await storage.upsertRating(req.params.id, userId, rating, review);
-      const average = await storage.getClubAverageRating(req.params.id);
-      res.json({ rating: clubRating, average: average.average, count: average.count });
+      const result = await storage.upsertRating(req.params.id, userId, rating, review);
+      const { average, count } = await storage.getClubAverageRating(req.params.id);
+      res.json({ success: true, rating: result, average, count });
     } catch (err) {
-      console.error("Error rating club:", err);
-      res.status(500).json({ message: "Failed to rate club" });
-    }
-  });
-
-  app.get("/api/clubs/:id/my-rating", isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const rating = await storage.getUserRating(req.params.id, userId);
-      res.json(rating || null);
-    } catch (err) {
-      res.status(500).json({ message: "Failed to fetch rating" });
+      console.error("Error submitting rating:", err);
+      res.status(500).json({ message: "Failed to submit rating" });
     }
   });
 
@@ -506,9 +503,9 @@ export function registerClubRoutes(
     }
   });
 
-  app.get("/api/clubs/:id/announcements", async (req, res) => {
+  app.get("/api/clubs/:clubId/announcements", async (req, res) => {
     try {
-      const announcements = await storage.getClubAnnouncements(req.params.id);
+      const announcements = await storage.getClubAnnouncements(req.params.clubId);
       res.json(announcements);
     } catch (err) {
       console.error("Error fetching announcements:", err);
@@ -566,21 +563,6 @@ export function registerClubRoutes(
     } catch (err) {
       console.error("Error fetching public page:", err);
       res.status(500).json({ message: "Failed to fetch public page" });
-    }
-  });
-
-  // Public club page by slug — no auth required (duplicate of above for backwards compat)
-  app.get("/api/clubs/public/:slug", async (req, res) => {
-    try {
-      const club = await storage.getClubBySlug(req.params.slug);
-      if (!club || !club.isActive) {
-        return res.status(404).json({ message: "Club not found" });
-      }
-      const pageData = await storage.getPublicPageData(club.id);
-      res.json(pageData);
-    } catch (err) {
-      console.error("Error fetching public club page:", err);
-      res.status(500).json({ message: "Failed to fetch club page" });
     }
   });
 
@@ -657,17 +639,6 @@ export function registerClubRoutes(
     } catch (err) {
       console.error("Error fetching feed:", err);
       res.status(500).json({ message: "Failed to fetch feed" });
-    }
-  });
-
-  app.get("/api/activity-feed", async (req, res) => {
-    try {
-      const limit = parseInt((req.query.limit as string) || "10");
-      const feed = await storage.getRecentActivityFeed(limit);
-      res.json(feed);
-    } catch (err) {
-      console.error("Error fetching activity feed:", err);
-      res.status(500).json({ message: "Failed to fetch activity feed" });
     }
   });
 

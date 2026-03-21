@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import { insertQuizAnswersSchema } from "@shared/schema";
 import { ZodError } from "zod";
@@ -27,17 +27,6 @@ export function registerUserRoutes(
     } catch (err) {
       console.error("Error fetching user clubs:", err);
       res.status(500).json({ message: "Failed to fetch user clubs" });
-    }
-  });
-
-  app.get("/api/user/rsvps", isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const rsvps = await storage.getRsvpsByUser(userId);
-      res.json(rsvps);
-    } catch (err) {
-      console.error("Error fetching RSVPs:", err);
-      res.status(500).json({ message: "Failed to fetch RSVPs" });
     }
   });
 

@@ -1,5 +1,5 @@
 import type { Express, RequestHandler } from "express";
-import { storage } from "../storage";
+import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 
 export function registerOrganizerRoutes(

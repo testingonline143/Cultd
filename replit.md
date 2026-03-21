@@ -29,6 +29,8 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
 ### Backend (server/)
 - **Framework**: Express 5 on Node.js with TypeScript (run via tsx)
 - **API Pattern**: RESTful JSON API under `/api/` prefix
+- **Route Organization**: Domain-split routes in `server/routes/` — `clubs.ts`, `events.ts`, `organizer.ts`, `admin.ts`, `users.ts`, `payments.ts`; composed in `server/routes/index.ts`
+- **Storage Organization**: Domain-split storage in `server/storage/` — `clubs.ts`, `events.ts`, `users.ts`, `admin.ts`, `payments.ts`; composed into single `storage` object in `server/storage/index.ts`. The monolithic `server/storage.ts` retains the `IStorage` interface definition and `DatabaseStorage` class (used as type source). All route files import `storage` from `server/storage/index`.
 - **Auth**: Supabase Auth via `server/auth/` — `setupAuth(app)` sets trust proxy; `isAuthenticated` middleware validates Supabase JWT Bearer tokens from the Authorization header; user data accessed via `req.user.claims.sub`. Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` (server), `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (client)
 - **Endpoints**:
   - `GET /api/auth/user` — get current authenticated user

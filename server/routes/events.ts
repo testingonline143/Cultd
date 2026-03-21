@@ -1,6 +1,6 @@
 import type { Express, RequestHandler } from "express";
 import QRCode from "qrcode";
-import { storage } from "../storage";
+import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import { isCrawler, readHtmlTemplate, buildOgHtml, buildEventSvg } from "../og";
 import sharp from "sharp";
@@ -327,17 +327,6 @@ export function registerEventRoutes(
     }
   });
 
-  app.get("/api/user/rsvps", isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const rsvps = await storage.getRsvpsByUser(userId);
-      res.json(rsvps);
-    } catch (err) {
-      console.error("Error fetching RSVPs:", err);
-      res.status(500).json({ message: "Failed to fetch RSVPs" });
-    }
-  });
-
   app.get("/api/rsvps/:rsvpId/qr", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -484,6 +473,57 @@ export function registerEventRoutes(
     } catch (err) {
       console.error("Error creating event comment:", err);
       res.status(500).json({ message: "Failed to post comment" });
+    }
+  });
+
+  app.get("/api/events/:id/attendance", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const event = await storage.getEvent(req.params.id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      const club = await storage.getClub(event.clubId);
+      if (!club || !(await storage.isClubManager(club.id, userId))) {
+        return res.status(403).json({ message: "Only the club organizer can view attendance" });
+      }
+      const attendees = await storage.getEventAttendees(req.params.id);
+      const checkedIn = attendees.filter((a: any) => a.checkedIn).length;
+      const totalRsvps = attendees.length;
+      res.json({
+        totalRsvps,
+        checkedIn,
+        notYetArrived: totalRsvps - checkedIn,
+        attendees: attendees.map((a: any) => ({
+          rsvpId: a.id,
+          name: a.userName,
+          checkedIn: !!a.checkedIn,
+          checkedInAt: a.checkedInAt,
+        })),
+      });
+    } catch (err) {
+      console.error("Error fetching attendance:", err);
+      res.status(500).json({ message: "Failed to fetch attendance" });
+    }
+  });
+
+  app.get("/api/events/:id/attendees", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const event = await storage.getEvent(req.params.id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+      const club = await storage.getClub(event.clubId);
+      if (!club || !(await storage.isClubManager(club.id, userId))) {
+        return res.status(403).json({ message: "Only the club organizer can view attendees" });
+      }
+      const attendees = await storage.getEventAttendees(req.params.id);
+      const checkedInCount = await storage.getCheckedInCount(req.params.id);
+      res.json({ attendees, checkedInCount, totalRsvps: attendees.length });
+    } catch (err) {
+      console.error("Error fetching attendees:", err);
+      res.status(500).json({ message: "Failed to fetch attendees" });
     }
   });
 

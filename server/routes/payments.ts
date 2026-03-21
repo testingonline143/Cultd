@@ -1,6 +1,6 @@
 import type { Express, RequestHandler } from "express";
 import crypto from "crypto";
-import { storage } from "../storage";
+import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import {
   razorpay,

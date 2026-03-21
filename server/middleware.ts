@@ -1,5 +1,5 @@
 import type { RequestHandler } from "express";
-import { storage } from "./storage";
+import { storage } from "./storage/index";
 
 export const isAdmin: RequestHandler = async (req: any, res, next) => {
   try {

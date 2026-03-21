@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { storage } from "./storage";
+import { storage } from "./storage/index";
 
 const CRAWLER_PATTERNS = [
   "whatsapp",
