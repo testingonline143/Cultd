@@ -1,4 +1,4 @@
-import type { IStorage } from "../storage";
+import type { IStorage } from "./interface";
 import { clubsStorage } from "./clubs";
 import { eventsStorage } from "./events";
 import { usersStorage } from "./users";

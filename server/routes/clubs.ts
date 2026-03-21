@@ -331,6 +331,10 @@ export function registerClubRoutes(
         return res.status(403).json({ message: "Not authorized" });
       }
       const { question, answer } = req.body;
+      const existingFaqs = await storage.getClubFaqs(req.params.id);
+      if (!existingFaqs.some(f => f.id === req.params.faqId)) {
+        return res.status(404).json({ message: "FAQ not found in this club" });
+      }
       const faq = await storage.updateFaq(req.params.faqId, question, answer);
       res.json(faq);
     } catch (err) {
@@ -345,6 +349,10 @@ export function registerClubRoutes(
       const club = await storage.getClub(req.params.id);
       if (!club || !(await storage.isClubManager(club.id, userId))) {
         return res.status(403).json({ message: "Not authorized" });
+      }
+      const existingFaqs = await storage.getClubFaqs(req.params.id);
+      if (!existingFaqs.some(f => f.id === req.params.faqId)) {
+        return res.status(404).json({ message: "FAQ not found in this club" });
       }
       await storage.deleteFaq(req.params.faqId);
       res.json({ success: true });

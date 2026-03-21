@@ -293,6 +293,15 @@ export function registerEventRoutes(
         return res.json({ success: true, rsvp, waitlisted: true, position });
       }
 
+      const eventDate = new Date(event.startsAt).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+      await storage.createNotification({
+        userId,
+        type: "rsvp_confirmed",
+        title: "You're in!",
+        message: `You're registered for ${event.title} on ${eventDate}. See you there!`,
+        linkUrl: `/event/${event.id}`,
+        isRead: false,
+      });
       res.json({ success: true, rsvp });
     } catch (err) {
       console.error("Error creating RSVP:", err);
