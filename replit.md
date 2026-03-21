@@ -21,7 +21,7 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
 - **UI Components**: shadcn/ui (new-york style) built on Radix UI primitives, stored in `client/src/components/ui/`
 - **Animations**: Framer Motion for scroll-triggered animations and transitions
 - **State Management**: TanStack React Query for server state; React useState for local state
-- **Auth**: Replit Auth integration via `client/src/hooks/use-auth.ts` — uses session cookies, fetches user from `/api/auth/user`. Supports Google, GitHub, Apple, and email sign-in via `/api/login`.
+- **Auth**: Supabase Auth via `client/src/hooks/use-auth.ts` — listens to Supabase auth state changes, sends JWT Bearer token to backend for protected API calls. Supports email/password sign-in and sign-up via `client/src/hooks/use-auth-modal.tsx`.
 - **Forms**: React Hook Form with Zod validation via @hookform/resolvers
 - **Build Tool**: Vite with React plugin
 - **Path aliases**: `@/` maps to `client/src/`, `@shared/` maps to `shared/`
@@ -29,7 +29,7 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
 ### Backend (server/)
 - **Framework**: Express 5 on Node.js with TypeScript (run via tsx)
 - **API Pattern**: RESTful JSON API under `/api/` prefix
-- **Auth**: Replit Auth via `server/replit_integrations/auth/` — `setupAuth(app)` configures session middleware + OpenID Connect; `isAuthenticated` middleware protects routes; user data accessed via `req.user.claims.sub`
+- **Auth**: Supabase Auth via `server/auth/` — `setupAuth(app)` sets trust proxy; `isAuthenticated` middleware validates Supabase JWT Bearer tokens from the Authorization header; user data accessed via `req.user.claims.sub`. Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` (server), `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (client)
 - **Endpoints**:
   - `GET /api/auth/user` — get current authenticated user
   - `GET /api/login` — redirect to Replit Auth login
