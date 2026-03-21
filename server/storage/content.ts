@@ -1,4 +1,4 @@
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, inArray } from "drizzle-orm";
 import { db } from "../db";
 import {
   clubs, clubMoments, momentComments, momentLikes, clubAnnouncements, clubPolls, pollVotes,
@@ -156,16 +156,23 @@ export const contentStorage = {
     const polls = await db.select().from(clubPolls)
       .where(eq(clubPolls.clubId, clubId))
       .orderBy(desc(clubPolls.createdAt));
-    const result = [];
-    for (const poll of polls) {
-      const allVotes = await db.select().from(pollVotes).where(eq(pollVotes.pollId, poll.id));
-      const voteCounts = (poll.options ?? []).map((_: string, idx: number) =>
-        allVotes.filter(v => v.optionIndex === idx).length
-      );
-      const userVoteRow = viewerUserId ? allVotes.find(v => v.userId === viewerUserId) : undefined;
-      result.push({ ...poll, voteCounts, userVote: userVoteRow?.optionIndex ?? null });
+    if (polls.length === 0) return [];
+    const pollIds = polls.map(p => p.id);
+    const allVotes = await db.select().from(pollVotes).where(inArray(pollVotes.pollId, pollIds));
+    const votesByPoll = new Map<string, typeof allVotes>();
+    for (const vote of allVotes) {
+      const list = votesByPoll.get(vote.pollId) ?? [];
+      list.push(vote);
+      votesByPoll.set(vote.pollId, list);
     }
-    return result;
+    return polls.map(poll => {
+      const votes = votesByPoll.get(poll.id) ?? [];
+      const voteCounts = (poll.options ?? []).map((_: string, idx: number) =>
+        votes.filter(v => v.optionIndex === idx).length
+      );
+      const userVoteRow = viewerUserId ? votes.find(v => v.userId === viewerUserId) : undefined;
+      return { ...poll, voteCounts, userVote: userVoteRow?.optionIndex ?? null };
+    });
   },
 
   async createPoll(data: InsertClubPoll): Promise<ClubPoll> {
