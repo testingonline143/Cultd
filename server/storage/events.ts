@@ -100,7 +100,7 @@ export const eventsStorage = {
     return created;
   },
 
-  async createRsvp(rsvp: InsertEventRsvp): Promise<EventRsvp> {
+  async createRsvp(rsvp: InsertEventRsvp, checkinTokenHash?: string): Promise<EventRsvp> {
     const existing = await eventsStorage.getUserRsvp(rsvp.eventId, rsvp.userId);
     if (existing) {
       const [updated] = await db.update(eventRsvps)
@@ -112,7 +112,8 @@ export const eventsStorage = {
         .returning();
       return updated;
     }
-    const [created] = await db.insert(eventRsvps).values(rsvp).returning();
+    const values = checkinTokenHash ? { ...rsvp, checkinToken: checkinTokenHash } : rsvp;
+    const [created] = await db.insert(eventRsvps).values(values as typeof rsvp).returning();
     return created;
   },
 
@@ -293,6 +294,14 @@ export const eventsStorage = {
       .where(and(eq(eventRsvps.id, rsvpId), eq(eventRsvps.status, "going"), eq(eventRsvps.checkedIn, false)))
       .returning();
     return updated;
+  },
+
+  async getAllRsvpsWithTokens(): Promise<{ id: string; checkinToken: string | null }[]> {
+    return db.select({ id: eventRsvps.id, checkinToken: eventRsvps.checkinToken }).from(eventRsvps);
+  },
+
+  async updateRsvpCheckinToken(rsvpId: string, hashedToken: string): Promise<void> {
+    await db.update(eventRsvps).set({ checkinToken: hashedToken }).where(eq(eventRsvps.id, rsvpId));
   },
 
   async cancelFutureRsvpsForClub(clubId: string): Promise<{ userId: string | null; eventTitle: string; eventId: string }[]> {

@@ -86,7 +86,10 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
   - `GET /api/clubs/:id/activity` — get club activity signals
   - `GET /api/activity/feed` — get recent platform-wide join activity
   - `GET /api/clubs-with-activity` — get all clubs with recentJoins count
-  - `GET /api/clubs/:id/members` — public list of approved members with foundingMember flag
+  - `GET /api/clubs/:id/members` — list of approved members with foundingMember flag (authenticated)
+  - `GET /api/users/:id` — public user profile without clubs list (authenticated)
+  - `GET /api/users/:id/clubs` — clubs for a user (authenticated)
+  - `POST /api/admin/migrate-tokens` — hash all plaintext checkin tokens to HMAC-SHA256 (admin only)
   - `POST /api/moments/:id/like` — like a moment (auth); `DELETE` — unlike
   - `GET /api/moments/:id/like-status` — check like status for current user
   - `GET /api/events/:id/comments` — public event discussion comments

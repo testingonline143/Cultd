@@ -1,7 +1,10 @@
 import type { Express, RequestHandler } from "express";
+import crypto from "crypto";
 import QRCode from "qrcode";
 import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
+import { writeRateLimiter } from "../middleware";
+import { hashCheckinToken } from "../auth/tokenUtils";
 import { isCrawler, readHtmlTemplate, buildOgHtml, buildEventSvg } from "../og";
 import sharp from "sharp";
 
@@ -195,7 +198,7 @@ export function registerEventRoutes(
     }
   });
 
-  app.post("/api/events/:id/rsvp", isAuthenticated, async (req: any, res) => {
+  app.post("/api/events/:id/rsvp", isAuthenticated, writeRateLimiter, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const event = await storage.getEvent(req.params.id);
@@ -276,13 +279,15 @@ export function registerEventRoutes(
 
       const rsvpCount = await storage.getRsvpCount(event.id);
       const status = rsvpCount >= event.maxCapacity ? "waitlisted" : "going";
+      const rawToken = crypto.randomUUID();
+      const hashedToken = hashCheckinToken(rawToken);
       const rsvp = await storage.createRsvp({
         eventId: event.id,
         userId,
         status,
         ticketTypeId,
         ticketTypeName,
-      });
+      }, hashedToken);
 
       if (allFormResponses.length > 0) {
         await storage.saveEventFormResponses(event.id, userId, allFormResponses);
@@ -471,7 +476,7 @@ export function registerEventRoutes(
     }
   });
 
-  app.post("/api/events/:id/comments", isAuthenticated, async (req: any, res) => {
+  app.post("/api/events/:id/comments", isAuthenticated, writeRateLimiter, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { text } = req.body;

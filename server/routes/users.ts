@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
+import { writeRateLimiter } from "../middleware";
 import { insertQuizAnswersSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -173,11 +174,10 @@ export function registerUserRoutes(
     }
   });
 
-  app.get("/api/users/:id", async (req, res) => {
+  app.get("/api/users/:id", isAuthenticated, async (req: any, res) => {
     try {
       const user = await storage.getUser(req.params.id);
       if (!user) return res.status(404).json({ message: "User not found" });
-      const userClubs = await storage.getUserApprovedClubs(req.params.id);
       const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || "CultFam Member";
       res.json({
         id: user.id,
@@ -186,11 +186,20 @@ export function registerUserRoutes(
         city: user.city ?? null,
         profileImageUrl: user.profileImageUrl ?? null,
         role: user.role ?? "member",
-        clubs: userClubs.map(c => ({ id: c.id, name: c.name, emoji: c.emoji, category: c.category })),
       });
     } catch (err) {
       console.error("Error fetching public user profile:", err);
       res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  app.get("/api/users/:id/clubs", isAuthenticated, async (req: any, res) => {
+    try {
+      const userClubs = await storage.getUserApprovedClubs(req.params.id);
+      res.json(userClubs.map(c => ({ id: c.id, name: c.name, emoji: c.emoji, category: c.category })));
+    } catch (err) {
+      console.error("Error fetching user clubs:", err);
+      res.status(500).json({ message: "Failed to fetch user clubs" });
     }
   });
 
@@ -254,7 +263,7 @@ export function registerUserRoutes(
     }
   });
 
-  app.post("/api/moments/:momentId/comments", isAuthenticated, async (req: any, res) => {
+  app.post("/api/moments/:momentId/comments", isAuthenticated, writeRateLimiter, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const content = (req.body.content || "").trim();

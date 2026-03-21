@@ -1,5 +1,18 @@
 import type { RequestHandler } from "express";
+import rateLimit from "express-rate-limit";
 import { storage } from "./storage/index";
+
+export const writeRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { keyGeneratorIpFallback: false },
+  keyGenerator: (req: any) => req.user?.claims?.sub ?? req.ip ?? "unknown",
+  handler: (_req, res) => {
+    res.status(429).json({ message: "Too many requests. Please try again in 15 minutes." });
+  },
+});
 
 export const isAdmin: RequestHandler = async (req: any, res, next) => {
   try {

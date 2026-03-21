@@ -2,6 +2,8 @@ import type { Express, RequestHandler } from "express";
 import crypto from "crypto";
 import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
+import { writeRateLimiter } from "../middleware";
+import { hashCheckinToken } from "../auth/tokenUtils";
 import {
   razorpay,
   getRazorpayKeyId,
@@ -25,7 +27,7 @@ export function registerPaymentRoutes(
   isAdmin: RequestHandler,
   requireClubManager: (param?: string) => RequestHandler,
 ): void {
-  app.post("/api/payments/create-order", isAuthenticated, async (req: any, res) => {
+  app.post("/api/payments/create-order", isAuthenticated, writeRateLimiter, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { eventId, ticketTypeId } = req.body;
@@ -174,6 +176,7 @@ export function registerPaymentRoutes(
 
       const rsvpCount = await storage.getRsvpCount(event.id);
       const rsvpStatus = rsvpCount >= event.maxCapacity ? "waitlisted" : "going";
+      const rawToken1 = crypto.randomUUID();
       const rsvp = await storage.createRsvp({
         eventId: event.id,
         userId,
@@ -183,7 +186,7 @@ export function registerPaymentRoutes(
         razorpayOrderId,
         razorpayPaymentId,
         paymentStatus: "paid",
-      });
+      }, hashCheckinToken(rawToken1));
 
       const rawFormResponses: { questionId: string; answer: string }[] = formResponses ?? [];
       if (rawFormResponses.length > 0) {
@@ -377,6 +380,7 @@ export function registerPaymentRoutes(
         if (!rsvp) {
           const rsvpCount = await storage.getRsvpCount(event.id);
           const rsvpStatus = rsvpCount >= event.maxCapacity ? "waitlisted" : "going";
+          const rawToken2 = crypto.randomUUID();
           rsvp = await storage.createRsvp({
             eventId: event.id,
             userId,
@@ -386,7 +390,7 @@ export function registerPaymentRoutes(
             razorpayOrderId: orderId,
             razorpayPaymentId: paymentId,
             paymentStatus: "paid",
-          });
+          }, hashCheckinToken(rawToken2));
           console.log(`[webhook] Created RSVP ${rsvp.id} for user=${userId} event=${eventId}`);
         }
 

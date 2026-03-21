@@ -56,7 +56,7 @@ export interface IStorage {
   getEventsByClub(clubId: string): Promise<Event[]>;
   getUpcomingEvents(city?: string, limit?: number): Promise<(Event & { clubName: string; clubEmoji: string; rsvpCount: number })[]>;
   extendEventSeries(clubId: string, title: string, recurrenceRule: string): Promise<Event[]>;
-  createRsvp(rsvp: InsertEventRsvp): Promise<EventRsvp>;
+  createRsvp(rsvp: InsertEventRsvp, checkinTokenHash?: string): Promise<EventRsvp>;
   cancelRsvp(eventId: string, userId: string): Promise<void>;
   getRsvpsByEvent(eventId: string): Promise<(EventRsvp & { userName: string | null })[]>;
   getUserRsvp(eventId: string, userId: string): Promise<EventRsvp | undefined>;
@@ -73,6 +73,8 @@ export interface IStorage {
   checkInRsvpByToken(token: string): Promise<EventRsvp | undefined>;
   checkInRsvpById(rsvpId: string): Promise<EventRsvp | undefined>;
   cancelFutureRsvpsForClub(clubId: string): Promise<{ userId: string | null; eventTitle: string; eventId: string }[]>;
+  getAllRsvpsWithTokens(): Promise<{ id: string; checkinToken: string | null }[]>;
+  updateRsvpCheckinToken(rsvpId: string, hashedToken: string): Promise<void>;
   updateUserRole(userId: string, role: string): Promise<User | undefined>;
   getClubRatings(clubId: string): Promise<ClubRating[]>;
   getClubAverageRating(clubId: string): Promise<{ average: number; count: number }>;

@@ -3,6 +3,7 @@ import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import { CATEGORY_EMOJI } from "@shared/schema";
 import { suggestCommissionForCity } from "../commission";
+import { hashCheckinToken, isTokenHashed } from "../auth/tokenUtils";
 
 export function registerAdminRoutes(
   app: Express,
@@ -458,6 +459,27 @@ export function registerAdminRoutes(
     } catch (err) {
       console.error("Error fetching admin payment stats:", err);
       res.status(500).json({ message: "Failed to fetch payment stats" });
+    }
+  });
+
+  app.post("/api/admin/migrate-tokens", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const allRsvps = await storage.getAllRsvpsWithTokens();
+      let migrated = 0;
+      let skipped = 0;
+      for (const rsvp of allRsvps) {
+        if (!rsvp.checkinToken || isTokenHashed(rsvp.checkinToken)) {
+          skipped++;
+          continue;
+        }
+        const hashed = hashCheckinToken(rsvp.checkinToken);
+        await storage.updateRsvpCheckinToken(rsvp.id, hashed);
+        migrated++;
+      }
+      res.json({ success: true, migrated, skipped, total: allRsvps.length });
+    } catch (err) {
+      console.error("Error migrating checkin tokens:", err);
+      res.status(500).json({ message: "Failed to migrate tokens" });
     }
   });
 }

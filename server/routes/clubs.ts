@@ -1,6 +1,7 @@
 import type { Express, RequestHandler } from "express";
 import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
+import { writeRateLimiter } from "../middleware";
 import { insertJoinRequestSchema, CATEGORY_EMOJI } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -144,7 +145,7 @@ export function registerClubRoutes(
     }
   });
 
-  app.post("/api/join", isAuthenticated, async (req: any, res) => {
+  app.post("/api/join", isAuthenticated, writeRateLimiter, async (req: any, res) => {
     try {
       const validated = insertJoinRequestSchema.parse(req.body);
       if (!validated.name || validated.name.length < 2) {
@@ -248,7 +249,7 @@ export function registerClubRoutes(
     }
   });
 
-  app.get("/api/clubs/:id/members", async (req, res) => {
+  app.get("/api/clubs/:id/members", isAuthenticated, async (req: any, res) => {
     try {
       const members = await storage.getPublicClubMembers(req.params.id);
       res.json(members);

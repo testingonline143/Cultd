@@ -22,9 +22,14 @@ export default function MemberProfile() {
   const { data: profile, isLoading, error } = useQuery<MemberPublicProfile>({
     queryKey: ["/api/users", id],
     queryFn: async () => {
-      const res = await fetch(`/api/users/${id}`);
-      if (!res.ok) throw new Error("User not found");
-      return res.json();
+      const [profileRes, clubsRes] = await Promise.all([
+        fetch(`/api/users/${id}`),
+        fetch(`/api/users/${id}/clubs`),
+      ]);
+      if (!profileRes.ok) throw new Error("User not found");
+      const profileData = await profileRes.json();
+      const clubs = clubsRes.ok ? await clubsRes.json() : [];
+      return { ...profileData, clubs };
     },
     enabled: !!id,
   });
