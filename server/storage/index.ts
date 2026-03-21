@@ -4,6 +4,8 @@ import { eventsStorage } from "./events";
 import { usersStorage } from "./users";
 import { adminStorage } from "./admin";
 import { paymentsStorage } from "./payments";
+import { contentStorage } from "./content";
+import { organizerStorage } from "./organizer";
 
 export const storage: IStorage = {
   ...clubsStorage,
@@ -11,6 +13,8 @@ export const storage: IStorage = {
   ...usersStorage,
   ...adminStorage,
   ...paymentsStorage,
+  ...contentStorage,
+  ...organizerStorage,
 };
 
 export { IStorage };
@@ -19,3 +23,5 @@ export { eventsStorage } from "./events";
 export { usersStorage } from "./users";
 export { adminStorage } from "./admin";
 export { paymentsStorage } from "./payments";
+export { contentStorage } from "./content";
+export { organizerStorage } from "./organizer";

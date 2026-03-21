@@ -2,13 +2,11 @@ import { eq, desc, asc, and, sql, gte, or, ilike } from "drizzle-orm";
 import { db } from "../db";
 import {
   clubs, joinRequests, users, events, clubRatings, clubFaqs,
-  clubScheduleEntries, clubMoments, momentComments, momentLikes,
-  clubAnnouncements, clubPolls, pollVotes, clubPageSections, sectionEvents,
-  clubProposals, eventRsvps,
+  clubScheduleEntries, clubMoments, momentComments, clubAnnouncements, eventRsvps,
+  clubPageSections, sectionEvents, clubProposals,
   type Club, type InsertClub, type JoinRequest, type InsertJoinRequest,
   type ClubRating, type ClubFaq, type ClubScheduleEntry, type ClubMoment,
-  type MomentComment, type ClubAnnouncement, type InsertClubAnnouncement,
-  type ClubPoll, type InsertClubPoll, type ClubPageSection, type InsertClubPageSection,
+  type ClubPageSection, type InsertClubPageSection,
   type SectionEvent, type ClubProposal, type InsertClubProposal,
 } from "@shared/schema";
 
@@ -46,20 +44,24 @@ export const clubsStorage = {
   },
 
   async generateSlugForClub(clubId: string): Promise<string | null> {
-    const club = await clubsStorage.getClub(clubId);
+    const [club] = await db.select().from(clubs).where(eq(clubs.id, clubId));
     if (!club) return null;
-    let baseSlug = club.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50);
-    if (baseSlug.length < 2) baseSlug = `club-${clubId.slice(0, 8)}`;
-    let finalSlug = baseSlug;
+    const base = club.name.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 40);
+    let slug = base;
     let attempt = 0;
-    while (await clubsStorage.getClubBySlug(finalSlug)) {
-      const existing = await clubsStorage.getClubBySlug(finalSlug);
-      if (existing && existing.id === clubId) return finalSlug;
+    while (true) {
+      const [existing] = await db.select({ id: clubs.id }).from(clubs).where(eq(clubs.slug, slug));
+      if (!existing || existing.id === clubId) break;
       attempt++;
-      finalSlug = `${baseSlug}-${attempt}`;
+      slug = `${base}-${attempt}`;
     }
-    await clubsStorage.updateClubSlug(clubId, finalSlug);
-    return finalSlug;
+    await db.update(clubs).set({ slug }).where(eq(clubs.id, clubId));
+    return slug;
   },
 
   async createClub(club: InsertClub): Promise<Club> {
@@ -73,17 +75,18 @@ export const clubsStorage = {
   },
 
   async incrementMemberCount(clubId: string): Promise<Club | undefined> {
-    const [updated] = await db.update(clubs).set({
-      memberCount: sql`${clubs.memberCount} + 1`,
-      foundingTaken: sql`CASE WHEN ${clubs.foundingTaken} < ${clubs.foundingTotal} THEN ${clubs.foundingTaken} + 1 ELSE ${clubs.foundingTaken} END`,
-    }).where(eq(clubs.id, clubId)).returning();
+    const [updated] = await db.update(clubs)
+      .set({ memberCount: sql`${clubs.memberCount} + 1` })
+      .where(eq(clubs.id, clubId))
+      .returning();
     return updated;
   },
 
   async decrementMemberCount(clubId: string): Promise<Club | undefined> {
-    const [updated] = await db.update(clubs).set({
-      memberCount: sql`GREATEST(${clubs.memberCount} - 1, 0)`,
-    }).where(eq(clubs.id, clubId)).returning();
+    const [updated] = await db.update(clubs)
+      .set({ memberCount: sql`GREATEST(${clubs.memberCount} - 1, 0)` })
+      .where(eq(clubs.id, clubId))
+      .returning();
     return updated;
   },
 
@@ -131,7 +134,7 @@ export const clubsStorage = {
       .from(joinRequests)
       .leftJoin(users, eq(joinRequests.userId, users.id))
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")))
-      .orderBy(joinRequests.createdAt);
+      .orderBy(asc(joinRequests.createdAt));
   },
 
   async getMembersPreview(clubId: string, limit = 10): Promise<{ userId: string | null; name: string; profileImageUrl: string | null }[]> {
@@ -143,7 +146,7 @@ export const clubsStorage = {
       .from(joinRequests)
       .leftJoin(users, eq(joinRequests.userId, users.id))
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")))
-      .orderBy(desc(joinRequests.createdAt))
+      .orderBy(asc(joinRequests.createdAt))
       .limit(limit);
   },
 
@@ -151,11 +154,11 @@ export const clubsStorage = {
     return db.select({
       name: joinRequests.name,
       profileImageUrl: users.profileImageUrl,
-    }).from(joinRequests)
+    })
+      .from(joinRequests)
       .leftJoin(users, eq(joinRequests.userId, users.id))
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")))
-      .orderBy(joinRequests.createdAt)
-      .limit(100);
+      .orderBy(asc(joinRequests.createdAt));
   },
 
   async createJoinRequest(request: InsertJoinRequest): Promise<JoinRequest> {
@@ -164,19 +167,19 @@ export const clubsStorage = {
   },
 
   async getJoinRequests(): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).orderBy(desc(joinRequests.createdAt));
+    return db.select().from(joinRequests);
   },
 
   async getJoinRequestsByClub(clubId: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.clubId, clubId)).orderBy(desc(joinRequests.createdAt));
+    return db.select().from(joinRequests).where(eq(joinRequests.clubId, clubId));
   },
 
   async getJoinRequestsByPhone(phone: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.phone, phone)).orderBy(desc(joinRequests.createdAt));
+    return db.select().from(joinRequests).where(eq(joinRequests.phone, phone));
   },
 
   async getJoinRequestsByUser(userId: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.userId, userId)).orderBy(desc(joinRequests.createdAt));
+    return db.select().from(joinRequests).where(eq(joinRequests.userId, userId));
   },
 
   async getJoinRequest(id: string): Promise<JoinRequest | undefined> {
@@ -190,7 +193,7 @@ export const clubsStorage = {
   },
 
   async approveJoinRequest(id: string): Promise<JoinRequest | undefined> {
-    const [updated] = await db.update(joinRequests).set({ status: "approved", markedDone: true }).where(eq(joinRequests.id, id)).returning();
+    const [updated] = await db.update(joinRequests).set({ status: "approved" }).where(eq(joinRequests.id, id)).returning();
     return updated;
   },
 
@@ -212,37 +215,33 @@ export const clubsStorage = {
 
   async getApprovedMembersByClub(clubId: string): Promise<JoinRequest[]> {
     return db.select().from(joinRequests)
-      .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")))
-      .orderBy(desc(joinRequests.createdAt));
+      .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")));
   },
 
   async hasExistingJoinRequest(clubId: string, userId: string): Promise<JoinRequest | undefined> {
-    const [existing] = await db.select().from(joinRequests)
+    const [request] = await db.select().from(joinRequests)
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.userId, userId)));
-    return existing;
+    return request;
   },
 
   async getJoinRequestCountByClub(clubId: string): Promise<number> {
     const [result] = await db.select({ count: sql<number>`count(*)::int` })
       .from(joinRequests)
-      .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")));
+      .where(eq(joinRequests.clubId, clubId));
     return result?.count ?? 0;
   },
 
   async hasUserJoinedClub(clubId: string, userId: string): Promise<boolean> {
-    const [result] = await db.select({ count: sql<number>`count(*)::int` })
-      .from(joinRequests)
+    const [request] = await db.select().from(joinRequests)
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.userId, userId), eq(joinRequests.status, "approved")));
-    return (result?.count ?? 0) > 0;
+    return !!request;
   },
 
   async getUserJoinStatus(clubId: string, userId: string): Promise<{ status: string | null; requestId: string | null }> {
-    const [result] = await db.select({ status: joinRequests.status, id: joinRequests.id })
-      .from(joinRequests)
-      .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.userId, userId)))
-      .orderBy(desc(joinRequests.createdAt))
-      .limit(1);
-    return { status: result?.status ?? null, requestId: result?.id ?? null };
+    const [request] = await db.select().from(joinRequests)
+      .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.userId, userId)));
+    if (!request) return { status: null, requestId: null };
+    return { status: request.status, requestId: request.id };
   },
 
   async approveJoinRequestWithFoundingCheck(requestId: string, clubId: string): Promise<JoinRequest | undefined> {
@@ -298,7 +297,8 @@ export const clubsStorage = {
       clubId: joinRequests.clubId,
       clubName: joinRequests.clubName,
       isFoundingMember: joinRequests.isFoundingMember,
-    }).from(joinRequests)
+    })
+      .from(joinRequests)
       .where(and(eq(joinRequests.userId, userId), eq(joinRequests.status, "approved")));
   },
 
@@ -306,7 +306,7 @@ export const clubsStorage = {
     const rows = await db.select({ userId: joinRequests.userId })
       .from(joinRequests)
       .where(and(eq(joinRequests.clubId, clubId), eq(joinRequests.status, "approved")));
-    return rows.map(r => r.userId).filter(Boolean) as string[];
+    return rows.map(r => r.userId).filter((id): id is string => id !== null);
   },
 
   async getClubMembersEnriched(clubId: string) {
@@ -341,12 +341,12 @@ export const clubsStorage = {
   },
 
   async getClubRatings(clubId: string): Promise<ClubRating[]> {
-    return db.select().from(clubRatings).where(eq(clubRatings.clubId, clubId)).orderBy(desc(clubRatings.createdAt));
+    return db.select().from(clubRatings).where(eq(clubRatings.clubId, clubId));
   },
 
   async getClubAverageRating(clubId: string): Promise<{ average: number; count: number }> {
     const [result] = await db.select({
-      average: sql<number>`COALESCE(AVG(${clubRatings.rating})::numeric(2,1), 0)::float`,
+      average: sql<number>`coalesce(avg(rating), 0)::float`,
       count: sql<number>`count(*)::int`,
     }).from(clubRatings).where(eq(clubRatings.clubId, clubId));
     return { average: result?.average ?? 0, count: result?.count ?? 0 };
@@ -362,17 +362,17 @@ export const clubsStorage = {
     const existing = await clubsStorage.getUserRating(clubId, userId);
     if (existing) {
       const [updated] = await db.update(clubRatings)
-        .set({ rating, review: review || null })
-        .where(eq(clubRatings.id, existing.id))
+        .set({ rating, review: review ?? null })
+        .where(and(eq(clubRatings.clubId, clubId), eq(clubRatings.userId, userId)))
         .returning();
       return updated;
     }
-    const [created] = await db.insert(clubRatings).values({ clubId, userId, rating, review: review || null }).returning();
+    const [created] = await db.insert(clubRatings).values({ clubId, userId, rating, review: review ?? null }).returning();
     return created;
   },
 
   async getClubFaqs(clubId: string): Promise<ClubFaq[]> {
-    return db.select().from(clubFaqs).where(eq(clubFaqs.clubId, clubId)).orderBy(clubFaqs.sortOrder);
+    return db.select().from(clubFaqs).where(eq(clubFaqs.clubId, clubId));
   },
 
   async createFaq(clubId: string, question: string, answer: string): Promise<ClubFaq> {
@@ -405,219 +405,6 @@ export const clubsStorage = {
 
   async deleteScheduleEntry(id: string): Promise<void> {
     await db.delete(clubScheduleEntries).where(eq(clubScheduleEntries.id, id));
-  },
-
-  async getClubMoments(clubId: string): Promise<(ClubMoment & { commentCount: number })[]> {
-    const rows = await db.select().from(clubMoments).where(eq(clubMoments.clubId, clubId)).orderBy(desc(clubMoments.createdAt));
-    if (rows.length === 0) return [];
-    const ids = rows.map(r => r.id);
-    const counts = await db
-      .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
-      .from(momentComments)
-      .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`)
-      .groupBy(momentComments.momentId);
-    const countMap: Record<string, number> = {};
-    for (const c of counts) countMap[c.momentId] = c.count;
-    return rows.map(r => ({ ...r, commentCount: countMap[r.id] ?? 0 }));
-  },
-
-  async createMoment(clubId: string, caption: string, emoji?: string, imageUrl?: string, authorUserId?: string, authorName?: string): Promise<ClubMoment> {
-    const [created] = await db.insert(clubMoments).values({ clubId, caption, emoji: emoji || null, imageUrl: imageUrl || null, authorUserId: authorUserId || null, authorName: authorName || null }).returning();
-    return created;
-  },
-
-  async updateMoment(id: string, data: { caption?: string; emoji?: string }): Promise<ClubMoment | undefined> {
-    const [updated] = await db.update(clubMoments).set(data).where(eq(clubMoments.id, id)).returning();
-    return updated;
-  },
-
-  async deleteMoment(id: string): Promise<void> {
-    await db.delete(momentComments).where(eq(momentComments.momentId, id));
-    await db.delete(clubMoments).where(eq(clubMoments.id, id));
-  },
-
-  async getMomentById(momentId: string): Promise<ClubMoment | undefined> {
-    const [row] = await db.select().from(clubMoments).where(eq(clubMoments.id, momentId));
-    return row;
-  },
-
-  async getCommentsByMoment(momentId: string): Promise<MomentComment[]> {
-    return db.select().from(momentComments)
-      .where(eq(momentComments.momentId, momentId))
-      .orderBy(momentComments.createdAt);
-  },
-
-  async createComment(data: { momentId: string; userId: string; userName: string; userImageUrl?: string | null; content: string }): Promise<MomentComment> {
-    const [created] = await db.insert(momentComments).values({
-      momentId: data.momentId,
-      userId: data.userId,
-      userName: data.userName,
-      userImageUrl: data.userImageUrl ?? null,
-      content: data.content,
-    }).returning();
-    return created;
-  },
-
-  async deleteComment(commentId: string, userId: string, isOrganiser = false): Promise<void> {
-    if (isOrganiser) {
-      await db.delete(momentComments).where(eq(momentComments.id, commentId));
-    } else {
-      await db.delete(momentComments).where(and(eq(momentComments.id, commentId), eq(momentComments.userId, userId)));
-    }
-  },
-
-  async likeMoment(momentId: string, userId: string): Promise<void> {
-    try {
-      await db.insert(momentLikes).values({ momentId, userId });
-      await db.update(clubMoments).set({ likesCount: sql`${clubMoments.likesCount} + 1` }).where(eq(clubMoments.id, momentId));
-    } catch { }
-  },
-
-  async unlikeMoment(momentId: string, userId: string): Promise<void> {
-    const deleted = await db.delete(momentLikes).where(and(eq(momentLikes.momentId, momentId), eq(momentLikes.userId, userId))).returning();
-    if (deleted.length > 0) {
-      await db.update(clubMoments).set({ likesCount: sql`GREATEST(${clubMoments.likesCount} - 1, 0)` }).where(eq(clubMoments.id, momentId));
-    }
-  },
-
-  async getMomentLikeStatus(momentId: string, userId: string): Promise<boolean> {
-    const [row] = await db.select().from(momentLikes).where(and(eq(momentLikes.momentId, momentId), eq(momentLikes.userId, userId)));
-    return !!row;
-  },
-
-  async getFeedMomentsCount(): Promise<number> {
-    const [result] = await db.select({ count: sql<number>`count(*)::int` }).from(clubMoments);
-    return result?.count ?? 0;
-  },
-
-  async getFeedMoments(limit = 10, userId?: string, offset = 0) {
-    const rows = await db.select({
-      id: clubMoments.id,
-      clubId: clubMoments.clubId,
-      caption: clubMoments.caption,
-      imageUrl: clubMoments.imageUrl,
-      emoji: clubMoments.emoji,
-      likesCount: clubMoments.likesCount,
-      createdAt: clubMoments.createdAt,
-      authorUserId: clubMoments.authorUserId,
-      authorName: clubMoments.authorName,
-      clubName: clubs.name,
-      clubEmoji: clubs.emoji,
-      clubLocation: clubs.location,
-    })
-      .from(clubMoments)
-      .innerJoin(clubs, eq(clubMoments.clubId, clubs.id))
-      .orderBy(desc(clubMoments.createdAt))
-      .limit(limit)
-      .offset(offset);
-    if (rows.length === 0) return [];
-    const ids = rows.map(r => r.id);
-    const counts = await db
-      .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
-      .from(momentComments)
-      .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`)
-      .groupBy(momentComments.momentId);
-    const countMap: Record<string, number> = {};
-    for (const c of counts) countMap[c.momentId] = c.count;
-    let likedSet = new Set<string>();
-    if (userId) {
-      const likedRows = await db
-        .select({ momentId: momentLikes.momentId })
-        .from(momentLikes)
-        .where(and(eq(momentLikes.userId, userId), sql`${momentLikes.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`));
-      for (const row of likedRows) likedSet.add(row.momentId);
-    }
-    return rows.map(r => ({ ...r, commentCount: countMap[r.id] ?? 0, userHasLiked: likedSet.has(r.id) }));
-  },
-
-  async getClubAnnouncements(clubId: string): Promise<ClubAnnouncement[]> {
-    return db.select().from(clubAnnouncements)
-      .where(eq(clubAnnouncements.clubId, clubId))
-      .orderBy(desc(clubAnnouncements.createdAt));
-  },
-
-  async createAnnouncement(data: InsertClubAnnouncement): Promise<ClubAnnouncement> {
-    const [created] = await db.insert(clubAnnouncements).values(data).returning();
-    return created;
-  },
-
-  async deleteAnnouncement(id: string, clubId: string): Promise<void> {
-    await db.delete(clubAnnouncements).where(
-      and(eq(clubAnnouncements.id, id), eq(clubAnnouncements.clubId, clubId))
-    );
-  },
-
-  async getClubPolls(clubId: string, viewerUserId?: string): Promise<(ClubPoll & { voteCounts: number[]; userVote: number | null })[]> {
-    const polls = await db.select().from(clubPolls)
-      .where(eq(clubPolls.clubId, clubId))
-      .orderBy(desc(clubPolls.createdAt));
-    const result = [];
-    for (const poll of polls) {
-      const allVotes = await db.select().from(pollVotes).where(eq(pollVotes.pollId, poll.id));
-      const voteCounts = (poll.options ?? []).map((_: string, idx: number) =>
-        allVotes.filter(v => v.optionIndex === idx).length
-      );
-      const userVoteRow = viewerUserId ? allVotes.find(v => v.userId === viewerUserId) : undefined;
-      result.push({ ...poll, voteCounts, userVote: userVoteRow?.optionIndex ?? null });
-    }
-    return result;
-  },
-
-  async createPoll(data: InsertClubPoll): Promise<ClubPoll> {
-    const [created] = await db.insert(clubPolls).values(data).returning();
-    return created;
-  },
-
-  async deletePoll(id: string, clubId: string): Promise<void> {
-    await db.delete(clubPolls).where(and(eq(clubPolls.id, id), eq(clubPolls.clubId, clubId)));
-  },
-
-  async closePoll(id: string, clubId: string): Promise<void> {
-    await db.update(clubPolls).set({ isOpen: false })
-      .where(and(eq(clubPolls.id, id), eq(clubPolls.clubId, clubId)));
-  },
-
-  async castVote(pollId: string, userId: string, optionIndex: number): Promise<void> {
-    const existing = await db.select().from(pollVotes)
-      .where(and(eq(pollVotes.pollId, pollId), eq(pollVotes.userId, userId)));
-    if (existing.length > 0) {
-      await db.update(pollVotes).set({ optionIndex })
-        .where(and(eq(pollVotes.pollId, pollId), eq(pollVotes.userId, userId)));
-    } else {
-      await db.insert(pollVotes).values({ pollId, userId, optionIndex });
-    }
-  },
-
-  async addCoOrganiser(clubId: string, userId: string): Promise<void> {
-    await db.update(clubs).set({
-      coOrganiserUserIds: sql`array_append(coalesce(${clubs.coOrganiserUserIds}, ARRAY[]::text[]), ${userId})`
-    }).where(eq(clubs.id, clubId));
-  },
-
-  async removeCoOrganiser(clubId: string, userId: string): Promise<void> {
-    await db.update(clubs).set({
-      coOrganiserUserIds: sql`array_remove(coalesce(${clubs.coOrganiserUserIds}, ARRAY[]::text[]), ${userId})`
-    }).where(eq(clubs.id, clubId));
-  },
-
-  async getClubsForOrganiser(userId: string): Promise<Club[]> {
-    const created = await db.select().from(clubs).where(eq(clubs.creatorUserId, userId));
-    const coManaged = await db.select().from(clubs).where(
-      sql`${clubs.coOrganiserUserIds} @> ARRAY[${userId}]::text[]`
-    );
-    const seen = new Set<string>();
-    const result: Club[] = [];
-    for (const c of [...created, ...coManaged]) {
-      if (!seen.has(c.id)) { seen.add(c.id); result.push(c); }
-    }
-    return result;
-  },
-
-  async isClubManager(clubId: string, userId: string): Promise<boolean> {
-    const [club] = await db.select().from(clubs).where(eq(clubs.id, clubId));
-    if (!club) return false;
-    if (club.creatorUserId === userId) return true;
-    return (club.coOrganiserUserIds ?? []).includes(userId);
   },
 
   async getPageSections(clubId: string): Promise<ClubPageSection[]> {
@@ -698,9 +485,23 @@ export const clubsStorage = {
       })
     );
 
-    const announcements = await clubsStorage.getClubAnnouncements(clubId);
+    const announcements = await db.select().from(clubAnnouncements)
+      .where(eq(clubAnnouncements.clubId, clubId))
+      .orderBy(desc(clubAnnouncements.createdAt));
     const schedule = await clubsStorage.getClubSchedule(clubId);
-    const moments = (await clubsStorage.getClubMoments(clubId)).slice(0, 6);
+
+    const momentRows = await db.select().from(clubMoments).where(eq(clubMoments.clubId, clubId)).orderBy(desc(clubMoments.createdAt)).limit(6);
+    const momentIds = momentRows.map(r => r.id);
+    let commentCounts: Record<string, number> = {};
+    if (momentIds.length > 0) {
+      const counts = await db
+        .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
+        .from(momentComments)
+        .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${momentIds.map(id => `'${id}'`).join(",")}]`)})`)
+        .groupBy(momentComments.momentId);
+      for (const c of counts) commentCounts[c.momentId] = c.count;
+    }
+    const moments = momentRows.map(r => ({ ...r, commentCount: commentCounts[r.id] ?? 0 }));
 
     const now = new Date();
     const clubEvents = await db.select().from(events).where(eq(events.clubId, clubId)).orderBy(events.startsAt);
