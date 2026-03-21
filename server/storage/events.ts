@@ -299,7 +299,7 @@ export const eventsStorage = {
     const now = new Date();
     const futureEvents = await db.select({ id: events.id, title: events.title })
       .from(events)
-      .where(and(eq(events.clubId, clubId), gte(events.startsAt, now), eq(events.isCancelled, false)));
+      .where(and(eq(events.clubId, clubId), gte(events.startsAt, now)));
     if (futureEvents.length === 0) return [];
     const futureEventIds = futureEvents.map(e => e.id);
     const eventTitleMap = new Map(futureEvents.map(e => [e.id, e.title]));

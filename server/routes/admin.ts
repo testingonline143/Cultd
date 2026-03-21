@@ -129,7 +129,7 @@ export function registerAdminRoutes(
     }
   });
 
-  app.post("/api/admin/clubs/:id/reconcile-members", isAuthenticated, isAdmin, async (req, res) => {
+  app.get("/api/admin/clubs/:id/reconcile-members", isAuthenticated, isAdmin, async (req, res) => {
     try {
       const updated = await storage.reconcileMemberCount(req.params.id as string);
       if (!updated) return res.status(404).json({ message: "Club not found" });

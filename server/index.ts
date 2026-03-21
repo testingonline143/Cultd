@@ -88,7 +88,7 @@ app.use((req, res, next) => {
   });
 
   const { storage } = await import("./storage");
-  storage.getClubs({ limit: 1000 })
+  storage.getClubs()
     .then(allClubs => Promise.all(allClubs.map(c => storage.reconcileMemberCount(c.id))))
     .then(results => console.log(`[startup] Reconciled memberCount for ${results.length} clubs`))
     .catch(err => console.error("[startup] memberCount reconciliation failed:", err));
