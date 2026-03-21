@@ -216,7 +216,8 @@ export async function registerRoutes(
       const user = await storage.getUser(userId);
       isDbAdmin = user?.role === "admin";
     }
-    res.json({ configured: true, isCurrentUserAdmin: isEnvAdmin || isDbAdmin });
+    const isCurrentUserAdmin = isEnvAdmin || isDbAdmin;
+    res.json({ configured: isCurrentUserAdmin, isCurrentUserAdmin });
   });
 
   app.get("/api/admin/join-requests", isAuthenticated, isAdmin, async (_req, res) => {
