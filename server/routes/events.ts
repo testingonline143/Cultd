@@ -355,10 +355,12 @@ export function registerEventRoutes(
       let tokenForQr: string;
       if (rawToken && rsvp.checkinToken) {
         const expectedHash = hashCheckinToken(rawToken);
-        if (!crypto.timingSafeEqual(Buffer.from(expectedHash), Buffer.from(rsvp.checkinToken))) {
+        if (!crypto.timingSafeEqual(Buffer.from(expectedHash, "hex"), Buffer.from(rsvp.checkinToken, "hex"))) {
           return res.status(403).json({ message: "Invalid token" });
         }
         tokenForQr = rawToken;
+      } else if (!rawToken && rsvp.checkinToken && isTokenHashed(rsvp.checkinToken)) {
+        return res.status(409).json({ message: "Ticket QR only available on the device used to RSVP" });
       } else {
         tokenForQr = rsvp.checkinToken ?? "";
       }
@@ -400,6 +402,13 @@ export function registerEventRoutes(
       }
       if (!rsvp) {
         return res.status(404).json({ success: false, message: "Invalid ticket — RSVP not found" });
+      }
+      if (rsvp.checkinToken && isTokenHashed(rsvp.checkinToken)) {
+        const expected = Buffer.from(hashedToken, "hex");
+        const stored = Buffer.from(rsvp.checkinToken, "hex");
+        if (expected.length !== stored.length || !crypto.timingSafeEqual(expected, stored)) {
+          return res.status(403).json({ success: false, message: "Invalid ticket" });
+        }
       }
       if (rsvp.eventId !== eventId) {
         return res.status(400).json({ success: false, message: "This ticket is for a different event" });

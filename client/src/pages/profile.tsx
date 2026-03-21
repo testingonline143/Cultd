@@ -518,12 +518,17 @@ function EventTicketCard({ rsvp, isPast }: { rsvp: UserRsvp; isPast: boolean }) 
           >
             {(() => {
               const storedToken = localStorage.getItem(`ticket-token-${rsvp.id}`);
-              const qrSrc = storedToken
-                ? `/api/rsvps/${rsvp.id}/qr?token=${encodeURIComponent(storedToken)}`
-                : `/api/rsvps/${rsvp.id}/qr`;
+              if (!storedToken) {
+                return (
+                  <div className="w-[200px] h-[200px] mx-auto mb-3 flex flex-col items-center justify-center text-center gap-2 text-muted-foreground" data-testid={`div-qr-unavailable-${rsvp.eventId}`}>
+                    <Ticket className="w-8 h-8 opacity-40" />
+                    <p className="text-xs">Ticket QR only available on the device used to RSVP</p>
+                  </div>
+                );
+              }
               return (
                 <img
-                  src={qrSrc}
+                  src={`/api/rsvps/${rsvp.id}/qr?token=${encodeURIComponent(storedToken)}`}
                   alt="QR Ticket"
                   className="w-[200px] h-[200px] mx-auto mb-3 rounded-lg"
                   style={{ imageRendering: 'pixelated' }}

@@ -807,12 +807,17 @@ export default function EventDetail() {
               <div className="bg-white rounded-xl p-3 mb-4">
                 {(() => {
                   const storedToken = localStorage.getItem(`ticket-token-${userRsvp.id}`);
-                  const qrSrc = storedToken
-                    ? `/api/rsvps/${userRsvp.id}/qr?token=${encodeURIComponent(storedToken)}`
-                    : `/api/rsvps/${userRsvp.id}/qr`;
+                  if (!storedToken) {
+                    return (
+                      <div className="w-[200px] h-[200px] flex flex-col items-center justify-center text-center gap-2 text-[var(--muted-warm)]" data-testid="div-ticket-qr-unavailable">
+                        <Ticket className="w-8 h-8 opacity-40" />
+                        <p className="text-xs">Ticket QR only available on the device used to RSVP</p>
+                      </div>
+                    );
+                  }
                   return (
                     <img
-                      src={qrSrc}
+                      src={`/api/rsvps/${userRsvp.id}/qr?token=${encodeURIComponent(storedToken)}`}
                       alt="Your event ticket QR code"
                       className="w-[200px] h-[200px]"
                       data-testid="img-ticket-qr"
