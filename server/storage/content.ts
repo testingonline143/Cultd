@@ -147,6 +147,11 @@ export const contentStorage = {
     );
   },
 
+  async getPollById(pollId: string): Promise<ClubPoll | null> {
+    const [poll] = await db.select().from(clubPolls).where(eq(clubPolls.id, pollId));
+    return poll ?? null;
+  },
+
   async getClubPolls(clubId: string, viewerUserId?: string): Promise<(ClubPoll & { voteCounts: number[]; userVote: number | null })[]> {
     const polls = await db.select().from(clubPolls)
       .where(eq(clubPolls.clubId, clubId))

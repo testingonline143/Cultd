@@ -455,6 +455,9 @@ export function registerClubRoutes(
       if (!caption) {
         return res.status(400).json({ message: "Caption is required" });
       }
+      if (typeof caption !== "string" || caption.trim().length > 1000) {
+        return res.status(400).json({ message: "Caption must be 1000 characters or less" });
+      }
       const user = await storage.getUser(userId);
       const authorName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Member";
       const moment = await storage.createMoment(req.params.id, caption, emoji, imageUrl, userId, authorName);

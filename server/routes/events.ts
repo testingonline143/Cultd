@@ -475,6 +475,13 @@ export function registerEventRoutes(
       if (text.trim().length > 300) {
         return res.status(400).json({ message: "Comment too long (max 300 chars)" });
       }
+      const event = await storage.getEvent(req.params.id);
+      if (!event) return res.status(404).json({ message: "Event not found" });
+      const isManager = await storage.isClubManager(event.clubId, userId);
+      if (!isManager) {
+        const isMember = await storage.hasUserJoinedClub(event.clubId, userId);
+        if (!isMember) return res.status(403).json({ message: "You must be a club member to comment on events" });
+      }
       const user = await storage.getUser(userId);
       const userName = user?.firstName || user?.email?.split("@")[0] || "Member";
       const comment = await storage.createEventComment(req.params.id, userId, userName, user?.profileImageUrl ?? null, text.trim());
@@ -571,9 +578,18 @@ export function registerEventRoutes(
       if (!validTypes.includes(kudoType)) {
         return res.status(400).json({ message: "Invalid kudo type" });
       }
+      if (receiverId === giverId) {
+        return res.status(400).json({ message: "You cannot give a kudo to yourself" });
+      }
 
       const event = await storage.getEvent(eventId);
       if (!event) return res.status(404).json({ message: "Event not found" });
+
+      const validAttendees = await storage.getEventAttendeesForKudo(eventId, giverId);
+      const isValidReceiver = validAttendees.some((a: any) => a.userId === receiverId);
+      if (!isValidReceiver) {
+        return res.status(400).json({ message: "Recipient must be a fellow attendee of this event" });
+      }
 
       const alreadyGiven = await storage.hasGivenKudo(eventId, giverId);
       if (alreadyGiven) return res.status(409).json({ message: "You have already given a kudo for this event" });

@@ -259,8 +259,14 @@ export function registerUserRoutes(
       const userId = req.user.claims.sub;
       const content = (req.body.content || "").trim();
       if (!content) return res.status(400).json({ message: "Comment cannot be empty" });
+      if (content.length > 500) return res.status(400).json({ message: "Comment too long (max 500 chars)" });
       const moment = await storage.getMomentById(req.params.momentId);
       if (!moment) return res.status(404).json({ message: "Moment not found" });
+      const isManager = await storage.isClubManager(moment.clubId, userId);
+      if (!isManager) {
+        const isMember = await storage.hasUserJoinedClub(moment.clubId, userId);
+        if (!isMember) return res.status(403).json({ message: "You must be a club member to comment" });
+      }
       const user = await storage.getUser(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
       const userName = [user.firstName, user.lastName].filter(Boolean).join(" ") || "Member";
@@ -296,9 +302,16 @@ export function registerUserRoutes(
   app.post("/api/moments/:id/like", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      await storage.likeMoment(req.params.id, userId);
       const moment = await storage.getMomentById(req.params.id);
-      res.json({ success: true, likesCount: moment?.likesCount ?? 0 });
+      if (!moment) return res.status(404).json({ message: "Moment not found" });
+      const isManager = await storage.isClubManager(moment.clubId, userId);
+      if (!isManager) {
+        const isMember = await storage.hasUserJoinedClub(moment.clubId, userId);
+        if (!isMember) return res.status(403).json({ message: "You must be a club member to like posts" });
+      }
+      await storage.likeMoment(req.params.id, userId);
+      const updated = await storage.getMomentById(req.params.id);
+      res.json({ success: true, likesCount: updated?.likesCount ?? 0 });
     } catch (err) {
       console.error("Error liking moment:", err);
       res.status(500).json({ message: "Failed to like moment" });
@@ -308,9 +321,16 @@ export function registerUserRoutes(
   app.delete("/api/moments/:id/like", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      await storage.unlikeMoment(req.params.id, userId);
       const moment = await storage.getMomentById(req.params.id);
-      res.json({ success: true, likesCount: moment?.likesCount ?? 0 });
+      if (!moment) return res.status(404).json({ message: "Moment not found" });
+      const isManager = await storage.isClubManager(moment.clubId, userId);
+      if (!isManager) {
+        const isMember = await storage.hasUserJoinedClub(moment.clubId, userId);
+        if (!isMember) return res.status(403).json({ message: "You must be a club member to unlike posts" });
+      }
+      await storage.unlikeMoment(req.params.id, userId);
+      const updated = await storage.getMomentById(req.params.id);
+      res.json({ success: true, likesCount: updated?.likesCount ?? 0 });
     } catch (err) {
       console.error("Error unliking moment:", err);
       res.status(500).json({ message: "Failed to unlike moment" });
@@ -333,6 +353,13 @@ export function registerUserRoutes(
       const { optionIndex } = req.body;
       if (optionIndex === undefined || optionIndex === null) {
         return res.status(400).json({ message: "optionIndex is required" });
+      }
+      const poll = await storage.getPollById(req.params.pollId);
+      if (!poll) return res.status(404).json({ message: "Poll not found" });
+      const isManager = await storage.isClubManager(poll.clubId, userId);
+      if (!isManager) {
+        const isMember = await storage.hasUserJoinedClub(poll.clubId, userId);
+        if (!isMember) return res.status(403).json({ message: "You must be a club member to vote" });
       }
       await storage.castVote(req.params.pollId, userId, Number(optionIndex));
       res.json({ success: true });

@@ -22,7 +22,7 @@ export function registerOrganizerRoutes(
     }
   });
 
-  app.get("/api/organizer/my-clubs", isAuthenticated, async (req: any, res) => {
+  app.get("/api/organizer/my-clubs", isAuthenticated, requireRole("organiser", "admin"), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const clubs = await storage.getClubsForOrganiser(userId);

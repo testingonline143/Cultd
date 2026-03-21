@@ -124,6 +124,7 @@ export interface IStorage {
   createAnnouncement(data: InsertClubAnnouncement): Promise<ClubAnnouncement>;
   deleteAnnouncement(id: string, clubId: string): Promise<void>;
   getClubMemberUserIds(clubId: string): Promise<string[]>;
+  getPollById(pollId: string): Promise<ClubPoll | null>;
   getClubPolls(clubId: string, viewerUserId?: string): Promise<(ClubPoll & { voteCounts: number[]; userVote: number | null })[]>;
   createPoll(data: InsertClubPoll): Promise<ClubPoll>;
   deletePoll(id: string, clubId: string): Promise<void>;
