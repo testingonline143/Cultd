@@ -157,6 +157,12 @@ export default function HomeFeed() {
     enabled: !!user,
   });
 
+  const { data: suggestedClubs = [] } = useQuery<Club[]>({
+    queryKey: ["/api/clubs"],
+    select: (clubs) => clubs.filter(c => c.isActive).slice(0, 3),
+    enabled: !!user,
+  });
+
   const { data: events = [] } = useQuery<EventWithClub[]>({
     queryKey: ["/api/events"],
   });
@@ -501,38 +507,79 @@ export default function HomeFeed() {
 
         {/* Empty state — user has not joined any clubs yet */}
         {user && userClubs.length === 0 && (
-          <div
-            className="rounded-[20px] p-6 flex flex-col items-center text-center gap-4"
-            style={{ background: "var(--warm-white)", border: "1.5px dashed rgba(196,98,45,0.35)" }}
-            data-testid="empty-state-no-clubs"
-          >
-            <span className="text-4xl">🏘️</span>
-            <div>
-              <p className="font-display font-bold text-[16px] mb-1" style={{ color: "var(--ink)" }}>
-                You haven't joined a club yet
-              </p>
-              <p className="text-[13px]" style={{ color: "var(--muted-warm)" }}>
-                Join clubs to see their posts, events, and announcements here.
-              </p>
+          <div data-testid="empty-state-no-clubs">
+            <div
+              className="rounded-[20px] p-5 flex flex-col items-center text-center gap-3 mb-4"
+              style={{ background: "var(--warm-white)", border: "1.5px dashed rgba(196,98,45,0.35)" }}
+            >
+              <span className="text-4xl">🏘️</span>
+              <div>
+                <p className="font-display font-bold text-[16px] mb-1" style={{ color: "var(--ink)" }}>
+                  You haven't joined a club yet
+                </p>
+                <p className="text-[13px]" style={{ color: "var(--muted-warm)" }}>
+                  Join clubs to see their posts, events, and announcements here.
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 w-full">
+                <Link
+                  href="/matched-clubs"
+                  className="rounded-full px-5 py-2.5 text-[13px] font-bold text-white text-center"
+                  style={{ background: "var(--terra)" }}
+                  data-testid="button-view-matches"
+                >
+                  🎯 See My Matches
+                </Link>
+                <Link
+                  href="/explore"
+                  className="rounded-full px-5 py-2.5 text-[13px] font-semibold text-center"
+                  style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
+                  data-testid="button-browse-clubs"
+                >
+                  Explore All Clubs
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-col gap-2 w-full">
-              <Link
-                href="/matched-clubs"
-                className="rounded-full px-5 py-2.5 text-[13px] font-bold text-white text-center"
-                style={{ background: "var(--terra)" }}
-                data-testid="button-view-matches"
-              >
-                🎯 See My Matches
-              </Link>
-              <Link
-                href="/explore"
-                className="rounded-full px-5 py-2.5 text-[13px] font-semibold text-center"
-                style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
-                data-testid="button-browse-clubs"
-              >
-                Explore All Clubs
-              </Link>
-            </div>
+
+            {suggestedClubs.length > 0 && (
+              <div>
+                <p className="text-[12px] font-bold uppercase tracking-widest mb-3" style={{ color: "var(--muted-warm)" }}>
+                  Popular clubs near you
+                </p>
+                <div className="flex flex-col gap-3">
+                  {suggestedClubs.map(club => (
+                    <Link
+                      key={club.id}
+                      href={club.slug ? `/c/${club.slug}` : `/club/${club.id}`}
+                      className="flex items-center gap-3 p-3 rounded-[16px] transition-all active:scale-[0.98]"
+                      style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", textDecoration: "none" }}
+                      data-testid={`card-suggested-club-${club.id}`}
+                    >
+                      <div
+                        className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0 text-2xl"
+                        style={{ background: "var(--terra-pale)" }}
+                      >
+                        {club.coverImageUrl
+                          ? <img src={club.coverImageUrl} alt={club.name} className="w-full h-full object-cover rounded-[12px]" loading="lazy" />
+                          : club.emoji}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-[14px] truncate" style={{ color: "var(--ink)" }}>{club.name}</p>
+                        <p className="text-[11px] truncate" style={{ color: "var(--muted-warm)" }}>
+                          {club.category}{club.city ? ` · ${club.city}` : ""}
+                        </p>
+                      </div>
+                      <div
+                        className="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold"
+                        style={{ background: "var(--terra-pale)", color: "var(--terra)" }}
+                      >
+                        Explore
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

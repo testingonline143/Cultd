@@ -57,6 +57,7 @@ export function buildOgHtml(template: string, og: OgData): string {
   const type = og.type ?? "website";
 
   const ogBlock = `
+    <meta name="description" content="${escapeAttr(og.description)}" />
     <meta property="og:title" content="${escapeAttr(og.title)}" />
     <meta property="og:description" content="${escapeAttr(og.description)}" />
     <meta property="og:image" content="${escapeAttr(og.imageUrl)}" />
@@ -67,6 +68,7 @@ export function buildOgHtml(template: string, og: OgData): string {
     <meta name="twitter:title" content="${escapeAttr(og.title)}" />
     <meta name="twitter:description" content="${escapeAttr(og.description)}" />
     <meta name="twitter:image" content="${escapeAttr(og.imageUrl)}" />
+    <link rel="canonical" href="${escapeAttr(og.url)}" />
     <title>${escapeHtml(og.title)}</title>`;
 
   let html = template;
@@ -102,10 +104,12 @@ export function buildClubSvg(club: {
   category: string;
   shortDesc: string;
   organizerName?: string;
+  city?: string | null;
 }): string {
   const name = truncate(club.name, 36);
   const desc = truncate(club.shortDesc, 110);
   const category = club.category.toUpperCase();
+  const cityLabel = club.city ? ` • ${club.city.toUpperCase()}` : "";
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
@@ -134,7 +138,7 @@ export function buildClubSvg(club: {
 
   <line x1="40" y1="540" x2="1160" y2="540" stroke="#1A1410" stroke-opacity="0.1" stroke-width="1"/>
   <text x="40" y="590" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="3" fill="#C4622D" fill-opacity="0.7">CULTFAM</text>
-  <text x="160" y="590" font-family="Arial, sans-serif" font-size="22" fill="#1A1410" fill-opacity="0.4"> • TIRUPATI</text>
+  <text x="160" y="590" font-family="Arial, sans-serif" font-size="22" fill="#1A1410" fill-opacity="0.4">${escapeHtml(cityLabel)}</text>
   <text x="1160" y="590" font-family="Arial, sans-serif" font-size="22" fill="#1A1410" fill-opacity="0.35" text-anchor="end">cultfam.in</text>
 </svg>`;
 }

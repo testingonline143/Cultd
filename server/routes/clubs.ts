@@ -552,6 +552,7 @@ export function registerClubRoutes(
         category: club.category,
         shortDesc: club.shortDesc,
         organizerName: club.organizerName ?? undefined,
+        city: club.city ?? undefined,
       });
       const pngBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
       res.set({ "Content-Type": "image/png", "Cache-Control": "public, max-age=86400" });
