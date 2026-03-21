@@ -361,7 +361,8 @@ export default function HomeFeed() {
           background: "rgba(245,240,232,0.92)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          paddingTop: "calc(1rem + env(safe-area-inset-top, 0px))",
+          boxShadow: scrolled ? "0 1px 0 rgba(26,20,16,0.10)" : "none",
           transition: "box-shadow 0.2s ease",
         }}
         data-testid="header-home"

@@ -88,7 +88,8 @@ export default function Notifications() {
           background: "rgba(245,240,232,0.92)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          paddingTop: "calc(1.5rem + env(safe-area-inset-top, 0px))",
+          boxShadow: scrolled ? "0 1px 0 rgba(26,20,16,0.10)" : "none",
           transition: "box-shadow 0.2s ease",
         }}
       >
@@ -168,9 +169,8 @@ export default function Notifications() {
                 <button
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className="w-full text-left rounded-xl p-3 transition-all active:scale-[0.98]"
+                  className="w-full text-left rounded-xl p-3 transition-all active:scale-[0.98] active:shadow-none card-native"
                   style={{
-                    background: "transparent",
                     borderLeft: notification.isRead
                       ? "3px solid transparent"
                       : "3px solid var(--terra)",
