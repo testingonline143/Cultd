@@ -135,23 +135,23 @@ export default function PublicClub() {
       <div className="grid grid-cols-4 gap-2 px-6 mt-3">
         <div className="rounded-[14px] p-2.5 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[20px] leading-none tracking-wide text-[var(--terra)]" data-testid="text-member-count">{memberCount}</div>
-          <div className="text-[9px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Members</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Members</div>
         </div>
         <div className="rounded-[14px] p-2.5 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[20px] leading-none tracking-wide text-[var(--gold)]" data-testid="text-rating">
             {typeof rating === 'number' ? rating.toFixed(1) : '—'}
           </div>
-          <div className="text-[9px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Rating</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Rating</div>
         </div>
         <div className="rounded-[14px] p-2.5 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[20px] leading-none tracking-wide text-[var(--ink)]" data-testid="text-events-done">{pastEventCount || 0}</div>
-          <div className="text-[9px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Events Done</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Events Done</div>
         </div>
         <div className="rounded-[14px] p-2.5 text-center" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
           <div className="font-mono text-[20px] leading-none tracking-wide text-[var(--ink)]" data-testid="text-founding-spots">
             {Math.max(0, (club.foundingTotal || 20) - (club.foundingTaken || 0))}
           </div>
-          <div className="text-[9px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Spots Left</div>
+          <div className="text-[11px] font-semibold text-[var(--muted-warm)] tracking-wider mt-0.5">Spots Left</div>
         </div>
       </div>
 

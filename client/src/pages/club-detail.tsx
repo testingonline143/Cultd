@@ -1024,7 +1024,7 @@ function ClubEvents({ clubId, clubName, isAuthenticated }: { clubId: string; clu
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-display font-semibold text-[var(--cream)] text-sm truncate">{event.title}</span>
                       {event.recurrenceRule && (
-                        <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(196,98,45,0.25)', color: 'var(--terra-light)' }} data-testid={`badge-recurring-${event.id}`}>
+                        <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(196,98,45,0.25)', color: 'var(--terra-light)' }} data-testid={`badge-recurring-${event.id}`}>
                           <Repeat className="w-2.5 h-2.5" />
                           {event.recurrenceRule === "weekly" ? "Weekly" : event.recurrenceRule === "biweekly" ? "Bi-weekly" : "Monthly"}
                         </span>
@@ -1769,14 +1769,14 @@ function MembersTab({ clubId }: { clubId: string }) {
                     </AvatarFallback>
                   </Avatar>
                   {member.isFoundingMember && (
-                    <span className="absolute -bottom-1 -right-1 text-[9px] bg-amber-400 text-amber-900 rounded-full px-1 font-bold leading-tight" title="Founding Member" data-testid={`badge-founding-${member.userId || i}`}>⚡</span>
+                    <span className="absolute -bottom-1 -right-1 text-[11px] bg-amber-400 text-amber-900 rounded-full px-1 font-bold leading-tight" title="Founding Member" data-testid={`badge-founding-${member.userId || i}`}>⚡</span>
                   )}
                 </div>
                 <span className="text-[10px] text-[var(--ink3)] text-center truncate w-full font-medium" data-testid={`text-member-name-${member.userId || i}`}>
                   {member.name.split(' ')[0]}
                 </span>
                 {member.isFoundingMember && (
-                  <span className="text-[9px] font-bold text-amber-600 text-center w-full truncate">Founder</span>
+                  <span className="text-[11px] font-bold text-amber-600 text-center w-full truncate">Founder</span>
                 )}
               </>
             );

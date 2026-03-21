@@ -149,14 +149,13 @@ export default function Notifications() {
                 <button
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className="w-full text-left rounded-md p-3 transition-colors"
+                  className="w-full text-left rounded-xl p-3 transition-all active:scale-[0.98]"
                   style={{
-                    background: notification.isRead
-                      ? "transparent"
-                      : "rgba(var(--terra-rgb, 183,107,72), 0.06)",
+                    background: "transparent",
                     borderLeft: notification.isRead
                       ? "3px solid transparent"
                       : "3px solid var(--terra)",
+                    paddingLeft: notification.isRead ? "12px" : "9px",
                   }}
                   data-testid={`notification-item-${notification.id}`}
                 >

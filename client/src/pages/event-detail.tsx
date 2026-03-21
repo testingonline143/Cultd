@@ -523,7 +523,7 @@ export default function EventDetail() {
                 <Calendar className="w-4 h-4 text-[var(--terra)]" />
               </div>
               <div>
-                <div className="text-[9px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Date & Time</div>
+                <div className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Date & Time</div>
                 <div className="text-[13px] font-semibold text-[var(--ink)] leading-snug" data-testid="text-event-date">
                   {formatDate(eventData.startsAt)}
                   {eventData.endsAt && ` \u00B7 ${formatTime(eventData.startsAt)} \u2013 ${formatTime(eventData.endsAt)}`}
@@ -537,7 +537,7 @@ export default function EventDetail() {
                 <MapPin className="w-4 h-4 text-[var(--terra)]" />
               </div>
               <div>
-                <div className="text-[9px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Location</div>
+                <div className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Location</div>
                 <div className="text-[13px] font-semibold text-[var(--ink)]" data-testid="text-event-location">{eventData.locationText}</div>
                 {eventData.locationUrl && (
                   <a
@@ -559,7 +559,7 @@ export default function EventDetail() {
                   <Ticket className="w-4 h-4 text-[var(--terra)]" />
                 </div>
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Tickets</div>
+                  <div className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-0.5">Tickets</div>
                   <div className="text-[13px] font-semibold text-[var(--ink)]" data-testid="text-event-ticket-price">
                     Starts from ₹{Math.min(...ticketTypes.map(t => t.price))}
                     {ticketTypes.length > 1 && <span className="text-[11px] font-normal text-[var(--muted-warm)] ml-1">· {ticketTypes.length} options</span>}
@@ -599,7 +599,7 @@ export default function EventDetail() {
 
         {eventData.description && (
           <div className="rounded-2xl p-4 mb-3" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
-            <div className="text-[9px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-2">About This Meet-up</div>
+            <div className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)] mb-2">About This Meet-up</div>
             <p className="text-[13px] text-[var(--ink3)] leading-[1.7] whitespace-pre-wrap" data-testid="text-event-description">
               {eventData.description}
             </p>
@@ -652,7 +652,7 @@ export default function EventDetail() {
         <div className="rounded-2xl p-4 mb-3" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }} data-testid="section-discussion">
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle className="w-4 h-4" style={{ color: 'var(--terra)' }} />
-            <span className="text-[9px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)]">Discussion</span>
+            <span className="text-[11px] font-bold uppercase tracking-[1px] text-[var(--muted-warm)]">Discussion</span>
             {comments.length > 0 && (
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--terra-pale)', color: 'var(--terra)' }}>{comments.length}</span>
             )}

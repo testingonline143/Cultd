@@ -62,7 +62,7 @@ export function BottomNav() {
           }}
         >
           <Icon
-            className="w-5 h-5"
+            className={isActive ? "w-6 h-6" : "w-5 h-5"}
             style={{ opacity: isActive ? 1 : 0.45, color: isActive ? "var(--terra)" : "var(--ink)" }}
           />
         </div>

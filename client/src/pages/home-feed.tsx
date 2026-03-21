@@ -89,6 +89,7 @@ export default function HomeFeed() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const [scrolled, setScrolled] = useState(false);
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [likeCountOverrides, setLikeCountOverrides] = useState<Record<string, number>>({});
   const [selectedClubId, setSelectedClubId] = useState<string | null>(null);
@@ -104,6 +105,12 @@ export default function HomeFeed() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const sessionStartRef = useRef<Date>(new Date());
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const likeMutation = useMutation({
     mutationFn: (momentId: string) => apiRequest("POST", `/api/moments/${momentId}/like`),
@@ -354,6 +361,8 @@ export default function HomeFeed() {
           background: "rgba(245,240,232,0.92)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
+          boxShadow: scrolled ? "0 1px 12px rgba(26,20,16,0.08)" : "none",
+          transition: "box-shadow 0.2s ease",
         }}
         data-testid="header-home"
       >
