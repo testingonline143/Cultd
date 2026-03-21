@@ -5,17 +5,33 @@ import { useAuth } from "@/hooks/use-auth";
 import { Drawer } from "vaul";
 import { Link } from "wouter";
 
-const TAB_PATHS = ["/home", "/explore", "/events", "/profile", "/organizer", "/notifications", "/create"];
+const HIDDEN_PATHS = ["/login", "/onboarding", "/scan", "/matched-clubs", "/admin"];
+
+function getActiveTab(location: string): string {
+  if (location === "/home" || location.startsWith("/home/")) return "/home";
+  if (location.startsWith("/explore") || location.startsWith("/club/") || location.startsWith("/c/")) return "/explore";
+  if (location.startsWith("/events") || location.startsWith("/event/")) return "/events";
+  if (location.startsWith("/profile") || location.startsWith("/member/") || location.startsWith("/my-payments")) return "/profile";
+  if (location.startsWith("/organizer") || location.startsWith("/create")) return "/organizer";
+  if (location.startsWith("/notifications")) return "/notifications";
+  return location;
+}
 
 export function BottomNav() {
   const [location, navigate] = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  if (!TAB_PATHS.includes(location)) return null;
+  const isHidden =
+    !isAuthenticated ||
+    location === "/" ||
+    HIDDEN_PATHS.some((p) => location === p || location.startsWith(p + "/"));
+
+  if (isHidden) return null;
 
   const isOrganiser = user?.role === "organiser" || user?.role === "admin";
   const isCreator = isOrganiser;
+  const activeTab = getActiveTab(location);
 
   const leftTabs = [
     { path: "/explore", label: "CLUBS", icon: Users },
@@ -28,7 +44,7 @@ export function BottomNav() {
   ];
 
   const renderTab = (tab: { path: string; label: string; icon: React.ElementType }, key: string) => {
-    const isActive = location === tab.path;
+    const isActive = activeTab === tab.path;
     const Icon = tab.icon;
     return (
       <button
@@ -71,7 +87,6 @@ export function BottomNav() {
         data-testid="nav-bottom"
       >
         <div className="flex items-center h-16 max-w-lg mx-auto px-2">
-          {/* Left tabs */}
           {leftTabs.map((tab) => renderTab(tab, tab.path))}
 
           {isCreator && (
@@ -92,12 +107,10 @@ export function BottomNav() {
             </div>
           )}
 
-          {/* Right tabs */}
           {rightTabs.map((tab) => renderTab(tab, tab.path))}
         </div>
       </nav>
 
-      {/* FAB Action Sheet */}
       <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay
@@ -188,7 +201,6 @@ export function BottomNav() {
                     </div>
                   </Link>
                 )}
-
               </div>
             </div>
           </Drawer.Content>

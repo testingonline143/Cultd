@@ -90,31 +90,6 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   return <Component />;
 }
 
-function AuthHandler({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated, isLoading } = useAuth();
-  const [location, navigate] = useLocation();
-
-  useEffect(() => {
-    if (isLoading || !isAuthenticated || !user) return;
-
-    const timeoutId = setTimeout(() => {
-      if (location === "/") {
-        if (!user.quizCompleted) {
-          navigate("/onboarding");
-        } else {
-          const redirectTo = sessionStorage.getItem("redirectAfterAuth");
-          sessionStorage.removeItem("redirectAfterAuth");
-          navigate(redirectTo || "/home");
-        }
-      }
-    }, 0);
-
-    return () => clearTimeout(timeoutId);
-
-  }, [user, isAuthenticated, isLoading, location, navigate]);
-
-  return <>{children}</>;
-}
 
 function GlobalAuthModal() {
   const { showAuthModal, closeAuthModal, signIn, signUp } = useAuthModal();
@@ -122,15 +97,36 @@ function GlobalAuthModal() {
   return <AuthModal onClose={closeAuthModal} onSignIn={signIn} onSignUp={signUp} />;
 }
 
+function RootRoute() {
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const [, navigate] = useLocation();
+
+  useEffect(() => {
+    if (isLoading || !isAuthenticated || !user) return;
+    const timeoutId = setTimeout(() => {
+      if (!user.quizCompleted) {
+        navigate("/onboarding");
+      } else {
+        const redirectTo = sessionStorage.getItem("redirectAfterAuth");
+        sessionStorage.removeItem("redirectAfterAuth");
+        navigate(redirectTo || "/home");
+      }
+    }, 0);
+    return () => clearTimeout(timeoutId);
+  }, [isLoading, isAuthenticated, user, navigate]);
+
+  if (isLoading || isAuthenticated) return <PageLoader />;
+  return <Home />;
+}
+
 function Router() {
   return (
     <AuthModalProvider>
       <GlobalAuthModal />
-      <AuthHandler>
         <QuizGate>
         <Suspense fallback={<PageLoader />}>
           <Switch>
-            <Route path="/" component={Home} />
+            <Route path="/" component={RootRoute} />
             <Route path="/login" component={Login} />
             <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
             <Route path="/admin" component={Admin} />
@@ -155,7 +151,6 @@ function Router() {
         </Suspense>
           <BottomNav />
         </QuizGate>
-      </AuthHandler>
     </AuthModalProvider>
   );
 }

@@ -722,8 +722,8 @@ function ClubDetailContent({ club }: { club: Club }) {
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <span className="text-4xl mb-3">✨</span>
-              <p className="text-sm font-semibold text-[var(--ink)] mb-1">Values coming soon</p>
-              <p className="text-xs text-[var(--muted-warm)]">The organiser hasn't added values yet.</p>
+              <p className="text-sm font-semibold text-[var(--ink)] mb-1">No values added yet</p>
+              <p className="text-xs text-[var(--muted-warm)]">The organiser hasn't shared the club's values yet.</p>
             </div>
           )}
         </div>
@@ -1190,7 +1190,7 @@ function ScheduleTab({ clubId, fallbackSchedule }: { clubId: string; fallbackSch
     return (
       <div className="px-6 py-6 text-center">
         <Clock className="w-8 h-8 mx-auto text-[var(--muted-warm2)] mb-2" />
-        <p className="text-sm font-semibold text-[var(--ink3)] mb-1">Schedule coming soon</p>
+        <p className="text-sm font-semibold text-[var(--ink3)] mb-1">No schedule set up yet</p>
         {fallbackSchedule && (
           <p className="text-xs text-[var(--muted-warm)]">{fallbackSchedule}</p>
         )}
