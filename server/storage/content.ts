@@ -158,20 +158,35 @@ export const contentStorage = {
       .orderBy(desc(clubPolls.createdAt));
     if (polls.length === 0) return [];
     const pollIds = polls.map(p => p.id);
-    const allVotes = await db.select().from(pollVotes).where(inArray(pollVotes.pollId, pollIds));
-    const votesByPoll = new Map<string, typeof allVotes>();
-    for (const vote of allVotes) {
-      const list = votesByPoll.get(vote.pollId) ?? [];
-      list.push(vote);
-      votesByPoll.set(vote.pollId, list);
+    const [aggregates, userVotes] = await Promise.all([
+      db.select({
+        pollId: pollVotes.pollId,
+        optionIndex: pollVotes.optionIndex,
+        count: sql<number>`count(*)::int`,
+      })
+        .from(pollVotes)
+        .where(inArray(pollVotes.pollId, pollIds))
+        .groupBy(pollVotes.pollId, pollVotes.optionIndex),
+      viewerUserId
+        ? db.select({ pollId: pollVotes.pollId, optionIndex: pollVotes.optionIndex })
+            .from(pollVotes)
+            .where(and(inArray(pollVotes.pollId, pollIds), eq(pollVotes.userId, viewerUserId)))
+        : Promise.resolve([]),
+    ]);
+    const countMap = new Map<string, Map<number, number>>();
+    for (const row of aggregates) {
+      const byOption = countMap.get(row.pollId) ?? new Map<number, number>();
+      byOption.set(row.optionIndex, row.count);
+      countMap.set(row.pollId, byOption);
+    }
+    const userVoteMap = new Map<string, number>();
+    for (const row of userVotes) {
+      userVoteMap.set(row.pollId, row.optionIndex);
     }
     return polls.map(poll => {
-      const votes = votesByPoll.get(poll.id) ?? [];
-      const voteCounts = (poll.options ?? []).map((_: string, idx: number) =>
-        votes.filter(v => v.optionIndex === idx).length
-      );
-      const userVoteRow = viewerUserId ? votes.find(v => v.userId === viewerUserId) : undefined;
-      return { ...poll, voteCounts, userVote: userVoteRow?.optionIndex ?? null };
+      const byOption = countMap.get(poll.id) ?? new Map<number, number>();
+      const voteCounts = (poll.options ?? []).map((_: string, idx: number) => byOption.get(idx) ?? 0);
+      return { ...poll, voteCounts, userVote: userVoteMap.get(poll.id) ?? null };
     });
   },
 
