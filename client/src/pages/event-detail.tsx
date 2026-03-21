@@ -692,23 +692,34 @@ export default function EventDetail() {
           </div>
           {isAuthenticated && isClubMemberFromStatus ? (
             <div className="flex items-end gap-2 pt-2" style={{ borderTop: '1px solid var(--warm-border)' }}>
-              <textarea
-                ref={commentInputRef}
-                value={commentText}
-                onChange={e => setCommentText(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === "Enter" && !e.shiftKey && commentText.trim()) {
-                    e.preventDefault();
-                    commentMutation.mutate(commentText);
-                  }
-                }}
-                placeholder="Say something..."
-                rows={1}
-                maxLength={300}
-                className="flex-1 resize-none rounded-xl px-3 py-2 text-[13px] outline-none"
-                style={{ background: 'var(--cream)', border: '1.5px solid var(--warm-border)', color: 'var(--ink)', minHeight: 38 }}
-                data-testid="input-event-comment"
-              />
+              <div className="flex-1 relative">
+                <textarea
+                  ref={commentInputRef}
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && !e.shiftKey && commentText.trim()) {
+                      e.preventDefault();
+                      commentMutation.mutate(commentText);
+                    }
+                  }}
+                  placeholder="Say something..."
+                  rows={1}
+                  maxLength={300}
+                  className="w-full resize-none rounded-xl px-3 py-2 text-[13px] outline-none"
+                  style={{ background: 'var(--cream)', border: '1.5px solid var(--warm-border)', color: 'var(--ink)', minHeight: 38 }}
+                  data-testid="input-event-comment"
+                />
+                {commentText.length > 250 && (
+                  <span
+                    className="absolute bottom-1.5 right-2.5 text-[10px] font-semibold tabular-nums"
+                    style={{ color: commentText.length >= 300 ? 'var(--error, #ef4444)' : 'var(--muted-warm)' }}
+                    data-testid="text-comment-char-count"
+                  >
+                    {300 - commentText.length}
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => { if (commentText.trim()) commentMutation.mutate(commentText); }}
                 disabled={!commentText.trim() || commentMutation.isPending}

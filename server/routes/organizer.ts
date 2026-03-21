@@ -140,6 +140,17 @@ export function registerOrganizerRoutes(
         await storage.decrementMemberCount(req.params.clubId);
       }
       await storage.deleteJoinRequest(req.params.requestId);
+      if (request.userId) {
+        const club = await storage.getClub(req.params.clubId);
+        await storage.createNotification({
+          userId: request.userId,
+          type: "club_removal",
+          title: "Removed from club",
+          message: `You've been removed from ${club?.name ?? "the club"} by the organizer`,
+          linkUrl: `/club/${req.params.clubId}`,
+          isRead: false,
+        });
+      }
       res.json({ success: true });
     } catch (err) {
       console.error("Error removing member:", err);
