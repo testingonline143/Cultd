@@ -107,6 +107,7 @@ export const eventsStorage = {
         .set({
           status: "going",
           ...(rsvp.ticketTypeId !== undefined ? { ticketTypeId: rsvp.ticketTypeId, ticketTypeName: rsvp.ticketTypeName } : {}),
+          ...(checkinTokenHash ? { checkinToken: checkinTokenHash } : {}),
         })
         .where(eq(eventRsvps.id, existing.id))
         .returning();
