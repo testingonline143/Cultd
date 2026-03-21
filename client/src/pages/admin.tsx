@@ -9,6 +9,7 @@ import {
   TrendingUp, Camera, MessageSquare, Zap, RotateCcw, ChevronRight,
   BarChart2, Megaphone, Download, X, Vote, Send, Copy, Check,
   IndianRupee, RefreshCw, Clock, AlertCircle, Filter,
+  Sparkles, Award, Wallet, CircleDot,
 } from "lucide-react";
 import { Link } from "wouter";
 import { formatDistanceToNow, format } from "date-fns";
@@ -2057,6 +2058,7 @@ function PaymentsTab() {
   const { toast } = useToast();
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [activeView, setActiveView] = useState<"transactions" | "clubs" | "commissions">("transactions");
   const limit = 20;
 
   const { data, isLoading, refetch } = useQuery<AdminPaymentsResponse>({
@@ -2105,215 +2107,310 @@ function PaymentsTab() {
   });
 
   const totalPages = data ? Math.ceil(data.total / limit) : 1;
+  const maxClubVolume = data?.topClubs?.[0]?.totalVolume ?? 1;
 
   return (
-    <div className="space-y-4" data-testid="section-admin-payments">
-      <div className="flex items-center justify-between mb-1">
-        <h2 className="font-display text-lg font-bold" style={{ color: "var(--ink)" }}>Payment Dashboard</h2>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={async () => {
-              try {
-                const res = await apiRequest("GET", `/api/admin/payments?page=1&limit=10000`);
-                const allData = await res.json();
-                const rows = (allData.transactions as AdminTransaction[]).map(tx => [
-                  new Date(tx.createdAt).toLocaleString("en-IN"),
-                  tx.userName || tx.userId,
-                  tx.eventTitle || tx.eventId,
-                  tx.clubName || tx.clubId,
-                  String(tx.totalAmount / 100),
-                  String(tx.platformFee / 100),
-                  String(tx.baseAmount / 100),
-                  tx.status,
-                  tx.razorpayPaymentId,
-                ]);
-                downloadCSV("cultfam-payments.csv", rows, ["Date", "User", "Event", "Club", "Total (₹)", "Platform Fee (₹)", "Organiser (₹)", "Status", "Payment ID"]);
-              } catch { toast({ title: "Export failed", variant: "destructive" }); }
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-70"
-            style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
-            data-testid="button-export-csv"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Export
-          </button>
-          <button onClick={() => refetch()} className="p-1.5 rounded-lg hover:opacity-70 transition-opacity" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="button-refresh-payments">
-            <RefreshCw className="w-4 h-4" style={{ color: "var(--terra)" }} />
-          </button>
-        </div>
-      </div>
+    <div className="space-y-5" data-testid="section-admin-payments">
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 gap-3">
-          {[1,2,3,4].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} />)}
+      {/* ── Revenue Hero ──────────────────────────────────────────────────── */}
+      <div
+        className="rounded-[22px] p-5 relative overflow-hidden"
+        style={{ background: "var(--ink)" }}
+        data-testid="section-revenue-hero"
+      >
+        <div className="absolute inset-0 opacity-[0.15]" style={{ background: "radial-gradient(ellipse at top right, var(--terra), transparent 60%)" }} />
+        <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full blur-3xl opacity-10" style={{ background: "var(--terra-light)", transform: "translate(-30%, 30%)" }} />
+
+        <div className="relative flex items-start justify-between mb-4">
+          <div>
+            <div className="flex items-center gap-1.5 mb-1">
+              <Sparkles className="w-3 h-3" style={{ color: "var(--terra-light)" }} />
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.45)" }}>
+                Platform Revenue
+              </span>
+            </div>
+            {isLoading ? (
+              <div className="h-10 w-36 rounded-xl animate-pulse" style={{ background: "rgba(255,255,255,0.1)" }} />
+            ) : (
+              <div className="font-display text-4xl font-black text-white leading-none">
+                {fmt(data?.platformRevenue ?? 0)}
+              </div>
+            )}
+            <div className="text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>CultFam's cut</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={async () => {
+                try {
+                  const res = await apiRequest("GET", `/api/admin/payments?page=1&limit=10000`);
+                  const allData = await res.json();
+                  const rows = (allData.transactions as AdminTransaction[]).map(tx => [
+                    new Date(tx.createdAt).toLocaleString("en-IN"),
+                    tx.userName || tx.userId,
+                    tx.eventTitle || tx.eventId,
+                    tx.clubName || tx.clubId,
+                    String(tx.totalAmount / 100),
+                    String(tx.platformFee / 100),
+                    String(tx.baseAmount / 100),
+                    tx.status,
+                    tx.razorpayPaymentId,
+                  ]);
+                  downloadCSV("cultfam-payments.csv", rows, ["Date", "User", "Event", "Club", "Total (₹)", "Platform Fee (₹)", "Organiser (₹)", "Status", "Payment ID"]);
+                } catch { toast({ title: "Export failed", variant: "destructive" }); }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all hover:opacity-80"
+              style={{ background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.8)", border: "1px solid rgba(255,255,255,0.15)" }}
+              data-testid="button-export-csv"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Export
+            </button>
+            <button
+              onClick={() => refetch()}
+              className="p-1.5 rounded-xl hover:opacity-80 transition-opacity"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}
+              data-testid="button-refresh-payments"
+            >
+              <RefreshCw className="w-4 h-4" style={{ color: "rgba(255,255,255,0.7)" }} />
+            </button>
+          </div>
         </div>
-      ) : data && (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl p-4" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="stat-total-volume">
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Total Volume</div>
-            <div className="font-display text-xl font-black" style={{ color: "var(--terra)" }}>{fmt(data.totalVolume)}</div>
-            <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>{data.total} transactions</div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-3 gap-2 relative">
+          <div className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }} data-testid="stat-total-volume">
+            <div className="text-[9px] font-bold uppercase tracking-wider mb-1" style={{ color: "rgba(255,255,255,0.4)" }}>Total GMV</div>
+            {isLoading ? <div className="h-5 w-20 rounded animate-pulse" style={{ background: "rgba(255,255,255,0.1)" }} /> : (
+              <div className="text-sm font-black text-white leading-none">{fmt(data?.totalVolume ?? 0)}</div>
+            )}
+            <div className="text-[9px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{data?.total ?? 0} transactions</div>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="stat-platform-fees">
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Platform Revenue</div>
-            <div className="font-display text-xl font-black" style={{ color: "var(--ink)" }}>{fmt(data.platformRevenue)}</div>
-            <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>CultFam earnings</div>
-          </div>
-          <div className="rounded-2xl p-4" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="stat-pending">
-            <div className="flex items-center gap-1 mb-0.5">
-              <Clock className="w-3 h-3 text-amber-600" />
-              <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Pending</div>
+          <div className="rounded-xl p-3" style={{ background: data?.pendingCount ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.07)", border: `1px solid ${data?.pendingCount ? "rgba(245,158,11,0.35)" : "rgba(255,255,255,0.1)"}` }} data-testid="stat-pending">
+            <div className="flex items-center gap-1 mb-1">
+              <Clock className="w-2.5 h-2.5 text-amber-400" />
+              <div className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Pending</div>
             </div>
-            <div className="font-display text-xl font-black text-amber-700">{data.pendingCount}</div>
-            <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>transfers</div>
+            {isLoading ? <div className="h-5 w-12 rounded animate-pulse" style={{ background: "rgba(255,255,255,0.1)" }} /> : (
+              <div className="text-sm font-black text-amber-300 leading-none">{data?.pendingCount ?? 0}</div>
+            )}
+            <div className="text-[9px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>payouts</div>
           </div>
-          <div className="rounded-2xl p-4" style={{ background: data.failedCount > 0 ? "rgba(220,38,38,0.04)" : "var(--warm-white)", border: `1.5px solid ${data.failedCount > 0 ? "rgba(220,38,38,0.2)" : "var(--warm-border)"}` }} data-testid="stat-failed">
-            <div className="flex items-center gap-1 mb-0.5">
-              <XCircle className="w-3 h-3 text-red-600" />
-              <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--muted-warm)" }}>Failed</div>
+          <div className="rounded-xl p-3" style={{ background: (data?.failedCount ?? 0) > 0 ? "rgba(220,38,38,0.15)" : "rgba(255,255,255,0.07)", border: `1px solid ${(data?.failedCount ?? 0) > 0 ? "rgba(220,38,38,0.3)" : "rgba(255,255,255,0.1)"}` }} data-testid="stat-failed">
+            <div className="flex items-center gap-1 mb-1">
+              <XCircle className="w-2.5 h-2.5 text-red-400" />
+              <div className="text-[9px] font-bold uppercase tracking-wider" style={{ color: "rgba(255,255,255,0.4)" }}>Failed</div>
             </div>
-            <div className="font-display text-xl font-black text-red-700">{data.failedCount}</div>
-            {data.failedCount > 0 ? (
+            {isLoading ? <div className="h-5 w-12 rounded animate-pulse" style={{ background: "rgba(255,255,255,0.1)" }} /> : (
+              <div className="text-sm font-black text-red-300 leading-none">{data?.failedCount ?? 0}</div>
+            )}
+            {(data?.failedCount ?? 0) > 0 && (
               <button
                 onClick={() => retryAllMutation.mutate()}
                 disabled={retryAllMutation.isPending}
-                className="mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full disabled:opacity-50"
-                style={{ background: "rgba(220,38,38,0.1)", color: "#dc2626", border: "1px solid rgba(220,38,38,0.3)" }}
+                className="mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded-md disabled:opacity-50"
+                style={{ background: "rgba(220,38,38,0.3)", color: "#fca5a5" }}
                 data-testid="button-retry-all"
               >
-                {retryAllMutation.isPending ? "Retrying..." : "Retry All"}
+                {retryAllMutation.isPending ? "Retrying…" : "Retry All"}
               </button>
-            ) : (
-              <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>transfers</div>
             )}
           </div>
         </div>
-      )}
+      </div>
 
-      <div className="flex items-center gap-2 flex-wrap" data-testid="section-filters">
-        {["all", "transferred", "pending", "failed"].map(s => (
+      {/* ── Sub-nav ───────────────────────────────────────────────────────── */}
+      <div className="flex rounded-2xl overflow-hidden" style={{ border: "1.5px solid var(--warm-border)", background: "var(--warm-white)" }}>
+        {([
+          { key: "transactions", label: "Transactions", icon: IndianRupee },
+          { key: "clubs",        label: "Top Clubs",    icon: Award },
+          { key: "commissions",  label: "Commissions",  icon: BarChart2 },
+        ] as const).map(({ key, label, icon: Icon }) => (
           <button
-            key={s}
-            onClick={() => { setStatusFilter(s); setPage(1); }}
-            className="px-3 py-1.5 rounded-full text-xs font-bold transition-all"
-            style={statusFilter === s
+            key={key}
+            onClick={() => setActiveView(key)}
+            className="flex-1 py-2.5 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all"
+            style={activeView === key
               ? { background: "var(--terra)", color: "white" }
-              : { background: "var(--warm-white)", color: "var(--muted-warm)", border: "1.5px solid var(--warm-border)" }}
-            data-testid={`filter-${s}`}
+              : { color: "var(--muted-warm)" }}
+            data-testid={`tab-admin-payments-${key}`}
           >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
+            <Icon className="w-3.5 h-3.5" />
+            {label}
           </button>
         ))}
       </div>
 
-      {isLoading ? (
-        <div className="space-y-2">
-          {[1,2,3].map(i => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} />)}
-        </div>
-      ) : data && data.transactions.length === 0 ? (
-        <div className="rounded-2xl p-8 text-center" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="empty-payments">
-          <IndianRupee className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: "var(--terra)" }} />
-          <p className="text-sm" style={{ color: "var(--muted-warm)" }}>No transactions found.</p>
-        </div>
-      ) : (
-        <div className="rounded-[18px] overflow-hidden" style={{ border: "1.5px solid var(--warm-border)" }} data-testid="section-transactions">
-          <div className="grid text-[10px] font-bold uppercase tracking-wider px-3 py-2" style={{ background: "var(--cream)", color: "var(--muted-warm)", gridTemplateColumns: "1.8fr 1.2fr 1.2fr 0.9fr 0.9fr 0.9fr auto auto" }}>
-            <span>Date/Event</span>
-            <span>User</span>
-            <span>Club</span>
-            <span className="text-right">Total</span>
-            <span className="text-right">Fee</span>
-            <span className="text-right">Organiser</span>
-            <span>Status</span>
-            <span></span>
-          </div>
-          {data?.transactions.map((tx, i) => (
-            <div
-              key={tx.id}
-              className="grid items-center px-3 py-2.5 text-xs"
-              style={{ gridTemplateColumns: "1.8fr 1.2fr 1.2fr 0.9fr 0.9fr 0.9fr auto auto", borderTop: i > 0 ? "1px solid var(--warm-border)" : undefined, background: i % 2 === 0 ? "var(--warm-white)" : "var(--cream)" }}
-              data-testid={`admin-tx-${tx.id}`}
-            >
-              <div className="min-w-0 pr-2">
-                <div className="font-bold truncate" style={{ color: "var(--ink)" }}>{tx.eventTitle || "Event"}</div>
-                <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>{new Date(tx.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
-              </div>
-              <div className="truncate pr-1" style={{ color: "var(--ink)" }}>{tx.userName || "—"}</div>
-              <div className="truncate pr-1" style={{ color: "var(--muted-warm)" }}>{tx.clubName || "—"}</div>
-              <div className="text-right font-bold" style={{ color: "var(--ink)" }}>{fmt(tx.totalAmount)}</div>
-              <div className="text-right" style={{ color: "var(--terra)" }}>{fmt(tx.platformFee)}</div>
-              <div className="text-right" style={{ color: "var(--muted-warm)" }}>{fmt(tx.baseAmount)}</div>
-              <div className="px-1"><TxStatusBadge status={tx.status} /></div>
-              <div>
-                {tx.status === "failed" && (
-                  <button
-                    onClick={() => retryMutation.mutate(tx.id)}
-                    disabled={retryMutation.isPending}
-                    className="px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all disabled:opacity-50"
-                    style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626", border: "1px solid rgba(220,38,38,0.25)" }}
-                    data-testid={`button-retry-${tx.id}`}
-                  >
-                    <RefreshCw className="w-2.5 h-2.5" />
-                    Retry
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {data && totalPages > 1 && (
-        <div className="flex items-center justify-between pt-2" data-testid="section-pagination">
-          <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
-            disabled={page <= 1}
-            className="px-3 py-2 rounded-xl text-xs font-bold disabled:opacity-40"
-            style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
-            data-testid="button-prev-page"
-          >
-            Previous
-          </button>
-          <span className="text-xs" style={{ color: "var(--muted-warm)" }}>Page {page} of {totalPages}</span>
-          <button
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
-            className="px-3 py-2 rounded-xl text-xs font-bold disabled:opacity-40"
-            style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
-            data-testid="button-next-page"
-          >
-            Next
-          </button>
-        </div>
-      )}
-
-      {/* Top Clubs by Revenue */}
-      {data?.topClubs && data.topClubs.length > 0 && (
-        <div className="rounded-[18px] p-4" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="section-top-clubs">
-          <h3 className="text-sm font-bold mb-3" style={{ color: "var(--ink)" }}>Top Clubs by Revenue</h3>
-          <div className="space-y-2">
-            {data.topClubs.map((tc, i) => (
-              <div key={tc.clubId} className="flex items-center justify-between py-2" style={{ borderBottom: i < data.topClubs.length - 1 ? "1px solid var(--warm-border)" : undefined }}>
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <span className="text-[11px] font-bold w-5 shrink-0 text-center" style={{ color: "var(--muted-warm)" }}>#{i + 1}</span>
-                  <div className="min-w-0">
-                    <div className="text-xs font-bold truncate" style={{ color: "var(--ink)" }}>{tc.clubName}</div>
-                    <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>{tc.city}</div>
-                  </div>
-                </div>
-                <div className="text-right shrink-0 ml-2">
-                  <div className="text-xs font-bold" style={{ color: "var(--ink)" }}>₹{(tc.totalVolume / 100).toLocaleString("en-IN")} total</div>
-                  <div className="text-[10px] font-semibold" style={{ color: "var(--terra)" }}>CultFam: ₹{(tc.platformEarned / 100).toLocaleString("en-IN")}</div>
-                  <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>Organiser: ₹{(tc.organizerReceived / 100).toLocaleString("en-IN")}</div>
-                </div>
-              </div>
+      {/* ── Transactions view ─────────────────────────────────────────────── */}
+      {activeView === "transactions" && (
+        <>
+          {/* Status filter chips */}
+          <div className="flex items-center gap-1.5 flex-wrap" data-testid="section-filters">
+            {["all", "transferred", "pending", "failed"].map(s => (
+              <button
+                key={s}
+                onClick={() => { setStatusFilter(s); setPage(1); }}
+                className="px-3 py-1.5 rounded-full text-[11px] font-bold transition-all"
+                style={statusFilter === s
+                  ? { background: "var(--terra)", color: "white" }
+                  : { background: "var(--warm-white)", color: "var(--muted-warm)", border: "1.5px solid var(--warm-border)" }}
+                data-testid={`filter-${s}`}
+              >
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
             ))}
           </div>
+
+          {isLoading ? (
+            <div className="space-y-2">
+              {[1,2,3].map(i => <div key={i} className="h-16 rounded-2xl animate-pulse" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} />)}
+            </div>
+          ) : data && data.transactions.length === 0 ? (
+            <div className="rounded-[22px] p-10 text-center" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="empty-payments">
+              <IndianRupee className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: "var(--terra)" }} />
+              <p className="text-sm" style={{ color: "var(--muted-warm)" }}>No transactions found.</p>
+            </div>
+          ) : (
+            <div className="rounded-[18px] overflow-hidden" style={{ border: "1.5px solid var(--warm-border)" }} data-testid="section-transactions">
+              {/* Column headers */}
+              <div
+                className="grid text-[9px] font-bold uppercase tracking-wider px-3 py-2"
+                style={{ background: "var(--cream)", color: "var(--muted-warm)", gridTemplateColumns: "1.8fr 1.2fr 1.1fr 0.9fr 0.8fr 0.8fr auto auto" }}
+              >
+                <span>Event / Date</span>
+                <span>User</span>
+                <span>Club</span>
+                <span className="text-right">Total</span>
+                <span className="text-right">Fee</span>
+                <span className="text-right">Organiser</span>
+                <span>Status</span>
+                <span />
+              </div>
+
+              {data?.transactions.map((tx, i) => (
+                <div
+                  key={tx.id}
+                  className="grid items-center px-3 py-2.5 text-xs"
+                  style={{ gridTemplateColumns: "1.8fr 1.2fr 1.1fr 0.9fr 0.8fr 0.8fr auto auto", borderTop: i > 0 ? "1px solid var(--warm-border)" : undefined, background: i % 2 === 0 ? "var(--warm-white)" : "var(--cream)" }}
+                  data-testid={`admin-tx-${tx.id}`}
+                >
+                  <div className="min-w-0 pr-2">
+                    <div className="font-bold truncate" style={{ color: "var(--ink)" }}>{tx.eventTitle || "Event"}</div>
+                    <div className="text-[10px]" style={{ color: "var(--muted-warm)" }}>
+                      {new Date(tx.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      <span className="font-mono ml-1 opacity-60">{tx.razorpayPaymentId.slice(-6)}</span>
+                    </div>
+                  </div>
+                  <div className="truncate pr-1 text-xs" style={{ color: "var(--ink)" }}>{tx.userName || "—"}</div>
+                  <div className="truncate pr-1 text-[11px]" style={{ color: "var(--muted-warm)" }}>{tx.clubName || "—"}</div>
+                  <div className="text-right font-bold text-xs" style={{ color: "var(--ink)" }}>{fmt(tx.totalAmount)}</div>
+                  <div className="text-right text-[11px] font-semibold" style={{ color: "var(--terra)" }}>{fmt(tx.platformFee)}</div>
+                  <div className="text-right text-[11px]" style={{ color: "var(--muted-warm)" }}>{fmt(tx.baseAmount)}</div>
+                  <div className="px-1"><TxStatusBadge status={tx.status} /></div>
+                  <div>
+                    {tx.status === "failed" && (
+                      <button
+                        onClick={() => retryMutation.mutate(tx.id)}
+                        disabled={retryMutation.isPending}
+                        className="px-2 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all disabled:opacity-50"
+                        style={{ background: "rgba(220,38,38,0.08)", color: "#dc2626", border: "1px solid rgba(220,38,38,0.25)" }}
+                        data-testid={`button-retry-${tx.id}`}
+                      >
+                        <RefreshCw className="w-2.5 h-2.5" />
+                        Retry
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {data && totalPages > 1 && (
+            <div className="flex items-center justify-between pt-1" data-testid="section-pagination">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-2 rounded-xl text-xs font-bold disabled:opacity-40"
+                style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
+                data-testid="button-prev-page"
+              >
+                ← Previous
+              </button>
+              <span className="text-xs" style={{ color: "var(--muted-warm)" }}>Page {page} of {totalPages}</span>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-2 rounded-xl text-xs font-bold disabled:opacity-40"
+                style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
+                data-testid="button-next-page"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* ── Top Clubs view ────────────────────────────────────────────────── */}
+      {activeView === "clubs" && (
+        <div className="rounded-[22px] overflow-hidden" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="section-top-clubs">
+          <div className="px-4 py-3.5 flex items-center gap-2" style={{ borderBottom: "1px solid var(--warm-border)" }}>
+            <Award className="w-4 h-4" style={{ color: "var(--terra)" }} />
+            <h3 className="text-sm font-bold" style={{ color: "var(--ink)" }}>Top Clubs by Revenue</h3>
+          </div>
+          {isLoading ? (
+            <div className="p-4 space-y-3">
+              {[1,2,3,4,5].map(i => <div key={i} className="h-14 rounded-xl animate-pulse" style={{ background: "var(--cream)" }} />)}
+            </div>
+          ) : !data?.topClubs?.length ? (
+            <div className="p-10 text-center">
+              <IndianRupee className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: "var(--terra)" }} />
+              <p className="text-sm" style={{ color: "var(--muted-warm)" }}>No revenue data yet.</p>
+            </div>
+          ) : (
+            <div className="divide-y" style={{ borderColor: "var(--warm-border)" }}>
+              {data.topClubs.map((tc, i) => {
+                const pct = Math.max(4, Math.round((tc.totalVolume / maxClubVolume) * 100));
+                const medals = ["🥇", "🥈", "🥉"];
+                return (
+                  <div key={tc.clubId} className="px-4 py-3.5" data-testid={`club-revenue-${tc.clubId}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-base w-6 shrink-0 text-center">{medals[i] ?? <span className="text-[11px] font-bold" style={{ color: "var(--muted-warm)" }}>#{i+1}</span>}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-[13px] font-bold truncate" style={{ color: "var(--ink)" }}>{tc.clubName}</span>
+                          <span className="text-sm font-black shrink-0" style={{ color: "var(--terra)" }}>
+                            {fmt(tc.totalVolume)}
+                          </span>
+                        </div>
+                        <div className="text-[10px] mt-0.5" style={{ color: "var(--muted-warm)" }}>{tc.city}</div>
+                      </div>
+                    </div>
+                    {/* Visual bar */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--cream)" }}>
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${pct}%`, background: i === 0 ? "var(--terra)" : i === 1 ? "#b07a3d" : "#8a7a6a" }}
+                        />
+                      </div>
+                      <div className="text-[10px] font-semibold shrink-0 min-w-[6rem] text-right" style={{ color: "var(--muted-warm)" }}>
+                        CultFam: <span style={{ color: "var(--terra)" }}>{fmt(tc.platformEarned)}</span>
+                      </div>
+                    </div>
+                    <div className="mt-1 text-[10px]" style={{ color: "var(--muted-warm)" }}>
+                      Organiser received: {fmt(tc.organizerReceived)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Commission Rates per Club */}
-      {data?.commissionRates && data.commissionRates.length > 0 && (
+      {/* ── Commissions view ─────────────────────────────────────────────── */}
+      {activeView === "commissions" && data?.commissionRates && data.commissionRates.length > 0 && (
         <CommissionRatesSection commissionRates={data.commissionRates} onUpdated={() => refetch()} />
       )}
     </div>
