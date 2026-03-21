@@ -148,6 +148,9 @@ export default function EventDetail() {
         setShowSurveyModal(true);
         return;
       }
+      if (data.rsvp?.id && data.rsvp?.checkinToken) {
+        localStorage.setItem(`ticket-token-${data.rsvp.id}`, data.rsvp.checkinToken);
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/events", id] });
       queryClient.invalidateQueries({ queryKey: ["/api/events"] });
       setRsvpError(null);
@@ -184,6 +187,9 @@ export default function EventDetail() {
       return res.json();
     },
     onSuccess: (data) => {
+      if (data.rsvp?.id && data.rsvp?.checkinToken) {
+        localStorage.setItem(`ticket-token-${data.rsvp.id}`, data.rsvp.checkinToken);
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/events", id] });
       queryClient.invalidateQueries({ queryKey: ["/api/events"] });
       setRsvpError(null);
@@ -799,13 +805,21 @@ export default function EventDetail() {
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-white rounded-xl p-3 mb-4">
-                <img
-                  src={`/api/rsvps/${userRsvp.id}/qr`}
-                  alt="Your event ticket QR code"
-                  className="w-[200px] h-[200px]"
-                  data-testid="img-ticket-qr"
-                  loading="lazy"
-                />
+                {(() => {
+                  const storedToken = localStorage.getItem(`ticket-token-${userRsvp.id}`);
+                  const qrSrc = storedToken
+                    ? `/api/rsvps/${userRsvp.id}/qr?token=${encodeURIComponent(storedToken)}`
+                    : `/api/rsvps/${userRsvp.id}/qr`;
+                  return (
+                    <img
+                      src={qrSrc}
+                      alt="Your event ticket QR code"
+                      className="w-[200px] h-[200px]"
+                      data-testid="img-ticket-qr"
+                      loading="lazy"
+                    />
+                  );
+                })()}
               </div>
               <div className="text-center space-y-1">
                 <div className="text-sm font-semibold text-[var(--ink)]" data-testid="text-ticket-event">{eventData.title}</div>

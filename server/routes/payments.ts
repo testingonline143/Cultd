@@ -177,7 +177,7 @@ export function registerPaymentRoutes(
       const rsvpCount = await storage.getRsvpCount(event.id);
       const rsvpStatus = rsvpCount >= event.maxCapacity ? "waitlisted" : "going";
       const rawToken1 = crypto.randomUUID();
-      const rsvp = await storage.createRsvp({
+      const rsvpCreated = await storage.createRsvp({
         eventId: event.id,
         userId,
         status: rsvpStatus,
@@ -187,6 +187,7 @@ export function registerPaymentRoutes(
         razorpayPaymentId,
         paymentStatus: "paid",
       }, hashCheckinToken(rawToken1));
+      const rsvp = { ...rsvpCreated, checkinToken: rawToken1 };
 
       const rawFormResponses: { questionId: string; answer: string }[] = formResponses ?? [];
       if (rawFormResponses.length > 0) {

@@ -9,6 +9,9 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { setupAuth } from "./auth";
+import { validateCheckinSecret } from "./auth/tokenUtils";
+
+validateCheckinSecret();
 
 const app = express();
 

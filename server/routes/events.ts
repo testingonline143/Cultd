@@ -4,7 +4,7 @@ import QRCode from "qrcode";
 import { storage } from "../storage/index";
 import { isAuthenticated } from "../auth";
 import { writeRateLimiter } from "../middleware";
-import { hashCheckinToken } from "../auth/tokenUtils";
+import { hashCheckinToken, isTokenHashed } from "../auth/tokenUtils";
 import { isCrawler, readHtmlTemplate, buildOgHtml, buildEventSvg } from "../og";
 import sharp from "sharp";
 
@@ -295,7 +295,7 @@ export function registerEventRoutes(
 
       if (status === "waitlisted") {
         const position = await storage.getUserWaitlistPosition(event.id, userId);
-        return res.json({ success: true, rsvp, waitlisted: true, position });
+        return res.json({ success: true, rsvp: { ...rsvp, checkinToken: rawToken }, waitlisted: true, position });
       }
 
       const eventDate = new Date(event.startsAt).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
@@ -307,7 +307,7 @@ export function registerEventRoutes(
         linkUrl: `/event/${event.id}`,
         isRead: false,
       });
-      res.json({ success: true, rsvp });
+      res.json({ success: true, rsvp: { ...rsvp, checkinToken: rawToken } });
     } catch (err) {
       console.error("Error creating RSVP:", err);
       res.status(500).json({ success: false, message: "Failed to RSVP" });
@@ -344,6 +344,7 @@ export function registerEventRoutes(
   app.get("/api/rsvps/:rsvpId/qr", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const rawToken = req.query.token as string | undefined;
       const rsvp = await storage.getRsvpById(req.params.rsvpId);
       if (!rsvp) {
         return res.status(404).json({ message: "RSVP not found" });
@@ -351,8 +352,18 @@ export function registerEventRoutes(
       if (rsvp.userId !== userId) {
         return res.status(403).json({ message: "Not authorized" });
       }
+      let tokenForQr: string;
+      if (rawToken && rsvp.checkinToken) {
+        const expectedHash = hashCheckinToken(rawToken);
+        if (!crypto.timingSafeEqual(Buffer.from(expectedHash), Buffer.from(rsvp.checkinToken))) {
+          return res.status(403).json({ message: "Invalid token" });
+        }
+        tokenForQr = rawToken;
+      } else {
+        tokenForQr = rsvp.checkinToken ?? "";
+      }
       const payload = JSON.stringify({
-        token: rsvp.checkinToken,
+        token: tokenForQr,
         eventId: rsvp.eventId,
         userId: rsvp.userId,
       });
@@ -379,7 +390,14 @@ export function registerEventRoutes(
       if (!eventId) {
         return res.status(400).json({ success: false, message: "Event ID is required" });
       }
-      const rsvp = await storage.getRsvpByToken(token);
+      const hashedToken = hashCheckinToken(token);
+      let rsvp = await storage.getRsvpByToken(hashedToken);
+      if (!rsvp && !isTokenHashed(token)) {
+        rsvp = await storage.getRsvpByToken(token);
+        if (rsvp) {
+          await storage.updateRsvpCheckinToken(rsvp.id, hashedToken);
+        }
+      }
       if (!rsvp) {
         return res.status(404).json({ success: false, message: "Invalid ticket — RSVP not found" });
       }
@@ -397,7 +415,8 @@ export function registerEventRoutes(
       if (rsvp.checkedIn) {
         return res.json({ success: true, alreadyCheckedIn: true, name: rsvp.userName, checkedInAt: rsvp.checkedInAt });
       }
-      const updated = await storage.checkInRsvpByToken(token);
+      const effectiveToken = isTokenHashed(rsvp.checkinToken ?? "") ? rsvp.checkinToken! : hashedToken;
+      const updated = await storage.checkInRsvpByToken(effectiveToken);
       if (!updated) {
         return res.status(409).json({ success: false, alreadyCheckedIn: true, message: "Already checked in by another scan" });
       }

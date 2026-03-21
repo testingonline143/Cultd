@@ -516,13 +516,21 @@ function EventTicketCard({ rsvp, isPast }: { rsvp: UserRsvp; isPast: boolean }) 
             style={{ background: 'var(--cream)', border: '1.5px dashed var(--warm-border)' }}
             data-testid={`ticket-qr-${rsvp.eventId}`}
           >
-            <img
-              src={`/api/rsvps/${rsvp.id}/qr`}
-              alt="QR Ticket"
-              className="w-[200px] h-[200px] mx-auto mb-3 rounded-lg"
-              style={{ imageRendering: 'pixelated' }}
-              data-testid={`img-qr-${rsvp.eventId}`}
-            />
+            {(() => {
+              const storedToken = localStorage.getItem(`ticket-token-${rsvp.id}`);
+              const qrSrc = storedToken
+                ? `/api/rsvps/${rsvp.id}/qr?token=${encodeURIComponent(storedToken)}`
+                : `/api/rsvps/${rsvp.id}/qr`;
+              return (
+                <img
+                  src={qrSrc}
+                  alt="QR Ticket"
+                  className="w-[200px] h-[200px] mx-auto mb-3 rounded-lg"
+                  style={{ imageRendering: 'pixelated' }}
+                  data-testid={`img-qr-${rsvp.eventId}`}
+                />
+              );
+            })()}
             <p className="text-xs font-semibold text-foreground mb-0.5">{rsvp.eventTitle}</p>
             <p className="text-[11px] text-muted-foreground">Show this at the door</p>
           </div>
