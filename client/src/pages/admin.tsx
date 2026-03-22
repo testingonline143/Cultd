@@ -205,8 +205,8 @@ export default function Admin() {
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
           <Skeleton className="h-8 w-48 rounded-xl" />
           <Skeleton className="h-4 w-64 rounded-xl" />
-          <div className="grid grid-cols-3 gap-3 mt-4">
-            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-24 rounded-[18px]" />)}
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="h-24 rounded-[18px]" />)}
           </div>
         </div>
       </div>
@@ -250,12 +250,12 @@ export default function Admin() {
   }
 
   // 5 grouped tabs: Overview | People (Users+Requests) | Clubs & Events (Clubs+Events+Proposals) | Payments | Broadcast
-  const groupTabs: { key: AdminGroupTab; label: string; badge?: number }[] = [
-    { key: "overview",     label: "Overview" },
-    { key: "people",       label: "People",       badge: pendingCount > 0 ? pendingCount : undefined },
-    { key: "clubs-events", label: "Clubs & Events", badge: pendingProposalCount > 0 ? pendingProposalCount : undefined },
-    { key: "payments",     label: "Payments" },
-    { key: "broadcast",    label: "Broadcast" },
+  const groupTabs: { key: AdminGroupTab; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number }[] = [
+    { key: "overview",     label: "Overview",       icon: BarChart2 },
+    { key: "people",       label: "People",         icon: Users,    badge: pendingCount > 0 ? pendingCount : undefined },
+    { key: "clubs-events", label: "Clubs & Events", icon: Building2, badge: pendingProposalCount > 0 ? pendingProposalCount : undefined },
+    { key: "payments",     label: "Payments",       icon: Wallet },
+    { key: "broadcast",    label: "Broadcast",      icon: Megaphone },
   ];
 
   const displayName = user?.firstName || user?.email?.split("@")[0] || "Admin";
@@ -263,57 +263,61 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen" style={{ background: "var(--cream)" }}>
-      {/* Header */}
+      {/* Header — single compact row */}
       <div className="sticky top-0 z-40" style={{ background: "var(--ink)" }}>
-        <div className="px-4 py-3">
+        <div className="px-4 py-2.5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               {user?.profileImageUrl ? (
-                <img src={user.profileImageUrl} alt={displayName} className="w-10 h-10 rounded-full object-cover shrink-0" style={{ border: "2px solid var(--terra)" }} />
+                <img src={user.profileImageUrl} alt={displayName} className="w-9 h-9 rounded-full object-cover shrink-0" style={{ border: "2px solid var(--terra)" }} />
               ) : (
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-base shrink-0" style={{ background: "var(--terra)" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm shrink-0" style={{ background: "var(--terra)" }}>
                   {initials}
                 </div>
               )}
-              <div>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <Shield className="w-3 h-3" style={{ color: "var(--terra)" }} />
-                  <span className="text-[9px] font-black tracking-[2.5px] uppercase" style={{ color: "var(--terra)" }}>Admin Dashboard</span>
-                </div>
+              <div className="flex items-center gap-1.5">
+                <Shield className="w-3 h-3 shrink-0" style={{ color: "var(--terra)" }} />
                 <p className="font-display font-bold text-white text-[15px] leading-none">{displayName}</p>
               </div>
             </div>
             <Link href="/home" data-testid="link-admin-home">
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-full transition-all active:opacity-70" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                <ArrowLeft className="w-3.5 h-3.5 text-white" />
-                <span className="text-white text-xs font-semibold">Home</span>
+              <div className="w-9 h-9 flex items-center justify-center rounded-full transition-all active:opacity-70" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <ArrowLeft className="w-4 h-4 text-white" />
               </div>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Group tab bar */}
+      {/* Group tab bar — icon + label pill style */}
       <div
-        className="flex overflow-x-auto px-4 sticky top-[64px] z-30"
+        className="flex overflow-x-auto gap-2 px-4 py-2.5 sticky top-[56px] z-30"
         style={{ background: "var(--cream)", borderBottom: "1.5px solid var(--warm-border)", scrollbarWidth: "none" }}
       >
         {groupTabs.map((tab) => {
           const isActive = activeGroupTab === tab.key;
+          const Icon = tab.icon;
           return (
             <button
               key={tab.key}
               onClick={() => setActiveGroupTab(tab.key)}
-              className={`px-4 py-2.5 text-sm font-semibold transition-all whitespace-nowrap inline-flex items-center gap-1.5 border-b-2 -mb-px shrink-0 ${
-                isActive
-                  ? "border-[var(--terra)] text-[var(--terra)]"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-bold whitespace-nowrap shrink-0 transition-all"
+              style={isActive
+                ? { background: "var(--terra)", color: "white" }
+                : { background: "var(--warm-white)", color: "var(--muted-warm)", border: "1.5px solid var(--warm-border)" }
+              }
               data-testid={`tab-admin-${tab.key}`}
             >
+              <Icon className="w-3.5 h-3.5" />
               {tab.label}
               {tab.badge !== undefined && tab.badge > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold bg-[var(--terra)] text-white">
+                <span
+                  className="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-black"
+                  style={isActive
+                    ? { background: "rgba(255,255,255,0.25)", color: "white" }
+                    : { background: "var(--terra)", color: "white" }
+                  }
+                >
                   {tab.badge}
                 </span>
               )}
@@ -327,18 +331,25 @@ export default function Admin() {
 
         {activeGroupTab === "people" && (
           <div className="space-y-4">
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex rounded-2xl overflow-hidden" style={{ border: "1.5px solid var(--warm-border)", background: "var(--warm-white)" }}>
               {(["users", "requests"] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setPeopleSection(s)}
-                  className={`px-4 py-2 text-sm font-semibold transition-all whitespace-nowrap inline-flex items-center gap-1 ${peopleSection === s ? "bg-[var(--terra-pale)] text-[var(--terra)] border-[1.5px] border-[rgba(196,98,45,0.3)]" : "bg-[var(--warm-white)] border-[1.5px] border-[var(--warm-border)] text-muted-foreground"}`}
-                  style={{ borderRadius: 18 }}
+                  className="flex-1 py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+                  style={peopleSection === s
+                    ? { background: "var(--terra)", color: "white" }
+                    : { color: "var(--muted-warm)" }}
                   data-testid={`tab-admin-people-${s}`}
                 >
                   {s === "users" ? "Users" : "Requests"}
                   {s === "requests" && pendingCount > 0 && (
-                    <span className="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold bg-[var(--terra)] text-white">
+                    <span
+                      className="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-black"
+                      style={peopleSection === "requests"
+                        ? { background: "rgba(255,255,255,0.25)", color: "white" }
+                        : { background: "var(--terra)", color: "white" }}
+                    >
                       {pendingCount}
                     </span>
                   )}
@@ -352,18 +363,25 @@ export default function Admin() {
 
         {activeGroupTab === "clubs-events" && (
           <div className="space-y-4">
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex rounded-2xl overflow-hidden" style={{ border: "1.5px solid var(--warm-border)", background: "var(--warm-white)" }}>
               {(["clubs", "events", "proposals"] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setClubsEventsSection(s)}
-                  className={`px-4 py-2 text-sm font-semibold transition-all whitespace-nowrap inline-flex items-center gap-1 ${clubsEventsSection === s ? "bg-[var(--terra-pale)] text-[var(--terra)] border-[1.5px] border-[rgba(196,98,45,0.3)]" : "bg-[var(--warm-white)] border-[1.5px] border-[var(--warm-border)] text-muted-foreground"}`}
-                  style={{ borderRadius: 18 }}
+                  className="flex-1 py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+                  style={clubsEventsSection === s
+                    ? { background: "var(--terra)", color: "white" }
+                    : { color: "var(--muted-warm)" }}
                   data-testid={`tab-admin-clubs-${s}`}
                 >
                   {s === "clubs" ? "Clubs" : s === "events" ? "Events" : "Proposals"}
                   {s === "proposals" && pendingProposalCount > 0 && (
-                    <span className="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold bg-[var(--terra)] text-white">
+                    <span
+                      className="inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-black"
+                      style={clubsEventsSection === "proposals"
+                        ? { background: "rgba(255,255,255,0.25)", color: "white" }
+                        : { background: "var(--terra)", color: "white" }}
+                    >
                       {pendingProposalCount}
                     </span>
                   )}
@@ -389,12 +407,12 @@ function StatCard({ icon, label, value, color, sub }: { icon: React.ReactNode; l
       className="rounded-[18px] p-4 relative overflow-hidden"
       style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)", borderLeft: `4px solid ${color || "var(--terra)"}` }}
     >
-      <div className="absolute top-3 right-3 opacity-[0.07]">
-        <span style={{ color: color || "var(--terra)", fontSize: 36 }}>{icon}</span>
+      <div className="absolute top-3 right-3 opacity-[0.06]">
+        <span style={{ color: color || "var(--terra)", fontSize: 44 }}>{icon}</span>
       </div>
-      <div className="text-3xl font-black font-mono leading-none mb-1" style={{ color: color || "var(--terra)" }}>{value}</div>
-      <div className="text-[11px] font-semibold" style={{ color: "var(--muted-warm)" }}>{label}</div>
-      {sub && <div className="text-[10px] mt-0.5" style={{ color: "var(--muted-warm2)" }}>{sub}</div>}
+      <div className="text-[32px] font-black font-mono leading-none mb-1.5" style={{ color: color || "var(--terra)" }}>{value}</div>
+      <div className="text-[12px] font-semibold" style={{ color: "var(--muted-warm)" }}>{label}</div>
+      {sub && <div className="text-[11px] mt-0.5" style={{ color: "var(--muted-warm2)" }}>{sub}</div>}
     </div>
   );
 }
@@ -1031,8 +1049,8 @@ function ClubsMonitorTab() {
 
   return (
     <div className="space-y-5" data-testid="list-admin-clubs">
-      <div className="grid grid-cols-3 gap-3">
-        <StatCard icon={<Building2 className="w-6 h-6" />} label="Total" value={clubs.length} />
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard icon={<Building2 className="w-6 h-6" />} label="Total Clubs" value={clubs.length} />
         <StatCard icon={<Activity className="w-6 h-6" />} label="Active" value={activeClubs.length} color="#16a34a" />
         <StatCard icon={<Ban className="w-6 h-6" />} label="Paused" value={inactiveClubs.length} color="#dc2626" />
       </div>
@@ -1352,10 +1370,10 @@ function EventsTab() {
 
   return (
     <div className="space-y-4" data-testid="section-admin-events">
-      <div className="grid grid-cols-3 gap-3">
-        <StatCard icon={<Calendar className="w-6 h-6" />} label="Total" value={allEvents.length} />
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard icon={<Calendar className="w-6 h-6" />} label="Total Events" value={allEvents.length} />
         <StatCard icon={<Activity className="w-6 h-6" />} label="Upcoming" value={allEvents.filter(e => new Date(e.startsAt) > now && !e.isCancelled).length} color="#16a34a" />
-        <StatCard icon={<CheckCircle2 className="w-6 h-6" />} label="RSVPs" value={allEvents.reduce((sum, e) => sum + e.rsvpCount, 0)} />
+        <StatCard icon={<CheckCircle2 className="w-6 h-6" />} label="Total RSVPs" value={allEvents.reduce((sum, e) => sum + e.rsvpCount, 0)} />
       </div>
 
       <div className="flex items-center gap-2">
