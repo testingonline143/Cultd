@@ -75,6 +75,9 @@ export default function Onboarding() {
       return res.json();
     },
     onSuccess: () => {
+      queryClient.setQueryData(["/api/auth/user"], (old: any) =>
+        old ? { ...old, quizCompleted: true } : old
+      );
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       navigate("/matched-clubs");
     },
