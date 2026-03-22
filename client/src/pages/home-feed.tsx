@@ -411,8 +411,8 @@ export default function HomeFeed() {
 
       <div className="max-w-lg mx-auto px-5 pt-5 space-y-6">
 
-        {/* My Clubs Stories Row */}
-        {user && (
+        {/* My Clubs Stories Row — only shown when user has at least one club */}
+        {user && userClubs.length > 0 && (
           <div data-testid="section-club-stories">
             <div
               className="flex gap-4 overflow-x-auto pb-2"
