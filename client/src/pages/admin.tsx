@@ -281,7 +281,7 @@ export default function Admin() {
               </div>
             </div>
             <Link href="/home" data-testid="link-admin-home">
-              <div className="w-9 h-9 flex items-center justify-center rounded-full transition-all active:opacity-70" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+              <div className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:opacity-70" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
                 <ArrowLeft className="w-4 h-4 text-white" />
               </div>
             </Link>
@@ -301,7 +301,7 @@ export default function Admin() {
             <button
               key={tab.key}
               onClick={() => setActiveGroupTab(tab.key)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-bold whitespace-nowrap shrink-0 transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full text-[12px] font-bold whitespace-nowrap shrink-0 transition-all min-h-[44px]"
               style={isActive
                 ? { background: "var(--terra)", color: "white" }
                 : { background: "var(--warm-white)", color: "var(--muted-warm)", border: "1.5px solid var(--warm-border)" }
@@ -336,7 +336,7 @@ export default function Admin() {
                 <button
                   key={s}
                   onClick={() => setPeopleSection(s)}
-                  className="flex-1 py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+                  className="flex-1 min-h-[44px] py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
                   style={peopleSection === s
                     ? { background: "var(--terra)", color: "white" }
                     : { color: "var(--muted-warm)" }}
@@ -368,7 +368,7 @@ export default function Admin() {
                 <button
                   key={s}
                   onClick={() => setClubsEventsSection(s)}
-                  className="flex-1 py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
+                  className="flex-1 min-h-[44px] py-2.5 text-[12px] font-bold inline-flex items-center justify-center gap-1.5 transition-all"
                   style={clubsEventsSection === s
                     ? { background: "var(--terra)", color: "white" }
                     : { color: "var(--muted-warm)" }}
@@ -754,8 +754,11 @@ function AnalyticsTab() {
           <div className="mb-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-display font-bold text-base" style={{ color: "var(--ink)" }}>Platform Growth</h3>
-                <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>Last 8 weeks activity</p>
+                <div className="flex items-center gap-1.5">
+                  <BarChart2 className="w-3.5 h-3.5" style={{ color: "var(--terra)" }} />
+                  <span className="text-[11px] font-black uppercase tracking-wider" style={{ color: "var(--terra)" }}>Platform Growth</span>
+                </div>
+                <p className="text-[11px] mt-0.5" style={{ color: "var(--muted-warm)" }}>Last 8 weeks activity</p>
               </div>
             </div>
             <div className="flex items-center gap-3 mt-3">
@@ -803,10 +806,10 @@ function AnalyticsTab() {
       {/* City breakdown */}
       {analytics.cityCounts.length > 0 && (
         <div className="rounded-[20px] p-5" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="card-city-breakdown">
-          <h3 className="font-display font-bold text-base mb-4 flex items-center gap-2" style={{ color: "var(--ink)" }}>
-            <MapPin className="w-4 h-4" style={{ color: "var(--terra)" }} />
-            Clubs by City
-          </h3>
+          <div className="flex items-center gap-1.5 mb-4">
+            <MapPin className="w-3.5 h-3.5" style={{ color: "var(--terra)" }} />
+            <span className="text-[11px] font-black uppercase tracking-wider" style={{ color: "var(--terra)" }}>Clubs by City</span>
+          </div>
           <div className="space-y-3">
             {analytics.cityCounts.map((city) => {
               const pct = Math.round((city.count / Math.max(...analytics.cityCounts.map(c => c.count))) * 100);
@@ -832,7 +835,8 @@ function AnalyticsTab() {
       {feed && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <h3 className="font-display font-bold text-lg" style={{ color: "var(--ink)" }}>Platform Pulse</h3>
+            <Activity className="w-3.5 h-3.5" style={{ color: "var(--terra)" }} />
+            <span className="text-[11px] font-black uppercase tracking-wider" style={{ color: "var(--terra)" }}>Platform Pulse</span>
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#16a34a" }} />
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -1620,7 +1624,7 @@ function JoinRequestsTab() {
       {pending.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <h3 className="font-display font-bold text-base" style={{ color: "var(--ink)" }}>Needs Action</h3>
+            <span className="text-[11px] font-black uppercase tracking-wider" style={{ color: "var(--terra)" }}>Needs Action</span>
             <span className="text-[10px] font-black px-2 py-0.5 rounded-full text-white" style={{ background: "#e53e3e" }}>{pending.length}</span>
           </div>
           <div className="space-y-2">{pending.map(renderRequest)}</div>
@@ -1628,7 +1632,7 @@ function JoinRequestsTab() {
       )}
       {rest.length > 0 && (
         <div>
-          <h3 className="font-display font-bold text-base mb-3" style={{ color: "var(--muted-warm)" }}>All Requests</h3>
+          <span className="text-[11px] font-black uppercase tracking-wider mb-3 block" style={{ color: "var(--muted-warm)" }}>All Requests</span>
           <div className="space-y-2">{rest.map(renderRequest)}</div>
         </div>
       )}
