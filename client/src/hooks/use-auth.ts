@@ -37,7 +37,7 @@ export function useAuth() {
 
   // 2. Fetch the rich user profile from the database based on the Auth user
   // This allows us to keep the `quizCompleted`, `role`, etc., available for the frontend.
-  const { data: dbUser, isLoading: isDbUserLoading } = useQuery<DBUser | null>({
+  const { data: dbUser } = useQuery<DBUser | null>({
     queryKey: ["/api/auth/user"],
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -90,9 +90,11 @@ export function useAuth() {
      };
   }
 
-  // We are fully loaded once BOTH Supabase state is detected AND the db profile (if logged in) is fetched
-  // React Query's `isPending` is better than `isLoading` here, but we can also just check if we have the combinedUser
-  const isLoading = isAuthLoading || (!!sessionUser && isDbUserLoading && !dbUser);
+  // We are fully loaded once BOTH Supabase state is detected AND the db profile (if logged in) is fetched.
+  // Using !!sessionUser && !dbUser (rather than relying on isDbUserLoading) closes the race window where
+  // TanStack Query's isFetching is briefly false right after enabled flips to true — which would let
+  // RootRoute/QuizGate see the dummy quizCompleted:false placeholder and redirect to onboarding.
+  const isLoading = isAuthLoading || (!!sessionUser && !dbUser);
 
   return {
     user: combinedUser,
