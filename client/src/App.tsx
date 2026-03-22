@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLogin } from "@/hooks/use-login";
 import { useAuthModal, AuthModalProvider } from "@/hooks/use-auth-modal";
 import { AuthModal } from "@/components/auth-modal";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense, Component } from "react";
 import { BottomNav } from "@/components/bottom-nav";
 import { Loader as Loader2 } from "lucide-react";
 
@@ -51,6 +51,32 @@ function PageLoader() {
       {show && <Loader2 className="h-8 w-8 animate-spin opacity-40" />}
     </div>
   );
+}
+
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-6" style={{ background: "var(--cream)" }}>
+          <p className="text-sm font-semibold" style={{ color: "var(--ink)" }}>Something went wrong.</p>
+          <p className="text-sm" style={{ color: "var(--muted-warm)" }}>Please refresh the page to try again.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 rounded-2xl text-sm font-bold"
+            style={{ background: "var(--terra)", color: "var(--cream)" }}
+          >
+            Refresh
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 const QUIZ_EXEMPT_PATHS = ["/", "/login", "/onboarding", "/matched-clubs", "/admin", "/c"];
@@ -125,6 +151,7 @@ function Router() {
     <AuthModalProvider>
       <GlobalAuthModal />
         <QuizGate>
+        <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Switch>
             <Route path="/" component={RootRoute} />
@@ -151,6 +178,7 @@ function Router() {
             <Route component={NotFound} />
           </Switch>
         </Suspense>
+        </ErrorBoundary>
           <BottomNav />
         </QuizGate>
     </AuthModalProvider>

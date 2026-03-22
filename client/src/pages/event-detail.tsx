@@ -62,7 +62,7 @@ export default function EventDetail() {
   const [commentText, setCommentText] = useState("");
   const [pendingPaymentOrder, setPendingPaymentOrder] = useState<RazorpayOrderDetails | null>(null);
 
-  useEffect(() => { loadRazorpay().catch(() => {}); }, []);
+  useEffect(() => { loadRazorpay().catch((err) => { console.error("[payment] Razorpay failed to preload:", err); }); }, []);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const [pendingFormQuestions, setPendingFormQuestions] = useState<EventFormQuestion[]>([]);

@@ -57,7 +57,7 @@ function EventTodayBanner({ event }: { event: Event & { rsvpCount: number } }) {
       </div>
       <div className="flex gap-2">
         <Link href={`/scan/${event.id}`} className="flex-1 flex items-center justify-center gap-2 bg-[var(--terra)] text-white rounded-xl py-3.5 text-sm font-bold" data-testid={`button-today-checkin-${event.id}`}><QrCode className="w-5 h-5" />Check In Attendees</Link>
-        <button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/scan/${event.id}`).then(() => toast({ title: "Scanner link copied!" }))} className="flex items-center justify-center gap-1.5 px-4 rounded-xl text-xs font-semibold bg-white/10 text-white/80" data-testid={`button-today-copy-link-${event.id}`}><Link2 className="w-3.5 h-3.5" />Share</button>
+        <button onClick={() => navigator.clipboard.writeText(`${window.location.origin}/scan/${event.id}`).then(() => toast({ title: "Scanner link copied!" })).catch(() => toast({ title: "Couldn't copy link", description: "Please copy it manually.", variant: "destructive" }))} className="flex items-center justify-center gap-1.5 px-4 rounded-xl text-xs font-semibold bg-white/10 text-white/80" data-testid={`button-today-copy-link-${event.id}`}><Link2 className="w-3.5 h-3.5" />Share</button>
       </div>
     </div>
   );

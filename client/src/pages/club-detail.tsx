@@ -981,6 +981,91 @@ function ClubDetailContent({ club }: { club: Club }) {
           )}
         </div>
       )}
+
+      {/* Share / Invite Sheet */}
+      {showShareSheet && (() => {
+        const shareUrl = getClubPublicUrl(club);
+        const waText = encodeURIComponent(`Hey! I'm part of ${club.emoji} ${club.name} on CultFam — you should check it out! It's a great community 🙌\n${shareUrl}`);
+        const handleCopyLink = () => {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            setShowShareSheet(false);
+          }).catch(() => {
+            window.prompt("Copy this link:", shareUrl);
+          });
+        };
+        const handleNativeShare = () => {
+          navigator.share({ title: club.name, text: `Check out ${club.emoji} ${club.name} on CultFam!`, url: shareUrl })
+            .catch(() => {})
+            .finally(() => setShowShareSheet(false));
+        };
+        return (
+          <>
+            <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setShowShareSheet(false)} data-testid="overlay-share-sheet" />
+            <div
+              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl px-5 pt-3 pb-10"
+              style={{ background: "var(--warm-white)", borderTop: "1.5px solid var(--warm-border)", maxWidth: 480, margin: "0 auto" }}
+              data-testid="sheet-share"
+            >
+              <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: "var(--warm-border)" }} />
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="font-display font-bold text-lg" style={{ color: "var(--ink)" }}>Invite Friends</h3>
+                <button onClick={() => setShowShareSheet(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--cream)" }} data-testid="button-close-share">
+                  <X className="w-4 h-4" style={{ color: "var(--ink)" }} />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <a
+                  href={`https://wa.me/?text=${waText}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowShareSheet(false)}
+                  className="flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98]"
+                  style={{ background: "rgba(37,211,102,0.1)", border: "1.5px solid rgba(37,211,102,0.3)", textDecoration: "none" }}
+                  data-testid="button-share-whatsapp"
+                >
+                  <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "rgba(37,211,102,0.15)" }}>
+                    <MessageCircle className="w-5 h-5" style={{ color: "#1A8A3A" }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[14px]" style={{ color: "#1A8A3A" }}>Share on WhatsApp</p>
+                    <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>Send an invite to your contacts</p>
+                  </div>
+                </a>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-4 p-4 rounded-2xl w-full text-left transition-all active:scale-[0.98]"
+                  style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)" }}
+                  data-testid="button-copy-link"
+                >
+                  <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "var(--terra-pale)" }}>
+                    <Share2 className="w-5 h-5" style={{ color: "var(--terra)" }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[14px]" style={{ color: "var(--ink)" }}>Copy Invite Link</p>
+                    <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>{shareUrl.replace("https://", "")}</p>
+                  </div>
+                </button>
+                {typeof navigator.share === "function" && (
+                  <button
+                    onClick={handleNativeShare}
+                    className="flex items-center gap-4 p-4 rounded-2xl w-full text-left transition-all active:scale-[0.98]"
+                    style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)" }}
+                    data-testid="button-share-native"
+                  >
+                    <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "rgba(61,107,69,0.1)" }}>
+                      <Share2 className="w-5 h-5" style={{ color: "var(--green-accent)" }} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-[14px]" style={{ color: "var(--ink)" }}>More Options</p>
+                      <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>Share via any app</p>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 }
@@ -1862,91 +1947,6 @@ function GalleryTab({ clubId }: { clubId: string }) {
           ))}
         </div>
       )}
-
-      {/* Share / Invite Sheet */}
-      {showShareSheet && (() => {
-        const shareUrl = getClubPublicUrl(club);
-        const waText = encodeURIComponent(`Hey! I'm part of ${club.emoji} ${club.name} on CultFam — you should check it out! It's a great community 🙌\n${shareUrl}`);
-        const handleCopyLink = () => {
-          navigator.clipboard.writeText(shareUrl).then(() => {
-            setShowShareSheet(false);
-          }).catch(() => {
-            window.prompt("Copy this link:", shareUrl);
-          });
-        };
-        const handleNativeShare = () => {
-          navigator.share({ title: club.name, text: `Check out ${club.emoji} ${club.name} on CultFam!`, url: shareUrl })
-            .catch(() => {})
-            .finally(() => setShowShareSheet(false));
-        };
-        return (
-          <>
-            <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setShowShareSheet(false)} data-testid="overlay-share-sheet" />
-            <div
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl px-5 pt-3 pb-10"
-              style={{ background: "var(--warm-white)", borderTop: "1.5px solid var(--warm-border)", maxWidth: 480, margin: "0 auto" }}
-              data-testid="sheet-share"
-            >
-              <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: "var(--warm-border)" }} />
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-display font-bold text-lg" style={{ color: "var(--ink)" }}>Invite Friends</h3>
-                <button onClick={() => setShowShareSheet(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--cream)" }} data-testid="button-close-share">
-                  <X className="w-4 h-4" style={{ color: "var(--ink)" }} />
-                </button>
-              </div>
-              <div className="space-y-3">
-                <a
-                  href={`https://wa.me/?text=${waText}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setShowShareSheet(false)}
-                  className="flex items-center gap-4 p-4 rounded-2xl transition-all active:scale-[0.98]"
-                  style={{ background: "rgba(37,211,102,0.1)", border: "1.5px solid rgba(37,211,102,0.3)", textDecoration: "none" }}
-                  data-testid="button-share-whatsapp"
-                >
-                  <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "rgba(37,211,102,0.15)" }}>
-                    <MessageCircle className="w-5 h-5" style={{ color: "#1A8A3A" }} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-[14px]" style={{ color: "#1A8A3A" }}>Share on WhatsApp</p>
-                    <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>Send an invite to your contacts</p>
-                  </div>
-                </a>
-                <button
-                  onClick={handleCopyLink}
-                  className="flex items-center gap-4 p-4 rounded-2xl w-full text-left transition-all active:scale-[0.98]"
-                  style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)" }}
-                  data-testid="button-copy-link"
-                >
-                  <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "var(--terra-pale)" }}>
-                    <Share2 className="w-5 h-5" style={{ color: "var(--terra)" }} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-[14px]" style={{ color: "var(--ink)" }}>Copy Invite Link</p>
-                    <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>{shareUrl.replace("https://", "")}</p>
-                  </div>
-                </button>
-                {typeof navigator.share === "function" && (
-                  <button
-                    onClick={handleNativeShare}
-                    className="flex items-center gap-4 p-4 rounded-2xl w-full text-left transition-all active:scale-[0.98]"
-                    style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)" }}
-                    data-testid="button-share-native"
-                  >
-                    <div className="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0" style={{ background: "rgba(61,107,69,0.1)" }}>
-                      <Share2 className="w-5 h-5" style={{ color: "var(--green-accent)" }} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-[14px]" style={{ color: "var(--ink)" }}>More Options</p>
-                      <p className="text-[11px]" style={{ color: "var(--muted-warm)" }}>Share via any app</p>
-                    </div>
-                  </button>
-                )}
-              </div>
-            </div>
-          </>
-        );
-      })()}
 
       {selectedImage && (
         <div
