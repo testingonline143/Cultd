@@ -70,19 +70,19 @@ function ProposeClubModal({ onClose }: { onClose: () => void }) {
     : form.schedule && form.motivation;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
-      <div className="w-full max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden animate-in slide-in-from-bottom" style={{ background: "var(--cream)" }}>
-        <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "var(--warm-border)" }}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pt-4 px-4 pb-20 sm:p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+      <div className="w-full max-w-md rounded-t-2xl sm:rounded-2xl overflow-hidden animate-in slide-in-from-bottom flex flex-col max-h-[calc(100dvh-6rem)] sm:max-h-[85vh]" style={{ background: "var(--cream)" }}>
+        <div className="flex items-center justify-between p-4 border-b shrink-0" style={{ borderColor: "var(--warm-border)" }}>
           <h2 className="font-display text-lg font-bold" style={{ color: "var(--ink)" }}>Propose a Club</h2>
           <button onClick={onClose} className="p-1 rounded-lg" data-testid="button-close-proposal"><X className="w-5 h-5" style={{ color: "var(--muted-warm)" }} /></button>
         </div>
 
-        <div className="flex gap-1 px-4 pt-3">
+        <div className="flex gap-1 px-4 pt-3 shrink-0">
           <div className="h-1 flex-1 rounded-full" style={{ background: "var(--terra)" }} />
           <div className="h-1 flex-1 rounded-full" style={{ background: step >= 2 ? "var(--terra)" : "var(--warm-border)" }} />
         </div>
 
-        <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div className="p-4 space-y-4 flex-1 overflow-y-auto">
           {step === 1 ? (
             <>
               <div>
@@ -188,7 +188,7 @@ function ProposeClubModal({ onClose }: { onClose: () => void }) {
           )}
         </div>
 
-        <div className="flex gap-3 p-4 border-t" style={{ borderColor: "var(--warm-border)" }}>
+        <div className="flex gap-3 p-4 border-t shrink-0" style={{ borderColor: "var(--warm-border)" }}>
           {step === 2 && (
             <button
               onClick={() => setStep(1)}
