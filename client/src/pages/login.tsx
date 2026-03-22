@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowLeft, Mail, Lock, User as UserIcon } from "lucide-react";
+import { Loader2, ArrowLeft, Mail, Lock, User as UserIcon, CheckCircle2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Login() {
@@ -11,6 +11,8 @@ export default function Login() {
   const { toast } = useToast();
   
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgot, setIsForgot] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,6 +32,25 @@ export default function Login() {
       }
     }
   }, [isAuthenticated, authLoading, navigate, returnTo]);
+
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) {
+      toast({ title: "Enter your email first", variant: "destructive" });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const redirectTo = `${window.location.origin}/reset-password`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+      if (error) throw error;
+      setForgotSent(true);
+    } catch (err: any) {
+      toast({ title: "Failed to send reset email", description: err.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -117,6 +138,56 @@ export default function Login() {
             </p>
           </div>
 
+          {isForgot ? (
+            forgotSent ? (
+              <div className="text-center space-y-4 py-4">
+                <CheckCircle2 className="w-14 h-14 mx-auto" style={{ color: "var(--terra)" }} />
+                <h2 className="font-display text-xl font-bold text-foreground">Check your inbox</h2>
+                <p className="text-sm text-muted-foreground">We sent a reset link to <strong>{email}</strong>. Click it to set a new password.</p>
+                <button
+                  onClick={() => { setIsForgot(false); setForgotSent(false); }}
+                  className="text-sm font-bold underline underline-offset-4"
+                  style={{ color: "var(--terra)" }}
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <p className="text-sm text-muted-foreground -mt-2 mb-2">Enter your email and we'll send a reset link.</p>
+                <div className="space-y-1 pb-4">
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider ml-1 block">Email Address</label>
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2"><Mail className="w-4 h-4 text-muted-foreground" /></div>
+                    <input
+                      required type="email"
+                      className="w-full h-12 pl-11 pr-4 rounded-xl text-sm border focus:outline-none focus:ring-2 transition-all placeholder:text-muted-foreground/50"
+                      style={{ borderColor: "var(--warm-border)", background: "var(--cream)", color: "var(--ink)" }}
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      data-testid="input-forgot-email"
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit" disabled={isLoading}
+                  className="w-full h-12 rounded-xl text-sm font-bold text-white shadow-lg transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center disabled:opacity-70"
+                  style={{ background: "var(--terra)" }}
+                  data-testid="button-send-reset"
+                >
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Reset Link"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsForgot(false)}
+                  className="w-full text-sm text-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Back to Sign In
+                </button>
+              </form>
+            )
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
               <div className="grid grid-cols-2 gap-4">
@@ -180,6 +251,17 @@ export default function Login() {
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
                   Password
                 </label>
+                {!isSignUp && (
+                  <button
+                    type="button"
+                    onClick={() => setIsForgot(true)}
+                    className="text-xs font-semibold underline underline-offset-2 transition-colors"
+                    style={{ color: "var(--terra)" }}
+                    data-testid="link-forgot-password"
+                  >
+                    Forgot password?
+                  </button>
+                )}
               </div>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -239,6 +321,7 @@ export default function Login() {
               </p>
             )}
           </div>
+          )}
         </div>
       </div>
     </div>

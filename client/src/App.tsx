@@ -14,6 +14,7 @@ import { Loader as Loader2 } from "lucide-react";
 
 const Home            = lazy(() => import("@/pages/home"));
 const Login           = lazy(() => import("@/pages/login"));
+const ResetPassword   = lazy(() => import("@/pages/reset-password"));
 const Admin           = lazy(() => import("@/pages/admin"));
 const OrganizerDashboard = lazy(() => import("@/pages/organizer"));
 const Profile         = lazy(() => import("@/pages/profile"));
@@ -128,6 +129,7 @@ function Router() {
           <Switch>
             <Route path="/" component={RootRoute} />
             <Route path="/login" component={Login} />
+            <Route path="/reset-password" component={ResetPassword} />
             <Route path="/onboarding" component={() => <ProtectedRoute component={Onboarding} />} />
             <Route path="/admin" component={Admin} />
             <Route path="/home" component={() => <ProtectedRoute component={HomeFeed} />} />

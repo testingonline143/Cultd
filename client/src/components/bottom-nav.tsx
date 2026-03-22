@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Drawer } from "vaul";
 import { Link } from "wouter";
 
-const HIDDEN_PATHS = ["/login", "/onboarding", "/scan", "/matched-clubs", "/admin"];
+const HIDDEN_PATHS = ["/login", "/onboarding", "/scan", "/matched-clubs", "/admin", "/reset-password"];
 
 function getActiveTab(location: string): string {
   if (location === "/home" || location.startsWith("/home/")) return "/home";
