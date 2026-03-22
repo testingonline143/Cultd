@@ -8,6 +8,7 @@ import { useLocation } from "wouter";
 import { HOBBY_ICONS } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
+import type { User as DBUser } from "@shared/models/auth";
 
 const AVAILABILITY_OPTIONS = [
   { value: "early_morning", label: "Early Morning", emoji: "🌅" },
@@ -75,7 +76,7 @@ export default function Onboarding() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.setQueryData(["/api/auth/user"], (old: any) =>
+      queryClient.setQueryData<DBUser | null>(["/api/auth/user"], (old) =>
         old ? { ...old, quizCompleted: true } : old
       );
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
