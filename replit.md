@@ -157,8 +157,9 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
   - `club_moments` — id (UUID), clubId, caption (text), imageUrl (text, nullable), emoji (text, nullable), createdAt
   - `club_page_sections` — id (UUID), clubId, title (text), description (text, nullable), emoji (text, default "📌"), layout (text, default "full"), position (integer), isVisible (boolean, default true), createdAt
   - `section_events` — id (UUID), sectionId, eventId, position (integer), createdAt
-- **Migrations**: Raw SQL migrations applied in server startup; drizzle-kit for reference
+- **Migrations**: Schema managed via `drizzle-kit push` (run with `npm run db:push`). Full schema SQL generated at `migrations/0000_init.sql`. For Supabase setup, run `scripts/supabase-setup.sql` in Supabase SQL editor.
 - **Seeding**: `server/seed.ts` contains hardcoded club data for initial population
+- **Supabase migration**: `server/db.ts` auto-detects Supabase URLs and adds `ssl: { rejectUnauthorized: false }`. Data export at `scripts/data-export.sql`, combined setup SQL at `scripts/supabase-setup.sql`.
 
 ### Shared Code (shared/)
 - `shared/schema.ts` re-exports users/sessions from `shared/models/auth.ts`, defines all other Drizzle tables, Zod insert schemas, TypeScript types, CATEGORIES, CITIES constants
