@@ -33,6 +33,22 @@ export function registerOrganizerRoutes(
     }
   });
 
+  app.get("/api/organizer/pending-requests-count", isAuthenticated, requireRole("organiser", "admin"), async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const clubs = await storage.getClubsForOrganiser(userId);
+      let count = 0;
+      for (const club of clubs) {
+        const requests = await storage.getJoinRequestsByClub(club.id);
+        count += requests.filter((r) => r.status === "pending").length;
+      }
+      res.json({ count });
+    } catch (err) {
+      console.error("Error fetching organizer pending requests count:", err);
+      res.status(500).json({ message: "Failed to fetch pending count" });
+    }
+  });
+
   app.get("/api/organizer/join-requests/:clubId", isAuthenticated, requireRole("organiser", "admin"), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

@@ -305,11 +305,30 @@ function ProfileActions({ user }: { user: User }) {
     retry: false,
   });
 
+  const isAdmin = adminStatus?.isCurrentUserAdmin === true;
+
+  const { data: adminJoinRequests } = useQuery<{ id: string; status: string; markedDone?: boolean }[]>({
+    queryKey: ["/api/admin/join-requests"],
+    enabled: isAdmin,
+    retry: false,
+    staleTime: 1000 * 60 * 2,
+  });
+
+  const { data: adminProposalCount } = useQuery<{ count: number }>({
+    queryKey: ["/api/admin/club-proposals/pending-count"],
+    enabled: isAdmin,
+    retry: false,
+    staleTime: 1000 * 60 * 2,
+  });
+
+  const adminPendingCount =
+    (adminJoinRequests ?? []).filter((r) => r.status === "pending" && !r.markedDone).length +
+    (adminProposalCount?.count ?? 0);
+
   const handleRedoQuiz = () => {
     navigate("/onboarding");
   };
 
-  const isAdmin = adminStatus?.isCurrentUserAdmin === true;
   const isOrganiserOrAdmin = user.role === "organiser" || user.role === "admin" || isAdmin;
 
   return (
@@ -324,6 +343,22 @@ function ProfileActions({ user }: { user: User }) {
               <h3 className="font-display text-sm font-bold" style={{ color: 'var(--terra)' }} data-testid="text-admin-dashboard-label">Admin Dashboard</h3>
               <p className="text-xs text-muted-foreground mt-0.5">Manage users, clubs & platform settings</p>
             </div>
+            {adminPendingCount > 0 && (
+              <span
+                className="flex items-center justify-center rounded-full text-white font-bold shrink-0"
+                style={{
+                  minWidth: 22,
+                  height: 22,
+                  fontSize: 11,
+                  paddingLeft: adminPendingCount >= 10 ? 5 : 0,
+                  paddingRight: adminPendingCount >= 10 ? 5 : 0,
+                  background: "var(--terra)",
+                }}
+                data-testid="badge-admin-pending"
+              >
+                {adminPendingCount > 99 ? "99+" : adminPendingCount}
+              </span>
+            )}
             <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
           </div>
         </Link>

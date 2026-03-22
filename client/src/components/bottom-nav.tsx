@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Home, Users, Calendar, User, Plus, X, PenLine } from "lucide-react";
+import { Home, Users, Calendar, User, Plus, X, PenLine, LayoutGrid } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Drawer } from "vaul";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 const HIDDEN_PATHS = ["/login", "/onboarding", "/scan", "/matched-clubs", "/admin", "/reset-password"];
 
@@ -27,14 +28,28 @@ export function BottomNav() {
     location === "/" ||
     HIDDEN_PATHS.some((p) => location === p || location.startsWith(p + "/"));
 
-  if (isHidden) return null;
-
   const isOrganiser = user?.role === "organiser" || user?.role === "admin";
   const isCreator = isOrganiser;
+
+  const { data: pendingData } = useQuery<{ count: number }>({
+    queryKey: ["/api/organizer/pending-requests-count"],
+    enabled: isAuthenticated && isOrganiser && !isHidden,
+    staleTime: 1000 * 60 * 2,
+    refetchInterval: 1000 * 60 * 2,
+  });
+  const pendingCount = pendingData?.count ?? 0;
+
+  if (isHidden) return null;
+
   const activeTab = getActiveTab(location);
 
-  const leftTabs = [
+  const leftTabsRegular = [
     { path: "/explore", label: "CLUBS", icon: Users },
+    { path: "/events", label: "EVENTS", icon: Calendar },
+  ];
+
+  const leftTabsOrganiser = [
+    { path: "/organizer", label: "MANAGE", icon: LayoutGrid, badge: pendingCount },
     { path: "/events", label: "EVENTS", icon: Calendar },
   ];
 
@@ -43,7 +58,9 @@ export function BottomNav() {
     { path: "/profile", label: "PROFILE", icon: User },
   ];
 
-  const renderTab = (tab: { path: string; label: string; icon: React.ElementType }, key: string) => {
+  const leftTabs = isOrganiser ? leftTabsOrganiser : leftTabsRegular;
+
+  const renderTab = (tab: { path: string; label: string; icon: React.ElementType; badge?: number }, key: string) => {
     const isActive = activeTab === tab.path;
     const Icon = tab.icon;
     return (
@@ -54,7 +71,7 @@ export function BottomNav() {
         data-testid={`tab-${tab.label.toLowerCase()}`}
       >
         <div
-          className="flex items-center justify-center rounded-full transition-all"
+          className="flex items-center justify-center rounded-full transition-all relative"
           style={{
             width: isActive ? 44 : 28,
             height: 28,
@@ -65,6 +82,25 @@ export function BottomNav() {
             className={isActive ? "w-6 h-6" : "w-5 h-5"}
             style={{ opacity: isActive ? 1 : 0.45, color: isActive ? "var(--terra)" : "var(--ink)" }}
           />
+          {tab.badge !== undefined && tab.badge > 0 && (
+            <span
+              className="absolute flex items-center justify-center rounded-full text-white font-bold"
+              style={{
+                top: -3,
+                right: -3,
+                minWidth: 16,
+                height: 16,
+                fontSize: 9,
+                paddingLeft: tab.badge >= 10 ? 3 : 0,
+                paddingRight: tab.badge >= 10 ? 3 : 0,
+                background: "var(--terra)",
+                lineHeight: 1,
+              }}
+              data-testid="badge-manage-pending"
+            >
+              {tab.badge > 99 ? "99+" : tab.badge}
+            </span>
+          )}
         </div>
         <span
           className="font-bold tracking-wider uppercase"
