@@ -76,9 +76,10 @@ export default function Onboarding() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.setQueryData<DBUser | null>(["/api/auth/user"], (old) =>
-        old ? { ...old, quizCompleted: true } : old
-      );
+      queryClient.setQueryData<DBUser | null>(["/api/auth/user"], (old) => {
+        const base = old ?? (user as DBUser | null);
+        return base ? { ...base, quizCompleted: true } : null;
+      });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       navigate("/matched-clubs");
     },
