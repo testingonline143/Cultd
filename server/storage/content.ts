@@ -14,7 +14,7 @@ export const contentStorage = {
     const counts = await db
       .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
       .from(momentComments)
-      .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`)
+      .where(inArray(momentComments.momentId, ids))
       .groupBy(momentComments.momentId);
     const countMap: Record<string, number> = {};
     for (const c of counts) countMap[c.momentId] = c.count;
@@ -115,7 +115,7 @@ export const contentStorage = {
     const counts = await db
       .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
       .from(momentComments)
-      .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`)
+      .where(inArray(momentComments.momentId, ids))
       .groupBy(momentComments.momentId);
     const countMap: Record<string, number> = {};
     for (const c of counts) countMap[c.momentId] = c.count;
@@ -124,7 +124,7 @@ export const contentStorage = {
       const likedRows = await db
         .select({ momentId: momentLikes.momentId })
         .from(momentLikes)
-        .where(and(eq(momentLikes.userId, userId), sql`${momentLikes.momentId} = ANY(${sql.raw(`ARRAY[${ids.map(id => `'${id}'`).join(",")}]`)})`));
+        .where(and(eq(momentLikes.userId, userId), inArray(momentLikes.momentId, ids)));
       for (const row of likedRows) likedSet.add(row.momentId);
     }
     return rows.map(r => ({ ...r, commentCount: countMap[r.id] ?? 0, userHasLiked: likedSet.has(r.id) }));
