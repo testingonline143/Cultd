@@ -757,7 +757,7 @@ export default function HomeFeed() {
 
         {/* Kudos Sheet */}
         {kudoSheetOpen && kudoPromptEvent && (
-          <div className="fixed inset-0 z-50 flex items-end pb-16" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setKudoSheetOpen(false)} data-testid="overlay-kudo-sheet">
+          <div className="fixed inset-0 z-50 flex items-end pb-16 sm:pb-0" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setKudoSheetOpen(false)} data-testid="overlay-kudo-sheet">
             <div
               className="w-full rounded-t-3xl flex flex-col"
               style={{ background: "var(--cream)", maxHeight: "calc(100dvh - 5rem)" }}

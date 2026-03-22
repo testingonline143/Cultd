@@ -359,7 +359,7 @@ export default function PublicClub() {
       {showSignIn && (
         <>
           <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setShowSignIn(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl p-6 pt-3 pb-20 animate-in slide-in-from-bottom duration-300" style={{ background: "var(--warm-white)" }} data-testid="sheet-sign-in">
+          <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl p-6 pt-3 pb-20 sm:pb-6 animate-in slide-in-from-bottom duration-300" style={{ background: "var(--warm-white)" }} data-testid="sheet-sign-in">
             <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: "var(--warm-border)" }} />
             <button onClick={() => setShowSignIn(false)} className="absolute right-4 top-4 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--cream)" }} data-testid="button-close-signin">
               <X className="w-4 h-4 text-[var(--ink)]" />
