@@ -296,6 +296,7 @@ function ProfileHeader({ user }: { user: User }) {
 
 function ProfileActions({ user }: { user: User }) {
   const [, navigate] = useLocation();
+  const { logout, isLoggingOut } = useAuth();
 
   const { data: adminStatus } = useQuery<{ configured: boolean; isCurrentUserAdmin: boolean }>({
     queryKey: ["/api/admin/status"],
@@ -376,6 +377,19 @@ function ProfileActions({ user }: { user: User }) {
             Redo Quiz
           </button>
         )}
+        <button
+          onClick={() => logout()}
+          disabled={isLoggingOut}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-md glass-card text-xs font-semibold text-muted-foreground transition-all disabled:opacity-50"
+          data-testid="button-logout"
+        >
+          {isLoggingOut ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <LogOut className="w-3.5 h-3.5" />
+          )}
+          {isLoggingOut ? "Signing out…" : "Sign Out"}
+        </button>
       </div>
     </div>
   );
