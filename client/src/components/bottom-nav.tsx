@@ -84,22 +84,17 @@ export function BottomNav() {
           />
           {tab.badge !== undefined && tab.badge > 0 && (
             <span
-              className="absolute flex items-center justify-center rounded-full text-white font-bold"
+              className="absolute rounded-full"
               style={{
-                top: -3,
-                right: -3,
-                minWidth: 16,
-                height: 16,
-                fontSize: 9,
-                paddingLeft: tab.badge >= 10 ? 3 : 0,
-                paddingRight: tab.badge >= 10 ? 3 : 0,
+                top: -2,
+                right: -2,
+                width: 8,
+                height: 8,
                 background: "var(--terra)",
-                lineHeight: 1,
+                border: "1.5px solid rgba(245,240,232,0.97)",
               }}
               data-testid="badge-manage-pending"
-            >
-              {tab.badge > 99 ? "99+" : tab.badge}
-            </span>
+            />
           )}
         </div>
         <span
