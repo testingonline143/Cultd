@@ -5,3 +5,7 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .env
+
+# Data dumps — may contain PII (emails, phone numbers)
+scripts/data-export.sql
+scripts/supabase-setup.sql

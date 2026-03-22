@@ -159,7 +159,22 @@ Design preference: Warm editorial design with cream background (#F5F0E8) and ter
   - `section_events` — id (UUID), sectionId, eventId, position (integer), createdAt
 - **Migrations**: Schema managed via `drizzle-kit push` (run with `npm run db:push`). Full schema SQL generated at `migrations/0000_init.sql`. For Supabase setup, run `scripts/supabase-setup.sql` in Supabase SQL editor.
 - **Seeding**: `server/seed.ts` contains hardcoded club data for initial population
-- **Supabase migration**: `server/db.ts` auto-detects Supabase URLs and adds `ssl: { rejectUnauthorized: false }`. Data export at `scripts/data-export.sql`, combined setup SQL at `scripts/supabase-setup.sql`.
+- **Supabase migration**: `server/db.ts` auto-detects Supabase URLs and adds `ssl: { rejectUnauthorized: false }`. Data dumps (`scripts/data-export.sql`, `scripts/supabase-setup.sql`) are gitignored due to PII content.
+
+### Supabase Migration — Remaining Manual Steps
+
+1. **Create schema in Supabase**: Open Supabase Dashboard → SQL Editor → paste `scripts/supabase-setup.sql` → Run All.
+2. **Update DATABASE_URL**: In Replit Secrets, set `DATABASE_URL` to the Supabase connection pooler URL (from Supabase Dashboard → Settings → Database → Connection Pooling). Use format: `postgresql://postgres.{project_ref}:{password}@{pooler_host}:5432/postgres?sslmode=require`
+3. **Restart app**: Restart the "Start application" workflow after updating the secret.
+4. **Post-migration smoke test** (run in Supabase SQL editor):
+   ```sql
+   SELECT COUNT(*) FROM clubs;          -- expect 7
+   SELECT COUNT(*) FROM users;          -- expect 1+
+   SELECT COUNT(*) FROM club_faqs;      -- expect 18
+   SELECT COUNT(*) FROM club_schedule_entries; -- expect ~21
+   SELECT id, name, slug FROM clubs ORDER BY created_at;
+   ```
+   Then in the running app: verify home feed shows clubs, explore page works, club detail page loads, auth/login works.
 
 ### Shared Code (shared/)
 - `shared/schema.ts` re-exports users/sessions from `shared/models/auth.ts`, defines all other Drizzle tables, Zod insert schemas, TypeScript types, CATEGORIES, CITIES constants
