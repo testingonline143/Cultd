@@ -260,11 +260,13 @@ function ProfileHeader({ user }: { user: User }) {
             </div>
           ) : (
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-display text-2xl font-bold truncate" style={{ color: 'var(--terra)' }} data-testid="text-profile-name">{displayName}</h1>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <h1 className="font-display text-2xl font-bold truncate" style={{ color: 'var(--terra)' }} data-testid="text-profile-name">{displayName}</h1>
+                </div>
                 <button
                   onClick={() => setEditing(true)}
-                  className="w-7 h-7 rounded-full glass-card text-muted-foreground flex items-center justify-center transition-all"
+                  className="w-7 h-7 rounded-full glass-card text-muted-foreground flex items-center justify-center transition-all shrink-0"
                   data-testid="button-edit-name"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
