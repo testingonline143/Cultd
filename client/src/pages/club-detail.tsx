@@ -97,6 +97,12 @@ function ClubDetailContent({ club }: { club: Club }) {
   const [joinAnswer1, setJoinAnswer1] = useState("");
   const [joinAnswer2, setJoinAnswer2] = useState("");
   const [activeTab, setActiveTab] = useState("meet-ups");
+  const [visitedTabs, setVisitedTabs] = useState<Set<string>>(new Set(["meet-ups"]));
+
+  function switchTab(tabId: string) {
+    setActiveTab(tabId);
+    setVisitedTabs((prev) => { const next = new Set(prev); next.add(tabId); return next; });
+  }
   const [showShareSheet, setShowShareSheet] = useState(false);
 
   const { data: activity } = useQuery<{ recentJoins: number; recentJoinNames: string[]; totalEvents: number; lastEventDate: string | null }>({
@@ -504,7 +510,7 @@ function ClubDetailContent({ club }: { club: Club }) {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => switchTab(tab.id)}
             className={`px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
               activeTab === tab.id
                 ? "text-[var(--terra)]"
@@ -668,29 +674,39 @@ function ClubDetailContent({ club }: { club: Club }) {
         </div>
       )}
 
-      {activeTab === "schedule" && (
-        <ScheduleTab clubId={club.id} fallbackSchedule={club.schedule} />
+      {visitedTabs.has("schedule") && (
+        <div style={{ display: activeTab === "schedule" ? "block" : "none" }}>
+          <ScheduleTab clubId={club.id} fallbackSchedule={club.schedule} />
+        </div>
       )}
 
-      {activeTab === "moments" && (
-        <MomentsTab
-          clubId={club.id}
-          isOwner={isOwner}
-          isOrganiser={isOwner}
-          isMember={isApprovedMember && !isOwner}
-        />
+      {visitedTabs.has("moments") && (
+        <div style={{ display: activeTab === "moments" ? "block" : "none" }}>
+          <MomentsTab
+            clubId={club.id}
+            isOwner={isOwner}
+            isOrganiser={isOwner}
+            isMember={isApprovedMember && !isOwner}
+          />
+        </div>
       )}
 
-      {activeTab === "faqs" && (
-        <FaqsTab clubId={club.id} />
+      {visitedTabs.has("faqs") && (
+        <div style={{ display: activeTab === "faqs" ? "block" : "none" }}>
+          <FaqsTab clubId={club.id} />
+        </div>
       )}
 
-      {activeTab === "members" && (
-        <MembersTab clubId={club.id} />
+      {visitedTabs.has("members") && (
+        <div style={{ display: activeTab === "members" ? "block" : "none" }}>
+          <MembersTab clubId={club.id} />
+        </div>
       )}
 
-      {activeTab === "gallery" && (
-        <GalleryTab clubId={club.id} />
+      {visitedTabs.has("gallery") && (
+        <div style={{ display: activeTab === "gallery" ? "block" : "none" }}>
+          <GalleryTab clubId={club.id} />
+        </div>
       )}
 
       {activeTab === "values" && (

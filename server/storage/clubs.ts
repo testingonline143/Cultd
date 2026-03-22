@@ -177,19 +177,25 @@ export const clubsStorage = {
   },
 
   async getJoinRequests(): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests);
+    return db.select().from(joinRequests).orderBy(desc(joinRequests.createdAt));
   },
 
   async getJoinRequestsByClub(clubId: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.clubId, clubId));
+    return db.select().from(joinRequests)
+      .where(eq(joinRequests.clubId, clubId))
+      .orderBy(desc(joinRequests.createdAt));
   },
 
   async getJoinRequestsByPhone(phone: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.phone, phone));
+    return db.select().from(joinRequests)
+      .where(eq(joinRequests.phone, phone))
+      .orderBy(desc(joinRequests.createdAt));
   },
 
   async getJoinRequestsByUser(userId: string): Promise<JoinRequest[]> {
-    return db.select().from(joinRequests).where(eq(joinRequests.userId, userId));
+    return db.select().from(joinRequests)
+      .where(eq(joinRequests.userId, userId))
+      .orderBy(desc(joinRequests.createdAt));
   },
 
   async getJoinRequest(id: string): Promise<JoinRequest | undefined> {

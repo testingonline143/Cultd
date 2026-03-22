@@ -9,6 +9,42 @@ interface ImageUploadProps {
   aspectRatio?: "16/9" | "square";
 }
 
+async function compressImage(file: File, maxPx = 1280, quality = 0.82): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width > height) {
+          height = Math.round((height / width) * maxPx);
+          width = maxPx;
+        } else {
+          width = Math.round((width / height) * maxPx);
+          height = maxPx;
+        }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas not supported")); return; }
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error("Compression failed"));
+        },
+        "image/webp",
+        quality
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("Image load failed")); };
+    img.src = objectUrl;
+  });
+}
+
 export function ImageUpload({ value, onChange, label = "Add cover photo", aspectRatio = "16/9" }: ImageUploadProps) {
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,24 +55,26 @@ export function ImageUpload({ value, onChange, label = "Add cover photo", aspect
   async function handleFile(file: File) {
     setUploading(true);
     try {
+      const compressed = await compressImage(file);
       const { supabase } = await import("@/lib/supabase");
       const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.webp`;
-      
+
       const { data, error } = await supabase.storage
         .from('uploads')
-        .upload(filename, file, {
-          cacheControl: '3600',
+        .upload(filename, compressed, {
+          contentType: 'image/webp',
+          cacheControl: '31536000',
           upsert: true
         });
 
       if (error) {
         throw new Error(error.message || "Upload failed");
       }
-      
+
       const { data: { publicUrl } } = supabase.storage
         .from('uploads')
         .getPublicUrl(filename);
-        
+
       onChange(publicUrl);
     } catch (err: any) {
       toast({ title: "Upload failed", description: err.message, variant: "destructive" });
