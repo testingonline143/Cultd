@@ -64,7 +64,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-8 overflow-x-hidden" style={{ paddingBottom: "calc(6rem + env(safe-area-inset-bottom))" }}>
         {/* Account — avatar, name, bio, actions */}
         <section data-testid="section-account">
           <ProfileHeader user={user} />
@@ -162,7 +162,7 @@ function ProfileHeader({ user }: { user: User }) {
     updateMutation.mutate({ name: editName, bio: editBio, city: editCity });
   };
 
-  const displayName = user.firstName || user.email || "User";
+  const displayName = user.firstName || (user.email ? user.email.split("@")[0] : "User");
 
   return (
     <div className="glass-card rounded-2xl p-6 mb-4" data-testid="card-profile">
@@ -261,7 +261,7 @@ function ProfileHeader({ user }: { user: User }) {
           ) : (
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="font-display text-2xl font-bold" style={{ color: 'var(--terra)' }} data-testid="text-profile-name">{displayName}</h1>
+                <h1 className="font-display text-2xl font-bold truncate" style={{ color: 'var(--terra)' }} data-testid="text-profile-name">{displayName}</h1>
                 <button
                   onClick={() => setEditing(true)}
                   className="w-7 h-7 rounded-full glass-card text-muted-foreground flex items-center justify-center transition-all"
@@ -270,7 +270,7 @@ function ProfileHeader({ user }: { user: User }) {
                   <Edit2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-              {user.email && <p className="text-sm text-muted-foreground mt-0.5" data-testid="text-profile-email">{user.email}</p>}
+              {user.email && <p className="text-sm text-muted-foreground mt-0.5 truncate" data-testid="text-profile-email">{user.email}</p>}
               {user.city && <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1 flex-wrap"><MapPin className="w-3 h-3" /> {user.city}</p>}
               {user.bio && <p className="text-sm text-foreground mt-2" data-testid="text-profile-bio">{user.bio}</p>}
               <div className="flex items-center gap-2 flex-wrap mt-2">
