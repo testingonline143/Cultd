@@ -1,4 +1,4 @@
-import { eq, desc, asc, and, sql, gte, or, ilike } from "drizzle-orm";
+import { eq, desc, asc, and, sql, gte, or, ilike, inArray } from "drizzle-orm";
 import { db } from "../db";
 import {
   clubs, joinRequests, users, events, clubRatings, clubFaqs,
@@ -513,7 +513,7 @@ export const clubsStorage = {
       const counts = await db
         .select({ momentId: momentComments.momentId, count: sql<number>`count(*)::int` })
         .from(momentComments)
-        .where(sql`${momentComments.momentId} = ANY(${sql.raw(`ARRAY[${momentIds.map(id => `'${id}'`).join(",")}]`)})`)
+        .where(inArray(momentComments.momentId, momentIds))
         .groupBy(momentComments.momentId);
       for (const c of counts) commentCounts[c.momentId] = c.count;
     }
