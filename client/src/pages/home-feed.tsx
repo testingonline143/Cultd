@@ -757,71 +757,76 @@ export default function HomeFeed() {
 
         {/* Kudos Sheet */}
         {kudoSheetOpen && kudoPromptEvent && (
-          <div className="fixed inset-0 z-50 flex items-end" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setKudoSheetOpen(false)} data-testid="overlay-kudo-sheet">
+          <div className="fixed inset-0 z-50 flex items-end pb-16" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setKudoSheetOpen(false)} data-testid="overlay-kudo-sheet">
             <div
-              className="w-full rounded-t-3xl p-6 space-y-5 pb-10"
-              style={{ background: "var(--cream)", maxHeight: "85vh", overflowY: "auto" }}
+              className="w-full rounded-t-3xl flex flex-col"
+              style={{ background: "var(--cream)", maxHeight: "calc(100dvh - 5rem)" }}
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between">
-                <h2 className="font-display text-xl font-black text-[var(--ink)]">Give a Kudo</h2>
-                <button onClick={() => setKudoSheetOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="button-close-kudo-sheet">
-                  <X className="w-4 h-4 text-[var(--ink3)]" />
-                </button>
-              </div>
-              <p className="text-sm text-[var(--muted-warm)]">From: {kudoPromptEvent.title}</p>
-
-              {kudoAttendees.length === 0 ? (
-                <div className="text-center py-8 text-sm text-[var(--muted-warm)]" data-testid="text-no-attendees">
-                  No other attendees to give kudos to.
+              <div className="p-6 pb-0 space-y-5 flex-1 overflow-y-auto">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-display text-xl font-black text-[var(--ink)]">Give a Kudo</h2>
+                  <button onClick={() => setKudoSheetOpen(false)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--warm-white)", border: "1.5px solid var(--warm-border)" }} data-testid="button-close-kudo-sheet">
+                    <X className="w-4 h-4 text-[var(--ink3)]" />
+                  </button>
                 </div>
-              ) : (
-                <>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-[var(--muted-warm)] mb-3">Choose a person</p>
-                    <div className="flex flex-wrap gap-2">
-                      {kudoAttendees.map(a => (
-                        <button
-                          key={a.userId}
-                          onClick={() => setSelectedKudoReceiver(a.userId)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-all"
-                          style={{
-                            background: selectedKudoReceiver === a.userId ? "var(--terra)" : "var(--warm-white)",
-                            color: selectedKudoReceiver === a.userId ? "white" : "var(--ink)",
-                            border: selectedKudoReceiver === a.userId ? "1.5px solid var(--terra)" : "1.5px solid var(--warm-border)",
-                          }}
-                          data-testid={`button-kudo-receiver-${a.userId}`}
-                        >
-                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>
-                            {(a.userName || "?").charAt(0).toUpperCase()}
-                          </span>
-                          {a.userName || "Member"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                <p className="text-sm text-[var(--muted-warm)]">From: {kudoPromptEvent.title}</p>
 
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-[var(--muted-warm)] mb-3">Choose a kudo type</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {KUDO_TYPES.map(type => (
-                        <button
-                          key={type}
-                          onClick={() => setSelectedKudoType(type)}
-                          className="px-3 py-2.5 rounded-2xl text-sm font-semibold text-left transition-all"
-                          style={{
-                            background: selectedKudoType === type ? "var(--terra)" : "var(--warm-white)",
-                            color: selectedKudoType === type ? "white" : "var(--ink)",
-                            border: selectedKudoType === type ? "1.5px solid var(--terra)" : "1.5px solid var(--warm-border)",
-                          }}
-                          data-testid={`button-kudo-type-${type.replace(/\s+/g, "-").toLowerCase()}`}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
+                {kudoAttendees.length === 0 ? (
+                  <div className="text-center py-8 text-sm text-[var(--muted-warm)]" data-testid="text-no-attendees">
+                    No other attendees to give kudos to.
                   </div>
+                ) : (
+                  <>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider text-[var(--muted-warm)] mb-3">Choose a person</p>
+                      <div className="flex flex-wrap gap-2">
+                        {kudoAttendees.map(a => (
+                          <button
+                            key={a.userId}
+                            onClick={() => setSelectedKudoReceiver(a.userId)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-all"
+                            style={{
+                              background: selectedKudoReceiver === a.userId ? "var(--terra)" : "var(--warm-white)",
+                              color: selectedKudoReceiver === a.userId ? "white" : "var(--ink)",
+                              border: selectedKudoReceiver === a.userId ? "1.5px solid var(--terra)" : "1.5px solid var(--warm-border)",
+                            }}
+                            data-testid={`button-kudo-receiver-${a.userId}`}
+                          >
+                            <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold" style={{ background: "var(--terra-pale)", color: "var(--terra)" }}>
+                              {(a.userName || "?").charAt(0).toUpperCase()}
+                            </span>
+                            {a.userName || "Member"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider text-[var(--muted-warm)] mb-3">Choose a kudo type</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {KUDO_TYPES.map(type => (
+                          <button
+                            key={type}
+                            onClick={() => setSelectedKudoType(type)}
+                            className="px-3 py-2.5 rounded-2xl text-sm font-semibold text-left transition-all"
+                            style={{
+                              background: selectedKudoType === type ? "var(--terra)" : "var(--warm-white)",
+                              color: selectedKudoType === type ? "white" : "var(--ink)",
+                              border: selectedKudoType === type ? "1.5px solid var(--terra)" : "1.5px solid var(--warm-border)",
+                            }}
+                            data-testid={`button-kudo-type-${type.replace(/\s+/g, "-").toLowerCase()}`}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {kudoAttendees.length > 0 && (
+                <div className="px-6 pb-6 pt-4 shrink-0">
                   <button
                     onClick={() => {
                       if (selectedKudoReceiver && selectedKudoType) {
@@ -835,7 +840,7 @@ export default function HomeFeed() {
                   >
                     {sendKudoMutation.isPending ? "Sending..." : "Send Kudo Anonymously 🏅"}
                   </button>
-                </>
+                </div>
               )}
             </div>
           </div>

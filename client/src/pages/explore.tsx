@@ -43,7 +43,7 @@ function ProposeClubModal({ onClose }: { onClose: () => void }) {
 
   if (submitted) {
     return (
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pt-4 px-4 pb-20 sm:p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
         <div className="w-full max-w-md rounded-t-2xl sm:rounded-2xl p-6 text-center space-y-4 animate-in slide-in-from-bottom" style={{ background: "var(--cream)" }}>
           <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto" style={{ background: "rgba(22,163,74,0.12)" }}>
             <CheckCircle2 className="w-7 h-7 text-green-600" />
