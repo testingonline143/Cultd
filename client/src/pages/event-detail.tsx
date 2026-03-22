@@ -1005,10 +1005,10 @@ export default function EventDetail() {
       )}
 
       {showTicketModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" data-testid="modal-ticket-selection">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pt-4 px-4 pb-20 sm:p-4" data-testid="modal-ticket-selection">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowTicketModal(false)} />
-          <div className="relative w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
-            <div className="p-5 pb-2 flex items-center gap-2 sticky top-0 z-10" style={{ background: 'var(--warm-white)' }}>
+          <div className="relative w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl flex flex-col max-h-[calc(100dvh-6rem)] sm:max-h-[85vh]" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
+            <div className="p-5 pb-2 flex items-center gap-2 shrink-0" style={{ background: 'var(--warm-white)' }}>
               <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--terra-pale)' }}>
                 <Ticket className="w-4 h-4 text-[var(--terra)]" />
               </div>
@@ -1024,7 +1024,7 @@ export default function EventDetail() {
                 <Plus className="w-4 h-4 rotate-45" />
               </button>
             </div>
-            <div className="px-5 pb-4 space-y-2.5">
+            <div className="px-5 pb-4 space-y-2.5 flex-1 overflow-y-auto">
               {ticketTypes.map(tt => {
                 const isSelected = selectedTicketTypeId === tt.id;
                 return (
@@ -1060,7 +1060,7 @@ export default function EventDetail() {
                 );
               })}
             </div>
-            <div className="px-5 pb-6 pt-2" style={{ borderTop: '1px solid var(--warm-border)' }}>
+            <div className="px-5 pb-6 pt-2 shrink-0" style={{ borderTop: '1px solid var(--warm-border)' }}>
               <button
                 onClick={handleTicketContinue}
                 disabled={selectedTicketTypeId === null || formLoading}
@@ -1076,37 +1076,39 @@ export default function EventDetail() {
       )}
 
       {showSurveyModal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" data-testid="modal-survey-form">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center pt-4 px-4 pb-20 sm:p-4" data-testid="modal-survey-form">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !pendingFormMandatory && setShowSurveyModal(false)} />
-          <div className="relative w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[85vh] overflow-y-auto" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
-            <div className="flex items-center gap-2 mb-1">
-              <ClipboardList className="w-4 h-4 text-[var(--terra)]" />
-              <h3 className="text-sm font-bold text-foreground">Quick Registration</h3>
-              <span className="ml-auto text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: pendingFormMandatory ? 'var(--terra-pale)' : 'var(--cream)', color: pendingFormMandatory ? 'var(--terra)' : 'var(--muted-warm)' }}>
-                {pendingFormMandatory ? "Required to RSVP" : "Optional"}
-              </span>
+          <div className="relative w-full max-w-lg mx-auto rounded-t-3xl sm:rounded-3xl flex flex-col max-h-[calc(100dvh-6rem)] sm:max-h-[85vh]" style={{ background: 'var(--warm-white)', border: '1.5px solid var(--warm-border)' }}>
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <ClipboardList className="w-4 h-4 text-[var(--terra)]" />
+                <h3 className="text-sm font-bold text-foreground">Quick Registration</h3>
+                <span className="ml-auto text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: pendingFormMandatory ? 'var(--terra-pale)' : 'var(--cream)', color: pendingFormMandatory ? 'var(--terra)' : 'var(--muted-warm)' }}>
+                  {pendingFormMandatory ? "Required to RSVP" : "Optional"}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {pendingFormMandatory
+                  ? "The organizer needs a few details before confirming your spot."
+                  : "The organizer would love these details, but you can skip if you prefer."}
+              </p>
+              <div className="space-y-3">
+                {pendingFormQuestions.map((q) => (
+                  <div key={q.id} data-testid={`survey-question-${q.id}`}>
+                    <label className="text-xs font-semibold text-foreground mb-1 block">{q.question}{pendingFormMandatory && <span className="text-destructive ml-1">*</span>}</label>
+                    <input
+                      value={formAnswers[q.id] ?? ""}
+                      onChange={e => setFormAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
+                      className="w-full px-3 py-2.5 rounded-xl text-sm border-[1.5px] border-[var(--warm-border)] bg-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--terra)]/30"
+                      placeholder="Your answer"
+                      data-testid={`input-survey-answer-${q.id}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              {rsvpError && <p className="text-xs text-destructive font-medium" data-testid="text-survey-error">{rsvpError}</p>}
             </div>
-            <p className="text-xs text-muted-foreground">
-              {pendingFormMandatory
-                ? "The organizer needs a few details before confirming your spot."
-                : "The organizer would love these details, but you can skip if you prefer."}
-            </p>
-            <div className="space-y-3">
-              {pendingFormQuestions.map((q) => (
-                <div key={q.id} data-testid={`survey-question-${q.id}`}>
-                  <label className="text-xs font-semibold text-foreground mb-1 block">{q.question}{pendingFormMandatory && <span className="text-destructive ml-1">*</span>}</label>
-                  <input
-                    value={formAnswers[q.id] ?? ""}
-                    onChange={e => setFormAnswers(prev => ({ ...prev, [q.id]: e.target.value }))}
-                    className="w-full px-3 py-2.5 rounded-xl text-sm border-[1.5px] border-[var(--warm-border)] bg-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--terra)]/30"
-                    placeholder="Your answer"
-                    data-testid={`input-survey-answer-${q.id}`}
-                  />
-                </div>
-              ))}
-            </div>
-            {rsvpError && <p className="text-xs text-destructive font-medium" data-testid="text-survey-error">{rsvpError}</p>}
-            <div className="flex gap-3 pt-1">
+            <div className="flex gap-3 px-5 pb-5 pt-3 shrink-0" style={{ borderTop: '1px solid var(--warm-border)' }}>
               {!pendingFormMandatory ? (
                 <button
                   onClick={handleSurveySkip}
