@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { storage } from "../storage/index";
-import { isAuthenticated } from "../auth";
+import { isAuthenticated, supabase } from "../auth";
 import { writeRateLimiter } from "../middleware";
 import { insertQuizAnswersSchema } from "@shared/schema";
 import { ZodError } from "zod";
@@ -9,6 +9,25 @@ import { fromZodError } from "zod-validation-error";
 export function registerUserRoutes(
   app: Express,
 ): void {
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ message: "Email is required" });
+
+      const domain = process.env.REPLIT_DEV_DOMAIN;
+      const redirectTo = domain
+        ? `https://${domain}/reset-password`
+        : `${req.protocol}://${req.get("host")}/reset-password`;
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+      if (error) throw error;
+
+      res.json({ ok: true });
+    } catch (err: any) {
+      console.error("Forgot password error:", err);
+      res.status(500).json({ message: err.message || "Failed to send reset email" });
+    }
+  });
   app.get("/api/user/join-requests", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
