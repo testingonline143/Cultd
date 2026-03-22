@@ -91,6 +91,7 @@ function ClubDetailContent({ club }: { club: Club }) {
   const joinFormRef = useRef<HTMLDivElement>(null);
   const [showJoinForm, setShowJoinForm] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
+  const [showJoinSuccessSheet, setShowJoinSuccessSheet] = useState(false);
   const [joinName, setJoinName] = useState(user?.firstName || "");
   const [joinPhone, setJoinPhone] = useState("");
   const [joinError, setJoinError] = useState("");
@@ -201,6 +202,12 @@ function ClubDetailContent({ club }: { club: Club }) {
     }
   }, [showJoinForm]);
 
+  useEffect(() => {
+    if (!showJoinSuccessSheet) return;
+    const timer = setTimeout(() => setShowJoinSuccessSheet(false), 4000);
+    return () => clearTimeout(timer);
+  }, [showJoinSuccessSheet]);
+
   const joinMutation = useMutation({
     mutationFn: async (data: { clubId: string; clubName: string; name: string; phone: string; answer1?: string; answer2?: string }) => {
       const res = await apiRequest("POST", "/api/join", data);
@@ -208,6 +215,7 @@ function ClubDetailContent({ club }: { club: Club }) {
     },
     onSuccess: () => {
       setJoinSuccess(true);
+      setShowJoinSuccessSheet(true);
       setShowJoinForm(false);
       setJoinName("");
       setJoinPhone("");
@@ -1066,6 +1074,53 @@ function ClubDetailContent({ club }: { club: Club }) {
           </>
         );
       })()}
+
+      {/* Join Request Success Sheet */}
+      {showJoinSuccessSheet && (
+        <>
+          <div
+            className="fixed inset-0 z-50 bg-black/40"
+            onClick={() => setShowJoinSuccessSheet(false)}
+            data-testid="overlay-join-success"
+          />
+          <div
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl px-5 pt-4 pb-10"
+            style={{
+              background: "var(--warm-white)",
+              borderTop: "1.5px solid var(--warm-border)",
+              maxWidth: 480,
+              margin: "0 auto",
+            }}
+            data-testid="sheet-join-success"
+          >
+            <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: "var(--warm-border)" }} />
+            <div className="flex flex-col items-center text-center gap-3 pb-2">
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(61,107,69,0.12)", border: "2px solid rgba(61,107,69,0.25)" }}
+              >
+                <CheckCircle2 className="w-8 h-8" style={{ color: "var(--green-accent)" }} />
+              </div>
+              <div>
+                <h3 className="font-display font-black text-[20px]" style={{ color: "var(--ink)" }}>
+                  Request sent! 🎉
+                </h3>
+                <p className="text-[13px] mt-1.5 leading-relaxed max-w-[260px] mx-auto" style={{ color: "var(--muted-warm)" }}>
+                  The organiser will review your request. We'll notify you when you're in.
+                </p>
+              </div>
+              <button
+                onClick={() => { setShowJoinSuccessSheet(false); navigate("/explore"); }}
+                className="mt-1 rounded-full px-7 py-3 font-bold text-[14px] text-white transition-all active:scale-[0.98]"
+                style={{ background: "var(--terra)" }}
+                data-testid="button-back-to-exploring"
+              >
+                Back to Exploring
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

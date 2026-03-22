@@ -521,34 +521,42 @@ export default function HomeFeed() {
         {user && userClubs.length === 0 && (
           <div data-testid="empty-state-no-clubs">
             <div
-              className="rounded-[20px] p-5 flex flex-col items-center text-center gap-3 mb-4"
-              style={{ background: "var(--warm-white)", border: "1.5px dashed rgba(196,98,45,0.35)" }}
+              className="rounded-[24px] overflow-hidden mb-4"
+              style={{ background: "var(--warm-white)", border: "1.5px solid rgba(196,98,45,0.2)" }}
             >
-              <span className="text-4xl">🏘️</span>
-              <div>
-                <p className="font-display font-bold text-[16px] mb-1" style={{ color: "var(--ink)" }}>
-                  You haven't joined a club yet
-                </p>
-                <p className="text-[13px]" style={{ color: "var(--muted-warm)" }}>
-                  Join clubs to see their posts, events, and announcements here.
+              <div
+                className="px-6 pt-8 pb-5 flex flex-col items-center text-center gap-1"
+                style={{ background: "linear-gradient(160deg, var(--terra-pale) 0%, var(--warm-white) 60%)" }}
+              >
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-2"
+                  style={{ background: "rgba(196,98,45,0.12)", border: "2px solid rgba(196,98,45,0.2)" }}
+                >
+                  🌱
+                </div>
+                <h2 className="font-display font-black text-[22px] leading-tight" style={{ color: "var(--ink)" }}>
+                  Find your people
+                </h2>
+                <p className="text-[14px] mt-1 leading-relaxed max-w-[260px]" style={{ color: "var(--muted-warm)" }}>
+                  Join a club to see posts and events from your community.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 w-full">
+              <div className="px-5 py-4 flex flex-col gap-2.5">
+                <Link
+                  href="/explore"
+                  className="rounded-full px-5 py-3 text-[14px] font-bold text-white text-center transition-all active:scale-[0.98]"
+                  style={{ background: "var(--terra)", boxShadow: "0 4px 14px rgba(196,98,45,0.35)" }}
+                  data-testid="button-explore-clubs"
+                >
+                  Explore Clubs →
+                </Link>
                 <Link
                   href="/matched-clubs"
-                  className="rounded-full px-5 py-2.5 text-[13px] font-bold text-white text-center"
-                  style={{ background: "var(--terra)" }}
+                  className="rounded-full px-5 py-2.5 text-[13px] font-semibold text-center transition-all active:scale-[0.98]"
+                  style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
                   data-testid="button-view-matches"
                 >
                   🎯 See My Matches
-                </Link>
-                <Link
-                  href="/explore"
-                  className="rounded-full px-5 py-2.5 text-[13px] font-semibold text-center"
-                  style={{ background: "var(--cream)", border: "1.5px solid var(--warm-border)", color: "var(--ink)" }}
-                  data-testid="button-browse-clubs"
-                >
-                  Explore All Clubs
                 </Link>
               </div>
             </div>
