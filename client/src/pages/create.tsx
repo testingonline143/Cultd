@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation, useSearch } from "wouter";
 import { CATEGORIES, CITIES } from "@shared/schema";
 import type { Club } from "@shared/schema";
-import { LogIn, Loader2, Type, AlignLeft, Tag, Repeat, Link, PartyPopper, CalendarPlus, LayoutDashboard, Image } from "lucide-react";
+import { LogIn, Loader2, Type, AlignLeft, Tag, Repeat, Link, PartyPopper, CalendarPlus, LayoutDashboard, Image, Send, Info } from "lucide-react";
 import { ImageUpload } from "@/components/image-upload";
 import { Input } from "@/components/ui/input";
 import {
@@ -87,7 +87,7 @@ export default function Create() {
     <div className="min-h-screen bg-background pb-24 px-4 pt-6">
       <div className="max-w-lg mx-auto">
         <h1 className="font-display italic text-3xl font-bold text-foreground mb-6" data-testid="text-create-title">
-          Create
+          {isOrganiser ? "Create" : "Propose a Club"}
         </h1>
 
         {isOrganiser && (
@@ -153,10 +153,232 @@ function SignInPrompt({ message }: { message: string }) {
 }
 
 function ClubForm({ onSuccess }: { onSuccess: (name: string, id: string) => void }) {
-  const { toast } = useToast();
-  const [, navigate] = useLocation();
   const { user } = useAuth();
   const isOrganiser = user?.role === "organiser" || user?.role === "admin";
+
+  if (isOrganiser) {
+    return <OrganizerClubForm onSuccess={onSuccess} />;
+  }
+  return <ProposalForm />;
+}
+
+function ProposalForm() {
+  const { toast } = useToast();
+  const [, navigate] = useLocation();
+
+  const [clubName, setClubName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [schedule, setSchedule] = useState("");
+  const [city, setCity] = useState("Tirupati");
+  const [motivation, setMotivation] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const proposalMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/club-proposals", {
+        clubName,
+        category,
+        vibe: "casual",
+        shortDesc: description,
+        city,
+        schedule,
+        motivation,
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ message: "Failed to submit proposal" }));
+        throw new Error(data.message || "Failed to submit proposal");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/club-proposals/mine"] });
+      setSubmitted(true);
+    },
+    onError: (err: Error) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clubName || clubName.length < 3) {
+      toast({ title: "Club name must be at least 3 characters", variant: "destructive" });
+      return;
+    }
+    if (!category) {
+      toast({ title: "Please select a category", variant: "destructive" });
+      return;
+    }
+    if (!description.trim()) {
+      toast({ title: "Please describe your club", variant: "destructive" });
+      return;
+    }
+    if (!schedule.trim()) {
+      toast({ title: "Please enter a meeting schedule (e.g. Weekly)", variant: "destructive" });
+      return;
+    }
+    if (!motivation.trim()) {
+      toast({ title: "Please tell us why you want to start this club", variant: "destructive" });
+      return;
+    }
+    proposalMutation.mutate();
+  };
+
+  if (submitted) {
+    return (
+      <div className="glass-card rounded-2xl p-8 text-center space-y-4" data-testid="proposal-success">
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'var(--terra-pale)' }}>
+          <Send className="w-8 h-8" style={{ color: 'var(--terra)' }} />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-foreground">Proposal Submitted!</h2>
+        <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+          Your club proposal is under review. We'll notify you once it's approved — usually within 1–2 days.
+        </p>
+        <button
+          onClick={() => navigate("/profile")}
+          className="w-full text-white rounded-xl py-3 font-semibold text-sm"
+          style={{ background: 'var(--terra)' }}
+          data-testid="button-view-proposal-status"
+        >
+          View Proposal Status
+        </button>
+        <button
+          onClick={() => navigate("/home")}
+          className="w-full glass-card rounded-xl py-3 font-semibold text-sm text-foreground"
+          data-testid="button-back-home"
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-xs" style={{ background: 'rgba(196,98,45,0.08)', color: 'var(--terra)' }}>
+        <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+        <span>Your proposal will be reviewed by our team. Once approved, you'll become the organizer of your club.</span>
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+          <Type className="w-3.5 h-3.5" />
+          CLUB NAME
+        </label>
+        <Input
+          placeholder="e.g. Tirupati Trekking Club"
+          className="glass-card rounded-xl"
+          value={clubName}
+          onChange={(e) => setClubName(e.target.value)}
+          data-testid="input-club-name"
+        />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+          <AlignLeft className="w-3.5 h-3.5" />
+          WHAT IS THIS CLUB ABOUT?
+        </label>
+        <textarea
+          placeholder="Describe the club — activities, who it's for, what members can expect..."
+          rows={3}
+          className="w-full px-3 py-2 glass-card rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          data-testid="input-full-desc"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+            <Tag className="w-3.5 h-3.5" />
+            CATEGORY
+          </label>
+          <Select onValueChange={setCategory} value={category}>
+            <SelectTrigger className="glass-card rounded-xl" data-testid="select-category">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              {CATEGORIES.map((cat) => (
+                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              ))}
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+            <Repeat className="w-3.5 h-3.5" />
+            FREQUENCY
+          </label>
+          <Input
+            placeholder="e.g. Weekly"
+            className="glass-card rounded-xl"
+            value={schedule}
+            onChange={(e) => setSchedule(e.target.value)}
+            data-testid="input-schedule"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 block">
+          CITY
+        </label>
+        <Select onValueChange={setCity} value={city}>
+          <SelectTrigger className="glass-card rounded-xl" data-testid="select-city">
+            <SelectValue placeholder="Select City" />
+          </SelectTrigger>
+          <SelectContent>
+            {CITIES.map((c) => (
+              <SelectItem key={c} value={c}>{c}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+          <AlignLeft className="w-3.5 h-3.5" />
+          WHY DO YOU WANT TO START THIS CLUB?
+        </label>
+        <textarea
+          placeholder="Tell us your motivation — what inspired you, what gap you see in your community..."
+          rows={3}
+          className="w-full px-3 py-2 glass-card rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+          value={motivation}
+          onChange={(e) => setMotivation(e.target.value)}
+          data-testid="input-motivation"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={proposalMutation.isPending}
+        className="w-full text-white rounded-xl py-4 font-bold text-lg transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+        style={{ background: 'var(--terra)' }}
+        data-testid="button-submit-proposal"
+      >
+        {proposalMutation.isPending ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Submitting...
+          </>
+        ) : (
+          <>
+            <Send className="w-5 h-5" />
+            Submit Proposal
+          </>
+        )}
+      </button>
+    </form>
+  );
+}
+
+function OrganizerClubForm({ onSuccess }: { onSuccess: (name: string, id: string) => void }) {
+  const { toast } = useToast();
 
   const [clubName, setClubName] = useState("");
   const [fullDesc, setFullDesc] = useState("");
@@ -171,9 +393,7 @@ function ClubForm({ onSuccess }: { onSuccess: (name: string, id: string) => void
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const endpoint = isOrganiser ? "/api/clubs/create" : "/api/club-proposals";
-      
-      const payload = isOrganiser ? {
+      const res = await apiRequest("POST", "/api/clubs/create", {
         name: clubName,
         category,
         shortDesc,
@@ -184,17 +404,7 @@ function ClubForm({ onSuccess }: { onSuccess: (name: string, id: string) => void
         whatsappNumber,
         city,
         coverImageUrl: coverImageUrl ?? undefined,
-      } : {
-        clubName: clubName,
-        category,
-        vibe: "casual",
-        shortDesc: fullDesc || shortDesc,
-        city,
-        schedule,
-        motivation: fullDesc || "I want to create this community", // Required field for proposals
-      };
-
-      const res = await apiRequest("POST", endpoint, payload);
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({ message: "Failed to create club" }));
         throw new Error(data.message || "Failed to create club");
@@ -206,14 +416,8 @@ function ClubForm({ onSuccess }: { onSuccess: (name: string, id: string) => void
       queryClient.invalidateQueries({ queryKey: ["/api/organizer/my-club"] });
       queryClient.invalidateQueries({ queryKey: ["/api/clubs"] });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      
-      if (!isOrganiser) {
-        toast({ title: "Proposal Submitted!", description: "Your club proposal is pending admin approval." });
-        navigate("/home");
-      } else {
-        toast({ title: "Success!", description: data.message || "Club created live!" });
-        onSuccess(clubName, data.club?.id || "");
-      }
+      toast({ title: "Success!", description: data.message || "Club created live!" });
+      onSuccess(clubName, data.club?.id || "");
     },
     onError: (err: Error) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });
